@@ -59,7 +59,7 @@ wine_country_map <- left_join(wmap, world_map, by = "country")
     ggplot(wine_country_map, aes_string(map_id = "country", fill = att)) +
       geom_map(map = wine_country_map,  color = "white") +
       expand_limits(x = wine_country_map$long, y = wine_country_map$lat) +
-      scale_fill_viridis_c(option = "C") + theme_fivethirtyeight() + ggtitle(title)
+      scale_fill_viridis_c(option = "C") + theme_map() + ggtitle(title)
   )
 }
 
@@ -77,9 +77,9 @@ wine_country_map <- left_join(wmap, world_map, by = "country")
 .save_pdf("price_max")
 
 
-ggplot(wine_data, aes(price)) + geom_histogram()
 
-ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlim(0,1000)
+
+ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlim(0,1000) + 
 
 ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlim(0,100) 
 
@@ -87,6 +87,6 @@ ggplot(wine_data, aes(price, points, color = point_cat)) + geom_jitter(alpha=1/1
 
 
 ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlab("Points (0-100)") +
-  ylab("Price ($)")
+  ylab("Price ($)") 
 
 .save_pdf("price_v_points")
