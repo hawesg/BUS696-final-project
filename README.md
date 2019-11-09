@@ -1,16 +1,18 @@
-# Reproducible Research Template
+# BUS 696 Final Project 
 
-Lately I've been working on adopting a better workflow for how I produce
-research for work purposes. With all of the push around reproducible
-research, I thought that it would be good to share how I set up all of
-my projects.
+## Garrett, Ricky, Bart
 
-Each project contains in the beginning the following items:
+
+
+This is the the project files for our BUS 696 Final project working with the data from https://www.kaggle.com/zynicide/wine-reviews 
+
+For now code is organized in this structure:
 
 1. [code](code): a folder to store code for processing data
-2. [images](images): a folder to store images produced for reporting
-3. [rmd/README.Rmd](rmd/README.Rmd): This is a a R file used to produce the `README.md` file.
-4. [README.md](README.md): This is a tl:dr of the analysis pdf file.
-5. [main.R](main.R): This is the main R file. It lists the steps for the analysis
-6. [run.sh](run.sh): This is the bash file that will automatically run 'main.R' when
+2. [data](fata): a folder to store input and output data
+3. [images](images): a folder to store images produced for reporting
+4. [rmd/README.Rmd](rmd/README.Rmd): This is a a R file used to produce the `README.md` file.
+5. [README.md](README.md): This is a tl:dr of the analysis pdf file.
+6. [main.R](main.R): This is the main R file. It lists the steps for the analysis
+7. [run.sh](run.sh): This is the bash file that will automatically run 'main.R' when
 invoked.
