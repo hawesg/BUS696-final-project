@@ -14,11 +14,11 @@ library(stringr)
 source("code/load.R")
 
 # ---- clean ----
-# Step Two: Load Data:
+# Step Two: Clean Data:
 source("code/clean.R")
 
 # ---- feature generation ----
-# Step Three: Analyzing data for report:
+# Step Three: Feature Engeneering:
 source("code/analysis.R")
 
 
