@@ -36,13 +36,16 @@ wine_data <-
 
 
 
-# Add a column to indicate wheather the wine includes 
+# Add a column to indicate wheather the wine includes a vintage # might also use str_extract to get that vintage
 wine_data <-
-  wine_data  %>% mutate (vintage = str_extract(title, "(19\\d{2}|20\\d{2})") )
+  wine_data  %>% mutate ( includes_vintage = grepl("(19\\d{2}|20\\d{2})", title) )
+    
+    
+    # TODO This is not quite right because there is still a few where they have included a year that is not the vintage
+    #vintage = str_extract(title, "(19\\d{2}|20\\d{2})") )
 
                            
                            
-                           #sub("\\d", title) )
 
 
 # Add color
@@ -55,7 +58,6 @@ nrow(wine_data_with_color)
 nrow(wine_data) - nrow(wine_data_with_color)
 # 3426 records missing
 
-options(scipen = 99999)
 #seq(0, 3000, by = 25)
 stats <- wine_data %>% group_by(pr=cut(price, breaks= c(0, 10, 25, 50, 100, 200, 500, 1000, 3500), dig.lab = 5  )) %>% summarize(count = n(), min = min(points), 
                                                               max = max(points), avg = mean(points), sd = sd(points))
