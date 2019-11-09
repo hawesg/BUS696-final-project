@@ -13,8 +13,17 @@ library(stringr)
 # Step One: Load Data:
 source("code/load.R")
 
+# ---- clean ----
+# Step Two: Load Data:
+source("code/clean.R")
+
+# ---- feature generation ----
+# Step Three: Analyzing data for report:
+source("code/analysis.R")
+
+
 # ---- analysis ----
-# Step Two: Analyzing data for report:
+# Step Tjree: Analyzing data for report:
 source("code/analysis.R")
 
 # ---- render ----
