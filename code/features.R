@@ -1,5 +1,7 @@
 
 
+
+
 ################### Feature Generation ##################
 
 # TODO Decide on factors for price groups budget, ... premium, ultra premium? then use cut to devide them into buckets.
@@ -37,13 +39,13 @@ wine_data %>% filter(grepl("(19\\d{2}|20\\d{2})", title)) %>%
 wine_data <-
   wine_data  %>% mutate (includes_vintage = grepl("(19\\d{2}|20\\d{2})", title))
 
-# Add a column to indicate wheather the wine includes some variation of reserve 
+# Add a column to indicate wheather the wine includes some variation of reserve
 
-# TODO this does not include all of them there is an accent on some letters in some cases I think, in reality probably "serv" 
-#      works but someone would have to manually check by scrolling through these 
-#       wine_data %>% filter(grepl("serv", designation, ignore.case=TRUE)) %>%
-#         select(designation) %>%
-#         unique() %>% View()
+# TODO this does not include all of them there is an accent on some letters in some cases I think, in reality probably "serv"
+#      works but someone would have to manually check by scrolling through these
+wine_data %>% filter(grepl("serv", designation, ignore.case = TRUE)) %>%
+  select(designation) %>%
+  unique() %>% View()
 
 wine_data <-
   wine_data  %>% mutate (is_reserve = grepl("[Rr][ei]serv[ea]", designation))

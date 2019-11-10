@@ -2,8 +2,8 @@
 
 wine_data_original <- wine_data
 
-# rollback wine data if there is a change that you don't like  
-.rollback_wine_date <- function(){
+# rollback wine data if there is a change that you don't like
+.rollback_wine_date <- function() {
   wine_data <- wine_data_orignal
 }
 
@@ -118,16 +118,16 @@ summary(sum_temp)
 #   price           [x] drop na's (8,996 obs)
 #                   [ ] maybe filter outliers (talk to hersh)
 #   taster_name     [x] filter out wines that are missing a taster (26,244 obs)
-#   title           [x] seems good but this should not be a factor since they are all distinct convert to character 
+#   title           [x] seems good but this should not be a factor since they are all distinct convert to character
 #                     and drop after feature engeneering
-#   variety         [ ] Seems clean, factor_lump maybe although group by white and red somehow? Ask me what this means but i 
+#   variety         [ ] Seems clean, factor_lump maybe although group by white and red somehow? Ask me what this means but i
 #                     have a specific goal.
 #   winery          [ ] Drop this column they are mostly unique, maybe do something with sentement analysis on name
 #   color           [x] fct lump as R, W and Other, then rename to "Red", "White", "Other" - NOTE: Does SW go with other or with white?
 
 
 
-# These are just quick dirty plots so i can get a sense of the data  
+# These are just quick dirty plots so i can get a sense of the data
 
 boxplot(wine_data$price)
 hist(wine_data$price)
@@ -137,9 +137,17 @@ plot(wine_data$price, wine_data$points)
 # Rename from R W O SW
 
 wine_data <-
-  wine_data %>% mutate ( color = revalue(wine_data$color, c("O"="Other", "R"="Red", "W"="White", "SW"="Sparkling White")) )
+  wine_data %>% mutate (color = revalue(
+    wine_data$color,
+    c(
+      "O" = "Other",
+      "R" = "Red",
+      "W" = "White",
+      "SW" = "Sparkling White"
+    )
+  ))
 
-# Apply the cleaning strategies from above 
+# Apply the cleaning strategies from above
 
 wine_data <-
   wine_data %>% mutate (
@@ -147,7 +155,7 @@ wine_data <-
     variety = as.character(variety),
     taster_name = as.character(taster_name),
     title = as.character(title),
-    color_simple = fct_lump(color, n=2)
+    color_simple = fct_lump(color, n = 2)
   ) %>%
   filter (country != "" &
             variety != "") %>% drop_na(price)
@@ -155,13 +163,13 @@ wine_data <-
 wine_data$color_simple
 
 
-# 
+#
 
 
 # Deal with reserva all of this is just playing around with getting reserve dealt with
 
 # inspections <- wine_data
-# 
+#
 # wine_data%>%
 #   group_by(designation) %>%
 #   summarize(designations=n()) %>%
@@ -173,35 +181,35 @@ wine_data$color_simple
 #   filter(grepl("serv", designation, ignore.case=TRUE)) %>%
 #   select(designation) %>%
 #   unique() %>% View()
-# 
-# 
+#
+#
 # alternates <- inspections %>%
 #     filter(grepl("serv", designation, ignore.case=TRUE)) %>%
 #     select(designation) %>%
 #     unique() %>%
 #     pull(designation)
-# 
-# 
+#
+#
 # inspections <- inspections %>% mutate(designation=ifelse(designation %in% alternates, 'Reserva', designation))
-# 
+#
 # view(inspections)
-  
-  # Check most inspected restaurants again
-  
-  # inspections %>%
-  #   group_by(RestaurantName) %>%
-  #   summarize(inspections=n()) %>%
-  #   arrange(desc(inspections))
-  
+
+# Check most inspected restaurants again
+
+# inspections %>%
+#   group_by(RestaurantName) %>%
+#   summarize(inspections=n()) %>%
+#   arrange(desc(inspections))
+
 
 # %>%
 #   filter(RestaurantName!='SARAH MCDONALD STEELE') %>%
 #   select(RestaurantName) %>%
-#   unique() %>% 
+#   unique() %>%
 #   View()
 
 # Create a vector of those alternate spellings
-  
+
 # alternates <- wine_data %>%
 #   filter(grepl("McDo", RestaurantName, ignore.case=TRUE)) %>%
 #   filter(RestaurantName!='SARAH MCDONALD STEELE') %>%
@@ -220,5 +228,3 @@ wine_data$color_simple
 #   group_by(RestaurantName) %>%
 #   summarize(inspections=n()) %>%
 #   arrange(desc(inspections))
-
-
