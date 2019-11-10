@@ -6,17 +6,9 @@
 
 world_map <- map_data("world")
 world_map <-
-  world_map %>% mutate(region = ifelse(region == "USA", "US", region))
-world_map <- world_map %>% mutate (country = region)
+  world_map %>% mutate(region = ifelse(region == "USA", "US", region)) %>% mutate (country = region) %>% mutate(country = ifelse(subregion == "Great Britain", "England", country))
 
-# Drop England, US-France and blank for simplicity since there is no entry in world_map
 
-wine_map_DF <-
-  wine_data  %>% mutate (country = as.character(country)) %>%
-  filter (country != "England" &
-            country != "US-France" &
-            country != "")
-head(wine_map_DF)
 
 # Generate Summary
 
@@ -79,14 +71,30 @@ wine_country_map <- left_join(wmap, world_map, by = "country")
 
 
 
-ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlim(0,1000) + 
+ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlim(0, 1000) +
+  
+  ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlim(0, 100)
 
-ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlim(0,100) 
-
-ggplot(wine_data, aes(price, points, color = point_cat)) + geom_jitter(alpha=1/10) + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlim(0,100)
+ggplot(wine_data, aes(price, points, color = point_cat)) + geom_jitter(alpha =
+                                                                         1 / 10) + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlim(0, 100)
 
 
 ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlab("Points (0-100)") +
-  ylab("Price ($)") 
+  ylab("Price ($)")
 
 .save_pdf("price_v_points")
+
+# TODO put this somewhere
+color_sum <-
+  wine_data_with_color %>%
+  group_by(color) %>%
+  summarize( count = n(),
+    point_min = min(points, na.rm = TRUE),
+    point_avg = round(mean(points, na.rm = TRUE),2),
+    point_max = max(points, na.rm = TRUE),
+    price_min = min(price, na.rm = TRUE),
+    price_avg = round(mean(price, na.rm = TRUE),2),
+    price_max = max(price, na.rm = TRUE)) 
+
+
+color_sum
