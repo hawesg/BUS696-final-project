@@ -26,10 +26,25 @@ wine_data <-
   wine_data %>% mutate (title_length = nchar(as.character(wine_data$title)))
 
 # Add a column to indicate wheather the wine includes a vintage # might also use str_extract to get that vintage
+
+# TODO this isn't quite right 2 options someone goes through the following 100K+ by hand or we call the variable title_has_year
+
+wine_data %>% filter(grepl("(19\\d{2}|20\\d{2})", title)) %>%
+  select(title) %>%
+  unique() %>% View()
+
+
 wine_data <-
   wine_data  %>% mutate (includes_vintage = grepl("(19\\d{2}|20\\d{2})", title))
 
-# Add a column to indicate wheather the wine includes some variation of reserve
+# Add a column to indicate wheather the wine includes some variation of reserve 
+
+# TODO this does not include all of them there is an accent on some letters in some cases I think, in reality probably "serv" 
+#      works but someone would have to manually check by scrolling through these 
+#       wine_data %>% filter(grepl("serv", designation, ignore.case=TRUE)) %>%
+#         select(designation) %>%
+#         unique() %>% View()
+
 wine_data <-
   wine_data  %>% mutate (is_reserve = grepl("[Rr][ei]serv[ea]", designation))
 
@@ -41,30 +56,34 @@ wine_data <-
 
 # Get Names Vector
 dput(colnames(wine_data))
+# c(
+#   "X",
+#   "country",
+#   "description",
+#   "designation",
+#   "points",
+#   "price",
+#   "province",
+#   "region_1",
+#   "region_2",
+#   "taster_name",
+#   "taster_twitter_handle",
+#   "title",
+#   "variety",
+#   "winery",
+#   "vintage",
+#   "includes_vintage",
+#   "point_cat",
+#   "title_length",
+#   "is_reserve"
+# )
 
-levels(wine_data$taster_name)
+level(wine_data$taster_name)
 
-c(
-  "X",
-  "country",
-  "description",
-  "designation",
-  "points",
-  "price",
-  "province",
-  "region_1",
-  "region_2",
-  "taster_name",
-  "taster_twitter_handle",
-  "title",
-  "variety",
-  "winery",
-  "vintage",
-  "includes_vintage",
-  "point_cat",
-  "title_length",
-  "is_reserve"
-)
+wine_data$taster_name
+
+
+# TODO do we drop the reviews that have no name assuming that they should have a reviewer and this is erronious data?
 
 cf <- fct_lump(wine_data$taster_name, n = 5)
 levels(cf)
