@@ -127,3 +127,4 @@ wine_data <-
             variety != "") %>% drop_na(price)
 
 # TODO
+# bart adding notes
