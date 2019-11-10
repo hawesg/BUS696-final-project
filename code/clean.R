@@ -127,3 +127,45 @@ wine_data <-
             variety != "") %>% drop_na(price)
 
 # TODO
+
+view(wine_data %>%
+  group_by(designation) %>%
+  summarize(designations=n()) %>%
+  arrange(desc(designations)) )
+
+# Find alternate spellings of McDonalds
+wine_data %>%
+  filter(grepl("serv", designation, ignore.case=TRUE)) %>%
+  select(designation) %>%
+  unique() %>% 
+  View()
+
+
+# %>%
+#   filter(RestaurantName!='SARAH MCDONALD STEELE') %>%
+#   select(RestaurantName) %>%
+#   unique() %>% 
+#   View()
+
+# Create a vector of those alternate spellings
+  
+# alternates <- wine_data %>%
+#   filter(grepl("McDo", RestaurantName, ignore.case=TRUE)) %>%
+#   filter(RestaurantName!='SARAH MCDONALD STEELE') %>%
+#   select(RestaurantName) %>%
+#   unique() %>%
+#   pull(RestaurantName)
+
+# Replace them all with MCDONALDS
+
+# inspections <- inspections %>%
+#   mutate(RestaurantName=ifelse(RestaurantName %in% alternates, 'MCDONALDS', RestaurantName))
+
+# Check most inspected restaurants again
+
+# inspections %>%
+#   group_by(RestaurantName) %>%
+#   summarize(inspections=n()) %>%
+#   arrange(desc(inspections))
+
+
