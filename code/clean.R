@@ -127,6 +127,7 @@ wine_data <-
             variety != "") %>% drop_na(price)
 
 # TODO
+<<<<<<< HEAD
 
 view(wine_data %>%
   group_by(designation) %>%
@@ -169,3 +170,6 @@ wine_data %>%
 #   arrange(desc(inspections))
 
 
+=======
+# bart adding notes
+>>>>>>> 804763c0082a172dade241cceb90d548bca028c1
