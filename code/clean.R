@@ -1,5 +1,7 @@
 ################### Clean ###################
 
+wine_data_or <- wine_data
+
 class(wine_data)
 # [1] "data.frame"
 
@@ -8,9 +10,9 @@ dim(wine_data)
 # [1] 129971     14
 
 names(wine_data)
-# [1] "X"                     "country"               "description"           "designation"           "points"                "price"                
-# [7] "province"              "region_1"              "region_2"              "taster_name"           "taster_twitter_handle" "title"                
-# [13] "variety"               "winery"      
+# [1] "X"                     "country"               "description"           "designation"           "points"                "price"
+# [7] "province"              "region_1"              "region_2"              "taster_name"           "taster_twitter_handle" "title"
+# [13] "variety"               "winery"
 
 # TODO Confirm relevant columns currently I think country, designation, points, price, taster_name, title, variety and maybe winery
 
@@ -31,6 +33,9 @@ str(wine_data)
 # $ variety              : Factor w/ 708 levels "","Abouriou",..: 693 453 439 482 443 594 189 212 212 439 ...
 # $ winery               : Factor w/ 16757 levels ":Nota Bene","1+1=3",..: 11641 12988 13054 14432 14665 14740 15046 15435 8433 9014 ...
 
+wine_tibble <- as_tibble(wine_data)
+str(wine_tibble)
+wine_tibble
 
 glimpse(wine_data)
 # Observations: 129,971
@@ -52,48 +57,73 @@ glimpse(wine_data)
 
 
 dput(colnames(wine_data))
-# c("X", "country", "description", "designation", "points", "price", 
-#   "province", "region_1", "region_2", "taster_name", "taster_twitter_handle", 
+# c("X", "country", "description", "designation", "points", "price",
+#   "province", "region_1", "region_2", "taster_name", "taster_twitter_handle",
 #   "title", "variety", "winery")
 
 
 # Drop unimportant columns for summary
-sum_temp <- wine_data %>% select(c(country, designation,points, price, taster_name, title, variety, winery
-))
-# country            designation        points           price                    taster_name                                                        title       
-# US      :54504               :37465   Min.   : 80.00   Min.   :   4.00                    :26244   Gloria Ferrer NV Sonoma Brut Sparkling (Sonoma County) :    11  
-# France  :22093   Reserve     : 2009   1st Qu.: 86.00   1st Qu.:  17.00   Roger Voss       :25514   Korbel NV Brut Sparkling (California)                  :     9  
-# Italy   :19540   Estate      : 1322   Median : 88.00   Median :  25.00   Michael Schachner:15134   Segura Viudas NV Extra Dry Sparkling (Cava)            :     8  
-# Spain   : 6645   Reserva     : 1259   Mean   : 88.45   Mean   :  35.36   Kerin O’Keefe    :10776   Gloria Ferrer NV Blanc de Noirs Sparkling (Carneros)   :     7  
-# Portugal: 5691   Riserva     :  698   3rd Qu.: 91.00   3rd Qu.:  42.00   Virginie Boone   : 9537   Ruinart NV Brut Rosé  (Champagne)                      :     7  
-# Chile   : 4472   Estate Grown:  621   Max.   :100.00   Max.   :3300.00   Paul Gregutt     : 9532   Segura Viudas NV Aria Estate Extra Dry Sparkling (Cava):     7  
-# (Other) :17026   (Other)     :86597                    NA's   :8996      (Other)          :33234   (Other)                                                :129922  
-#                      variety                     winery      
-#  Pinot Noir              :13272   Wines & Winemakers:   222  
-#  Chardonnay              :11753   Testarossa        :   218  
-#  Cabernet Sauvignon      : 9472   DFJ Vinhos        :   215  
-#  Red Blend               : 8946   Williams Selyem   :   211  
-#  Bordeaux-style Red Blend: 6915   Louis Latour      :   199  
-#  Riesling                : 5189   Georges Duboeuf   :   196  
-#  (Other)                 :74424   (Other)           :128710  
-
-# TODO Clean up columns
-# Country - Convert to character for joining and remove 
-#     
+sum_temp <-
+  wine_data %>% select(c(
+    country,
+    designation,
+    points,
+    price,
+    taster_name,
+    title,
+    variety,
+    winery,
+    color
+  ))
 
 summary(sum_temp)
-  
-  hist(wine_data$price)
-  plot(wine_data$price, wine_data$points)
-  
-  wine_data <-
-    wine_data %>% mutate (country = as.character(country), variety = as.character(variety)) %>%
-    filter (
-      country != "England" &
-        country != "US-France" &
-        country != "" &
-        variety != ""
-    ) %>% drop_na(price)
-  
-  # TODO
-  
+
+# country            designation        points           price                    taster_name
+# US      :54504               :37464   Min.   : 80.00   Min.   :   4.00                    :26243
+# France  :22093   Reserve     : 2009   1st Qu.: 86.00   1st Qu.:  17.00   Roger Voss       :25514
+# Italy   :19540   Estate      : 1322   Median : 88.00   Median :  25.00   Michael Schachner:15134
+# Spain   : 6645   Reserva     : 1259   Mean   : 88.45   Mean   :  35.36   Kerin O’Keefe    :10776
+# Portugal: 5691   Riserva     :  698   3rd Qu.: 91.00   3rd Qu.:  42.00   Virginie Boone   : 9537
+# Chile   : 4471   Estate Grown:  621   Max.   :100.00   Max.   :3300.00   Paul Gregutt     : 9532
+# (Other) :17026   (Other)     :86597                    NA's   :8996      (Other)          :33234
+#                                                      title                            variety                     winery       color
+#  Gloria Ferrer NV Sonoma Brut Sparkling (Sonoma County) :    11   Pinot Noir              :13272   Wines & Winemakers:   222   O : 4949
+#  Korbel NV Brut Sparkling (California)                  :     9   Chardonnay              :11753   Testarossa        :   218   R :79658
+#  Segura Viudas NV Extra Dry Sparkling (Cava)            :     8   Cabernet Sauvignon      : 9472   DFJ Vinhos        :   215   SW: 3632
+#  Gloria Ferrer NV Blanc de Noirs Sparkling (Carneros)   :     7   Red Blend               : 8946   Williams Selyem   :   211   W :41731
+#  Ruinart NV Brut Rosé  (Champagne)                      :     7   Bordeaux-style Red Blend: 6915   Louis Latour      :   199
+#  Segura Viudas NV Aria Estate Extra Dry Sparkling (Cava):     7   Riesling                : 5189   Georges Duboeuf   :   196
+#  (Other)                                                :129921   (Other)                 :74423   (Other)           :128709
+
+# TODO Clean up columns (asterix means done)
+#*  country - Convert to character for joining and remove missing countries
+#*  designation - Cean,
+#                 Look at the various things like Reserva, Reserve, Riserve etc... as a feature or normalize here
+#*  points - looks good
+#            maybe add scaled column [0-20]
+#*  price - drop na's (8,996 obs)
+#          maybe filter outliers
+#*  taster_name - filter out wines that are missing a taster (26,244 obs)
+#*  title - seems good but this should not be a factor since they are all distinct convert to character and drop after feature engeneering
+#   variety - Seems clean, factor_lump maybe although group by wite and red somehow?
+#   winery - Drop this column they are mostly unique, maybe do something with sentement analysis on name
+#   color - fct lump as R, W and Other, then rename to "Red", "White", "Other" - NOTE: Does SW go with other or with white?
+
+
+
+boxplot(wine_data$price)
+hist(wine_data$price)
+plot(wine_data$price, wine_data$points)
+
+wine_data <-
+  wine_data %>% mutate (
+    country = as.character(country),
+    variety = as.character(variety),
+    taster_name = as.character(taster_name),
+    title = as.character(title),
+    color_simple = fct_lump(color)
+  ) %>%
+  filter (country != "" &
+            variety != "") %>% drop_na(price)
+
+# TODO
