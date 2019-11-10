@@ -6,7 +6,7 @@ library('ggthemes')
 library('stringr')
 
 wine_data <-
-  read.csv(here("data", "input", "winemag-data-130k-v2.csv"))
+  read.csv(here("..//data", "input", "winemag-data-130k-v2.csv"))
 
 
 
@@ -56,6 +56,7 @@ wine_data_Reduced <- wine_data %>%
 
   summary(wine_data_Reduced)
 dim(wine_data_Reduced)
+# view(wine_data_Reduced)
     
 wine_data_Reduced <- wine_data_Reduced %>% 
   group_by(designation) %>% 
