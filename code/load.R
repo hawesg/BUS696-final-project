@@ -17,7 +17,7 @@ nrow(wine_data) - nrow(wine_data_with_color)
 # List of records i am not getting merged by ID
 setdiff(wine_data$X, wine_data_with_color$X)
 
-
+wine_data <- wine_data_with_color
 
 
 ### Probably irrelevant because we are looking to model
