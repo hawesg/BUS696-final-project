@@ -49,15 +49,26 @@ wine_data_Reduced <- wine_data %>%
   mutate(designation=ifelse(grepl("(port|colheita)",designation),"Port",designation)) %>% 
   mutate(designation=ifelse(grepl("(collection|premium|prestige|limited)",designation),"Premium",designation)) %>% 
   mutate(designation=ifelse(grepl("clone",designation),"Clone",designation)) %>% 
-  mutate(designation=ifelse(grepl("(block|bin)",designation),"Block",designation)) %>% 
+  mutate(designation=ifelse(grepl("(block|bin)",designation),"Block",designation)) 
   #select(designation) %>%
   #unique() %>% 
   #View()
+
+  summary(wine_data_Reduced)
+dim(wine_data_Reduced)
+    
+wine_data_Reduced <- wine_data_Reduced %>% 
   group_by(designation) %>% 
   summarize(count_obs=n()) %>% 
   filter(count_obs > 1) %>% 
   arrange (desc(count_obs)) %>% 
   slice(1:25)
+
+
+
+summary(wine_data_Reduced)
+dim(wine_data_Reduced)
+
 
 ggplot(wine_data_Reduced,aes(x=designation,y=count_obs)) + geom_col() +
   labs(x = "designation", 
