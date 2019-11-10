@@ -19,7 +19,7 @@ source("code/clean.R")
 
 # ---- feature generation ----
 # Step Three: Feature Engeneering:
-source("code/analysis.R")
+source("code/features.R")
 
 
 # ---- analysis ----
