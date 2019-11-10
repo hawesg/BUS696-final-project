@@ -76,20 +76,20 @@ dput(colnames(wine_data))
 
 # Drop unimportant columns for summary
 
-sum_temp <-
-  wine_data %>% select(c(
-    country,
-    designation,
-    points,
-    price,
-    taster_name,
-    title,
-    variety,
-    winery,
-    color
-  ))
-
-summary(sum_temp)
+# sum_temp <-
+#   wine_data %>% select(c(
+#     country,
+#     designation,
+#     points,
+#     price,
+#     taster_name,
+#     title,
+#     variety,
+#     winery,
+#     color
+#   ))
+# 
+# summary(sum_temp)
 
 # country            designation        points           price                    taster_name
 # US      :54504               :37464   Min.   : 80.00   Min.   :   4.00                    :26243
@@ -134,8 +134,7 @@ hist(wine_data$price)
 plot(wine_data$price, wine_data$points)
 
 
-# Rename from R W O SW
-
+3
 wine_data <-
   wine_data %>% mutate (color = revalue(
     wine_data$color,
