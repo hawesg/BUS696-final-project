@@ -85,7 +85,7 @@ setdiff(x,y)
 # TODO Maybe a regex for if the title has accents in it (ie seems forign and fancy)
 
 
-
+wine_data_with_twitter_data <- merge(wine_data, TwitterData, by = "taster_twitter_handle")
 
 
 # levels(wine_data$taster_name)
