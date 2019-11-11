@@ -1,6 +1,6 @@
 # Load most commonly used libraries
 
-list.of.packages <- c("tidyverse", "plotly", "here", "ggthemes", "stringr", "plyr", "stringi")
+list.of.packages <- c("tidyverse", "plotly", "here", "ggthemes", "stringr", "plyr", "stringi", "readxl")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
@@ -10,6 +10,7 @@ library("here")
 library("ggthemes")
 library("stringr")
 library("stringi")
+library("readxl")
 
 # ---- begin ----
 # Step One: Load Data:
