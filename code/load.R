@@ -9,9 +9,11 @@ glimpse(colors)
 str(twitter_stats)
 glimpse(twitter_stats)
 
-# Export to csv for analysis 
-# x <- wine_data_Reduced %>% select(designation)
-# write.table(x, file = "foo.csv", sep = ",", col.names = NA,
+#Export to csv for analysis
+# x <- wine_data %>% select(taster_twitter_handle)
+# x <- unique(x)
+# x
+# write.table(x, file = "tw.csv", sep = ",", col.names = NA,
 #             qmethod = "double")
 
 # Add color

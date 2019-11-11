@@ -152,7 +152,7 @@ dim(wine_designations_no_accents %>% filter(grepl("[¡]", designation)))
 # 1
 dim(wine_designations_no_accents %>% filter(grepl("[\\;]", designation)))
 # 12
-dim(wine_designations_no_accents %>% filter(grepl("[\\-]", designation)))
+dim(wine_designations_no_ accents %>% filter(grepl("[\\-]", designation)))
 # 2037
 
 # Find records that match one but not another
@@ -188,6 +188,8 @@ wine_data <- wine_data %>%
 
 wine_data <- tibble::rowid_to_column(wine_data, "ID")
 
+names(wine_data)
+
 # Get list of column names in vector form
 
 dput(colnames(wine_data))
@@ -195,7 +197,7 @@ dput(colnames(wine_data))
 glimpse(wine_data)
 
 wine_data_clean <-
-  wine_data %>% mutate
+  wine_data %>% 
   select( 
     ID, 
     variety,
@@ -211,10 +213,21 @@ wine_data_clean <-
     color_lump
   )
 
+glimpse(wine_data_clean)
+
 str(wine_data_clean)
 glimpse(wine_data_clean)
 
-#wine_data_with_twitter_data <- merge(wine_data, TwitterData, by = "taster_twitter_handle")
+
+
+# Add in twitter stats  ---------------------------------------------------
+
+wine_data_with_twitter_data <- left_join(wine_data, twitter_stats, by = "taster_twitter_handle")
+
+summary(wine_data_with_twitter_data)
+# tw_nas <- wine_data_with_twitter_data %>% filter(is.na(taster_gender))
+# dim(tw_nas)
+# unique(tw_nas$taster_twitter_handle)
 
 #wine <- merge(wine_data, twitter_stats, by = "taster_twitter_handle")
 
