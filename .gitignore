@@ -4,3 +4,4 @@
 .Ruserdata
 foo.csv
 packrat/lib*/
+.DS_Store
