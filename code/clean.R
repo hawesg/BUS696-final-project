@@ -1,16 +1,11 @@
-################### Clean ###################
+################### Notes ###################
 
-wine_data_original <- wine_data
-
-# rollback wine data if there is a change that you don't like
-.rollback_wine_date <- function() {
-  wine_data <- wine_data_orignal
-}
+#Helper functions
+source("code/clean_fxns.R")
 
 class(wine_data)
 
-# [1] "data.frame"
-
+# [1] "tbl_df"     "tbl"        "data.frame"
 
 dim(wine_data)
 
@@ -41,11 +36,6 @@ str(wine_data)
 # $ title                : Factor w/ 118840 levels ":Nota Bene 2005 Una Notte Red (Washington)",..: 79669 89457 89940 101059 102995 103740 105794 108715 54638 59312 ...
 # $ variety              : Factor w/ 708 levels "","Abouriou",..: 693 453 439 482 443 594 189 212 212 439 ...
 # $ winery               : Factor w/ 16757 levels ":Nota Bene","1+1=3",..: 11641 12988 13054 14432 14665 14740 15046 15435 8433 9014 ...
-
-wine_tibble <- as_tibble(wine_data)
-
-str(wine_tibble)
-wine_tibble
 
 glimpse(wine_data)
 
@@ -112,29 +102,36 @@ dput(colnames(wine_data))
 
 #   country         [x] Convert to character for joining and remove missing countries
 #   designation     [x] Clean
-#                   [ ] Look at the various things like Reserva, Reserve, Riserve etc... as a feature or normalize here
+#                   [x] Look at the various things like Reserva, Reserve, Riserve etc... as a feature or normalize here
+#                   [ ] Lump factors
 #   points          [x] looks good
 #                   [ ] maybe add scaled column [0-20]
 #   price           [x] drop na's (8,996 obs)
 #                   [ ] maybe filter outliers (talk to hersh)
 #   taster_name     [x] filter out wines that are missing a taster (26,244 obs)
 #   title           [x] seems good but this should not be a factor since they are all distinct convert to character
-#                     and drop after feature engeneering
-#   variety         [ ] Seems clean, factor_lump maybe although group by white and red somehow? Ask me what this means but i
-#                     have a specific goal.
-#   winery          [ ] Drop this column they are mostly unique, maybe do something with sentement analysis on name
-#   color           [x] fct lump as R, W and Other, then rename to "Red", "White", "Other" - NOTE: Does SW go with other or with white?
+#                   [x] drop after feature engeneering - Length and has accent?
+#   variety         [ ] Seems clean, factor_lump maybe although group by white and red somehow? ie: If we only look at the top 10 factors 
+#                       we will likely only cover reds
+#   winery          [x] Drop this column they are mostly unique, maybe do something with sentement analysis on name
+#   color           [x] fct lump as R, W and Other, then rename to "Red", "White", "Other" - 
+#                   [ ] NOTE: Does SW go with other or with white?
 
 
 
-# These are just quick dirty plots so i can get a sense of the data
+################### Plots ###################
 
-boxplot(wine_data$price)
-hist(wine_data$price)
-plot(wine_data$price, wine_data$points)
+# These are just quick plots so i can get a sense of the data
+
+wine_data %>% ggplot(aes(x = reorder(color, points), y = points, fill = color)) + geom_boxplot() + 
+  xlab("Color") + theme_clean() #+ theme(legend.position = "none") 
+
+ggplot(wine_data, aes(points, price, colour = color)) + geom_point() + theme_gdocs()
 
 
-3
+
+# Color Revalue -----------------------------------------------------------
+
 wine_data <-
   wine_data %>% mutate (color = revalue(
     wine_data$color,
@@ -146,6 +143,10 @@ wine_data <-
     )
   ))
 
+
+
+
+# Cleaning ----------------------------------------------------------------
 # Apply the cleaning strategies from above
 
 wine_data <-
@@ -154,76 +155,21 @@ wine_data <-
     variety = as.character(variety),
     taster_name = as.character(taster_name),
     title = as.character(title),
-    color_simple = fct_lump(color, n = 2)
+    color_lump = fct_lump(color, n = 2), 
+    province_lump = fct_lump(wine_data$province, n = 10),
+    country_lump = fct_lump(wine_data$country, n = 10)
   ) %>%
   filter (country != "" &
-            variety != "") %>% drop_na(price)
-
-wine_data$color_simple
-
-
-#
+            variety != "" & taster_name != "") %>% drop_na(price) 
+  #mutate(  )  
+  
 
 
-# Deal with reserva all of this is just playing around with getting reserve dealt with
+    
+    #province = as.factor(stringi::stri_trans_general(province, "Latin-ASCII") ) ) %>%
+  mutate( )
 
-# inspections <- wine_data
-#
-# wine_data%>%
-#   group_by(designation) %>%
-#   summarize(designations=n()) %>%
-#   arrange(desc(designations)) %>% View()
+wine_data$color_lump
 
+ggplot(wine_data, aes(points, price, colour = color_lump)) + geom_point() + theme_gdocs()
 
-# Find alternate spellings of reserva
-# inspections %>%
-#   filter(grepl("serv", designation, ignore.case=TRUE)) %>%
-#   select(designation) %>%
-#   unique() %>% View()
-#
-#
-# alternates <- inspections %>%
-#     filter(grepl("serv", designation, ignore.case=TRUE)) %>%
-#     select(designation) %>%
-#     unique() %>%
-#     pull(designation)
-#
-#
-# inspections <- inspections %>% mutate(designation=ifelse(designation %in% alternates, 'Reserva', designation))
-#
-# view(inspections)
-
-# Check most inspected restaurants again
-
-# inspections %>%
-#   group_by(RestaurantName) %>%
-#   summarize(inspections=n()) %>%
-#   arrange(desc(inspections))
-
-
-# %>%
-#   filter(RestaurantName!='SARAH MCDONALD STEELE') %>%
-#   select(RestaurantName) %>%
-#   unique() %>%
-#   View()
-
-# Create a vector of those alternate spellings
-
-# alternates <- wine_data %>%
-#   filter(grepl("McDo", RestaurantName, ignore.case=TRUE)) %>%
-#   filter(RestaurantName!='SARAH MCDONALD STEELE') %>%
-#   select(RestaurantName) %>%
-#   unique() %>%
-#   pull(RestaurantName)
-
-# Replace them all with MCDONALDS
-
-# inspections <- inspections %>%
-#   mutate(RestaurantName=ifelse(RestaurantName %in% alternates, 'MCDONALDS', RestaurantName))
-
-# Check most inspected restaurants again
-
-# inspections %>%
-#   group_by(RestaurantName) %>%
-#   summarize(inspections=n()) %>%
-#   arrange(desc(inspections))

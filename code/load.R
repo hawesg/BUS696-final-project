@@ -2,7 +2,12 @@
 wine_data <-
   read.csv(here("data", "input", "winemag-data-130k-v2.csv"))
 colors <- read.csv(here("data", "input", "wine-colors.csv"))
+twitter_stats <- read.csv(here("data", "input", "twitter-data.csv"))
 dim(wine_data)
+
+glimpse(colors)
+str(twitter_stats)
+glimpse(twitter_stats)
 
 # Export to csv for analysis 
 # x <- wine_data_Reduced %>% select(designation)
@@ -24,19 +29,7 @@ setdiff(wine_data$X, wine_data_with_color$X)
 
 wine_data <- wine_data_with_color
 
+wine_data <- as_tibble(wine_data)
 
-### Probably irrelevant because we are looking to model
-#seq(0, 3000, by = 25)
-stats <-
-  wine_data %>% group_by(pr = cut(
-    price,
-    breaks = c(0, 10, 25, 50, 100, 200, 500, 1000, 3500),
-    dig.lab = 5
-  )) %>% summarize(
-    count = n(),
-    min = min(points),
-    max = max(points),
-    avg = mean(points),
-    sd = sd(points)
-  )
-stats
+wine_data_original <- wine_data
+
