@@ -4,6 +4,11 @@ wine_data <-
 colors <- read.csv(here("data", "input", "wine-colors.csv"))
 dim(wine_data)
 
+# Export to csv for analysis 
+# x <- wine_data_Reduced %>% select(designation)
+# write.table(x, file = "foo.csv", sep = ",", col.names = NA,
+#             qmethod = "double")
+
 # Add color
 wine_data_with_color <- merge(wine_data, colors, by = "variety")
 
