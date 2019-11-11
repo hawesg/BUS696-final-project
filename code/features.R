@@ -152,7 +152,7 @@ dim(wine_designations_no_accents %>% filter(grepl("[¡]", designation)))
 # 1
 dim(wine_designations_no_accents %>% filter(grepl("[\\;]", designation)))
 # 12
-dim(wine_designations_no_ accents %>% filter(grepl("[\\-]", designation)))
+dim(wine_designations_no_accents %>% filter(grepl("[\\-]", designation)))
 # 2037
 
 # Find records that match one but not another
