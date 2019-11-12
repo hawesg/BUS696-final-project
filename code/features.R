@@ -7,8 +7,6 @@
 
 # Points Categories -------------------------------------------------------
 
-
-
 # Turn score into categories per https://www.winespectator.com/articles/scoring-scale 
 
 wine_data <-
@@ -66,6 +64,17 @@ wine_data <-
   wine_data %>% mutate(title_has_accents = (title != stringi::stri_trans_general(title, "Latin-ASCII") ) )
 
 ################### Designation column  ##################
+
+# wine_designations_no_accents <-
+#   wine_data %>% mutate(designation = stringi::stri_trans_general(designation, "Latin-ASCII")) %>% # translate from accented charecters to their non accented counterparts,
+#   mutate(designation = tolower(str_squish(
+#     str_replace_all(designation, "[^A-Za-z]", " ")
+#   ))) # get rid of all non letter charecters then trim white space and make lower case
+
+wine_designations_no_accents <- wine_data %>% 
+  mutate(designation = .clean_text(designation))
+
+###### USE WORDCLOUD.R TO NARROW DOWN POTENTIAL FACTORS
 
 # List of regular expressions to match
 
@@ -132,13 +141,6 @@ replacements <-
 # This is so that we can use the replacements object in str_replace_all rather than a single pattern/replacement
 names(replacements) <- patterns
 
-
-wine_designations_no_accents <-
-  wine_data %>% mutate(designation = stringi::stri_trans_general(designation, "Latin-ASCII")) %>% # translate from accented charecters to their non accented counterparts,
-  mutate(designation = tolower(str_squish(
-    str_replace_all(designation, "[^A-Za-z]", " ")
-  ))) # get rid of all non letter charecters then trim white space and make lower case
-
 wine_designations_no_accents <-
   wine_designations_no_accents %>% mutate(designation = str_replace_all(wine_designations_no_accents$designation, replacements)) %>% # replace per above
   mutate(designation = as.factor(designation))
@@ -196,6 +198,7 @@ dput(colnames(wine_data))
 
 glimpse(wine_data)
 
+# TODO Add on to this
 wine_data_clean <-
   wine_data %>% 
   select( 
@@ -216,20 +219,7 @@ wine_data_clean <-
 glimpse(wine_data_clean)
 
 str(wine_data_clean)
-glimpse(wine_data_clean)
 
-
-
-# Add in twitter stats  ---------------------------------------------------
-
-wine_data_with_twitter_data <- left_join(wine_data, twitter_stats, by = "taster_twitter_handle")
-
-summary(wine_data_with_twitter_data)
-# tw_nas <- wine_data_with_twitter_data %>% filter(is.na(taster_gender))
-# dim(tw_nas)
-# unique(tw_nas$taster_twitter_handle)
-
-#wine <- merge(wine_data, twitter_stats, by = "taster_twitter_handle")
 
 # TODO missing records
 
