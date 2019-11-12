@@ -17,7 +17,7 @@ glimpse(twitter_stats)
 #             qmethod = "double")
 
 # Add color
-wine_data_with_color <- merge(wine_data, colors, by = "variety")
+wine_data_with_color <- left_join(wine_data, colors, by = "variety")
 
 nrow(wine_data)
 #[1] 129833
