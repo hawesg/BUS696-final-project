@@ -56,17 +56,17 @@ wine_country_map <- left_join(wmap, world_map, by = "country")
 }
 
 .map_from_attribute("point_min", "Points Min by Country")
-.save_pdf("point_min")
+# .save_pdf("point_min")
 .map_from_attribute("point_avg", "Points Average by Country")
-.save_pdf("point_avg")
+# .save_pdf("point_avg")
 .map_from_attribute("point_max", "Points Max by Country")
-.save_pdf("point_max")
+# .save_pdf("point_max")
 .map_from_attribute("price_min", "Price Min by Country")
-.save_pdf("price_min")
+# .save_pdf("price_min")
 .map_from_attribute("price_avg", "Price Average by Country")
-.save_pdf("price_avg")
+# .save_pdf("price_avg")
 .map_from_attribute("price_max", "Price Max by Country")
-.save_pdf("price_max")
+# .save_pdf("price_max")
 
 
 
@@ -98,3 +98,29 @@ color_sum <-
 
 
 color_sum
+
+
+wine_data %>% ggplot(aes(x = reorder(color, points), y = points, fill = color)) + geom_boxplot() + 
+  xlab("Color") + theme_clean() #+ theme(legend.position = "none") 
+
+ggplot(wine_data, aes(points, price, colour = color)) + geom_point() + theme_gdocs()
+
+ggplot(wine_data, aes(points, price, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price")
+
+library(ggExtra)
+
+
+p <- ggplot(wine_data, aes(points, price, color = point_cat)) + geom_point() + theme_gdocs() + labs(title = "Score vs Price")  #+ facet_wrap(~ color_lump + taster_gender)
+p1 <- ggMarginal(p, type="histogram", fill="slateblue") 
+
+p1  
+
+wine_data_p <- wine_data %>% filter(!is.na(taster_gender))
+
+ggplot(wine_data_p, aes(points, price, colour = color_lump)) + geom_point() + theme_fivethirtyeight() + facet_wrap(~ taster_gender + title_has_accents)
+
+wine_data %>% ggplot(aes(x = reorder(color, points), y = points, fill = color)) + geom_boxplot() + 
+  xlab("Color") + theme_clean() + facet_wrap(~ taster_gender + title_has_accents) #+ theme(legend.position = "none") 
+
+  
+  

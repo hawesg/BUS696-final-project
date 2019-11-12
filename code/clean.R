@@ -167,9 +167,8 @@ wine_data <-
 
     
     #province = as.factor(stringi::stri_trans_general(province, "Latin-ASCII") ) ) %>%
-  mutate( )
 
-wine_data$color_lump
+str(wine_data$color_lump)
 
-ggplot(wine_data, aes(points, price, colour = color_lump)) + geom_point() + theme_gdocs()
+wine_data <- left_join(wine_data, twitter_stats, by = "taster_twitter_handle")
 

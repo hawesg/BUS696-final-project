@@ -3,3 +3,17 @@
 .rollback_wine_date <- function() {
   wine_data <- wine_data_orignal
 }
+
+.clean_text <- function(x) {
+  x <- stringi::stri_trans_general(x, "Latin-ASCII")
+  x <- str_replace_all(x, "[^A-Za-z]", " ")
+  x <- tolower(x)
+  x <- str_squish(x)
+  return(x)
+}
+
+.clean_fct_text <- function(x) {
+  x <- as.character(x)
+  .clean_text(x)
+  return(x)
+}
