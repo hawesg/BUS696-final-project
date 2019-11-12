@@ -18,3 +18,7 @@ packrat::status()
 # install.packages("cellranger")
 # install.packages("tidyverse")
 intall.packages("ggthemes")
+
+packrat::bundle()
+
+packrat::unbundle(bundle, where, ..., restore = TRUE)
