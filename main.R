@@ -4,6 +4,8 @@ list.of.packages <- c("tidyverse", "plotly", "here", "ggthemes", "stringr", "ply
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
+rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
+
 library("plyr")
 library("tidyverse")
 library("here")
@@ -11,6 +13,16 @@ library("ggthemes")
 library("stringr")
 library("stringi")
 library("readxl")
+library("ggExtra")
+
+# ---- constants ----
+
+VARIETY_PER_COLOR_LUMP <- 5
+TASTER_NAME_LUMP <- 5
+TASTER_TWITTER_LUMP <- 5
+DESIGNATION_LUMP <- 10
+COUNTRY_LUMP <- 10
+VARIETY_LUMP <- 10
 
 # ---- begin ----
 # Step One: Load Data:

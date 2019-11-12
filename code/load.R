@@ -60,3 +60,4 @@ summary(wine_data_with_twitter_data)
 
 wine_data_original <- wine_data
 
+wine_data <- wine_data_with_twitter_data

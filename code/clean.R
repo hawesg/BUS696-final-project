@@ -109,9 +109,10 @@ dput(colnames(wine_data))
 #   price           [x] drop na's (8,996 obs)
 #                   [ ] maybe filter outliers (talk to hersh)
 #   taster_name     [x] filter out wines that are missing a taster (26,244 obs)
+#                   [ ] might be relevant that there are 3 tasters who don't use twitter
 #   title           [x] seems good but this should not be a factor since they are all distinct convert to character
 #                   [x] drop after feature engeneering - Length and has accent?
-#   variety         [ ] Seems clean, factor_lump maybe although group by white and red somehow? ie: If we only look at the top 10 factors 
+#   variety         [x] Seems clean, factor_lump maybe although group by white and red somehow? ie: If we only look at the top 10 factors 
 #                       we will likely only cover reds
 #   winery          [x] Drop this column they are mostly unique, maybe do something with sentement analysis on name
 #   color           [x] fct lump as R, W and Other, then rename to "Red", "White", "Other" - 
@@ -168,7 +169,6 @@ wine_data <-
     
     #province = as.factor(stringi::stri_trans_general(province, "Latin-ASCII") ) ) %>%
 
-str(wine_data$color_lump)
 
-wine_data <- left_join(wine_data, twitter_stats, by = "taster_twitter_handle")
+
 

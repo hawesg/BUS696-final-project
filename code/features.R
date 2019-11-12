@@ -1,13 +1,13 @@
 #************* Feature Generation *****************
 
-# TODO Decide on factors for price groups budget, ... premium, ultra premium? 
+# TODO Decide on factors for price groups budget, ... premium, ultra premium?
 # then use cut to devide them into buckets. Or not since we are modeling price.
 
 
 
 # Points Categories -------------------------------------------------------
 
-# Turn score into categories per https://www.winespectator.com/articles/scoring-scale 
+# Turn score into categories per https://www.winespectator.com/articles/scoring-scale
 
 wine_data <-
   wine_data  %>% mutate (point_cat = cut(
@@ -34,17 +34,23 @@ wine_data <-
   wine_data %>% mutate (title_length = nchar(as.character(wine_data$title)))
 
 
+wd_a_tl <- wine_data
+
+wine_data <- wd_a_tl
+
 # Title Includes Date -----------------------------------------------------
 
-# Add a column to indicate wheather the wine includes a date in the tile 
+# Add a column to indicate wheather the wine includes a date in the tile
 
-wine_data <-
-  wine_data  %>% mutate (has_year_in_title = grepl("(19|20)\\d{2})", title))
+# wine_data  %>% filter( grepl("(19|20)\\d{2})", title) )
+#
+# wine_data <-
+#   wine_data  %>% mutate (has_year_in_title = grepl("(19|20)\\d{2})", title))
 
-# check regex to see if results are the same length 
+# check regex to see if results are the same length
 
 # dim(wine_data  %>% mutate (has_year_in_title = grepl("(19\\d{2}|20\\d{2})", title)))
-# 
+# #
 # dim(wine_data  %>% mutate (has_year_in_title = grepl("(19|20)\\d{2})", title)))
 
 
@@ -61,7 +67,7 @@ wine_data <-
 # title_tibble <- title_tibble %>% mutate(title_has_accent = (t1 != t2))
 
 wine_data <-
-  wine_data %>% mutate(title_has_accents = (title != stringi::stri_trans_general(title, "Latin-ASCII") ) )
+  wine_data %>% mutate(title_has_accents = (title != stringi::stri_trans_general(title, "Latin-ASCII")))
 
 ################### Designation column  ##################
 
@@ -71,7 +77,7 @@ wine_data <-
 #     str_replace_all(designation, "[^A-Za-z]", " ")
 #   ))) # get rid of all non letter charecters then trim white space and make lower case
 
-wine_designations_no_accents <- wine_data %>% 
+wine_data <- wine_data %>%
   mutate(designation = .clean_text(designation))
 
 ###### USE WORDCLOUD.R TO NARROW DOWN POTENTIAL FACTORS
@@ -104,7 +110,8 @@ patterns <-
     ".*(port|colheita).*",
     ".*(collection|premium|prestige|limited).*",
     ".*clone.*",
-    ".*(block|bin).*"
+    ".*(block|bin).*",
+    "^$"
   )
 
 # Values to replace above patterns with
@@ -135,56 +142,110 @@ replacements <-
     "Port",
     "Premium",
     "Clone",
-    "Block"
+    "Block",
+    "No Designation"
   )
 
 # This is so that we can use the replacements object in str_replace_all rather than a single pattern/replacement
+
 names(replacements) <- patterns
 
-wine_designations_no_accents <-
-  wine_designations_no_accents %>% mutate(designation = str_replace_all(wine_designations_no_accents$designation, replacements)) %>% # replace per above
+wine_data <-
+  wine_data %>% mutate(designation = str_replace_all(designation, replacements)) %>% # replace per above
   mutate(designation = as.factor(designation))
 
 
-summary(wine_designations_no_accents)
+summary(wine_data)
 
-glimpse(wine_designations_no_accents)
+glimpse(wine_data)
 
-dim(wine_designations_no_accents %>% filter(grepl("[¡]", designation)))
+dim(wine_data %>% filter(grepl("[¡]", designation)))
 # 1
-dim(wine_designations_no_accents %>% filter(grepl("[\\;]", designation)))
+dim(wine_data %>% filter(grepl("[\\;]", designation)))
 # 12
-dim(wine_designations_no_accents %>% filter(grepl("[\\-]", designation)))
+dim(wine_data %>% filter(grepl("[\\-]", designation)))
 # 2037
 
 # Find records that match one but not another
 
 x <-
-  wine_designations_no_accents %>% filter(grepl("r[ei]serv[ae]", designation))
+  wine_data %>% filter(grepl("r[ei]serv[ae]", designation))
 y <-
-  wine_designations_no_accents %>% filter(grepl("[ei]serv", designation))
+  wine_data %>% filter(grepl("[ei]serv", designation))
 setdiff(x, y)
 
 glimpse(wine_data)
-wine_data <- wine_designations_no_accents
+
+wd_a_des <- wine_data
+
+wine_data <- wd_a_des
+
+# Lump Varieties ----------------------------------------------------------
+
+.append_color_to_factor <- function(variety, color) {
+  variety = as.character(variety)
+  variety = paste(variety, color)
+  return(variety)
+}
+
+VARIETY_PER_COLOR_LUMP <- 5
+
+red <-
+  wine_data %>% filter(color_lump == "Red") %>% 
+  mutate(variety_lump = fct_lump(variety, n = VARIETY_PER_COLOR_LUMP)) %>% 
+  mutate(variety_lump = .append_color_to_factor(variety_lump, "(R)"))
+white <-
+  wine_data %>% filter(color_lump == "White") %>% 
+  mutate(variety_lump = fct_lump(variety, n = VARIETY_PER_COLOR_LUMP)) %>% 
+  mutate(variety_lump = .append_color_to_factor(variety_lump, "(W)"))
+other <-
+  wine_data %>% filter(color_lump == "Other") %>% 
+  mutate(variety_lump = "Other")
+
+wine_data_bind <- do.call("rbind", list(red, white, other))
+
+wine_data <-
+  wine_data_bind %>% mutate(variety_lump = factor(variety_lump))
 
 
-# Reviewers ---------------------------------------------------------------
 
-# Lump Factors
+glimpse(wine_data_bind)
+summary(wine_data)
+levels(wine_data$variety_lump)
+
+# temp_fct <- factor(red$variety_lump)
+# unique(other$variety_lump)
+# glimpse(red)
+
+# white$variety_lump %>% fct_count()
+# glimpse(white)
+# summary(red)
+# levels(white$variety_lump)
+
+# Lump Factors ---------------------------------------------------------------
+
+# TODO look up constants and replace these with variables
 
 wine_data <-
   wine_data %>% filter(as.character(taster_twitter_handle) != "") %>% mutate(
-    taster_name_lump = fct_lump(taster_name, n = 5),
-    taster_twitter_lump = fct_lump(taster_twitter_handle, n = 5)
+    taster_name_lump = fct_lump(taster_name, n = TASTER_NAME_LUMP),
+    taster_twitter_lump = fct_lump(taster_twitter_handle, n = TASTER_TWITTER_LUMP),
+    designation_lump = fct_lump(designation, n = DESIGNATION_LUMP),
+    country_lump = fct_lump(country, n = COUNTRY_LUMP),
+    variety_lump = fct_lump(variety, n = VARIETY_LUMP)
   )
 
-# Add stats about each reviewer 
+summary(wine_data)
 
-wine_data <- wine_data %>% 
-  group_by(taster_twitter_handle) %>% 
-  mutate(taster_avg_points = mean(points), taster_review_count= n())
+str(wine_data)
+# Add stats about each reviewer
 
+wine_data <- wine_data %>%
+  group_by(taster_name) %>%
+  mutate(taster_avg_points = mean(points),
+         taster_review_count = n()) %>% ungroup()
+
+glimpse(wine_data)
 
 # Add ID Column -----------------------------------------------------------
 
@@ -192,34 +253,54 @@ wine_data <- tibble::rowid_to_column(wine_data, "ID")
 
 names(wine_data)
 
+
+
+# Drop unused point cat factors -------------------------------------------
+setdiff(levels(wine_data$point_cat), wine_data$point_cat)
+fct_drop(wine_data$point_cat)
+
 # Get list of column names in vector form
 
 dput(colnames(wine_data))
 
+names(wine_data)
+
 glimpse(wine_data)
+
+summary(wine_data)
 
 # TODO Add on to this
 wine_data_clean <-
-  wine_data %>% 
-  select( 
-    ID, 
-    variety,
-    country,
-    designation,
-    points,
+  wine_data %>%
+  select(
+    ID,
     price,
+    country,
+    variety,
+    points,
     point_cat,
     title_length,
-    has_year_in_title,
     title_has_accents,
+    variety_lump,
+    designation_lump,
+    taster_name_lump,
     taster_twitter_lump,
-    color_lump
-  )
+    taster_gender,
+    taster_avg_points,
+    taster_review_count,
+    taster_n_tweets,
+    color_lump,
+    country_lump,
+    province_lump,
+  ) %>% droplevels()
+
+setdiff(names(wine_data), names(wine_data_clean))
 
 glimpse(wine_data_clean)
 
 str(wine_data_clean)
 
+summary(wine_data_clean)
 
 # TODO missing records
 
