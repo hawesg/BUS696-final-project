@@ -23,6 +23,35 @@ ggplot(TwitterData, mapping = aes(x = number_of_tweets, y = number_of_followers,
 mean(wine_data$price, wine_data$taster_twitter_handle)
 
 
+#decision tree
+
+library(partykit)
+
+decision_tree <- ctree(point_cat ~ color_lump, 
+                       data = wine_data_clean)
+
+
+decision_tree2 <- ctree(point_cat ~ taster_gender, 
+                        data = wine_data_clean)
+
+decision_tree3 <- ctree(point_cat ~ taster_name_lump,
+                        data = wine_data_clean)
+
+decision_tree4 <- ctree(point_cat ~ country_lump2,
+                        data = wine_data_cleanc)
+
+wine_data_cleanc <- wine_data_clean %>% mutate(country_lump2 = fct_lump(country, 5))
+
+
+plot(decision_tree)
+plot(decision_tree2)
+plot(decision_tree3)
+plot(decision_tree4)
+
+summary(wine_data_clean$point_cat)
+
+table <- wine_data_cleanc %>% group_by(point_cat) %>%  count(country_lump2)
+
 #Plots
 
 ggplot(wine_data, aes(x = point_cat, y = price)) +
