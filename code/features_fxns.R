@@ -3,3 +3,4 @@
   variety = paste(variety, color)
   return(variety)
 }
+ 

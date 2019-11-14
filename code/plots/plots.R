@@ -6,47 +6,29 @@
 
 world_map <- map_data("world")
 world_map <-
-  world_map %>% mutate(region = ifelse(region == "USA", "US", region)) %>% mutate (country = region) %>% mutate(country = ifelse(subregion == "Great Britain", "England", country))
+  world_map %>% 
+  dplyr::mutate(region = ifelse(region == "USA", "US", region)) 
+colnames(world_map)[colnames(world_map)=="region"] <- "country"
+head(world_map)
 
-library("ggmap")
 
-# Generate Summary
 
 wmap <-
-  wine_data %>%
-  group_by(country) %>%
-  summarize(
+  wine_data_clean %>%
+  dplyr::filter(country!="England")%>%
+  dplyr::group_by(country) %>%
+  dplyr::summarize(
+    n = n(),
     point_min = min(points, na.rm = TRUE),
     point_avg = mean(points, na.rm = TRUE),
     point_max = max(points, na.rm = TRUE),
     price_min = min(price, na.rm = TRUE),
     price_avg = mean(price, na.rm = TRUE),
     price_max = max(price, na.rm = TRUE)
-  ) %>%
-  select(
-    c(
-      "country",
-      "point_min",
-      "point_avg",
-      "point_max",
-      "price_min",
-      "price_avg",
-      "price_max"
-    )
-  ) %>% ungroup() 
+  ) %>% dplyr::ungroup()
 
-head(wmap)
+wine_country_map <- merge(wmap, world_map, by = "country")
 
-head(wine_country_map)
-
-# Create data frame with bounderies and values
-wine_country_map <- left_join(wmap, world_map, by = "country")
-
-.save_pdf <- function(fn) {
-  ggsave(paste0("images/", fn, ".pdf"),
-         width = 6,
-         height = 5)
-}
 
 .map_from_attribute <- function(att, title) {
   return(
@@ -56,6 +38,10 @@ wine_country_map <- left_join(wmap, world_map, by = "country")
       scale_fill_viridis_c(option = "C") + theme_gdocs() + ggtitle(title)
   )
 }
+
+?geom_map
+
+glimpse(wine_data_clean)
 
 .map_from_attribute("point_min", "Points Min by Country")
 # .save_pdf("point_min")
@@ -71,19 +57,47 @@ wine_country_map <- left_join(wmap, world_map, by = "country")
 # .save_pdf("price_max")
 
 
+# c(1,2,5,7,14,15)
+#chart.Correlation(wine_data_clean[,c(2,5,7,14,15)],col=wine_data_clean$color_lump)
+
+
+
+# FANCY CORELATION MATRIX -------------------------------------------------
+
+# Fix conflicts in ggpairs
+conflict_prefer("mutate", "dplyr")
+conflict_prefer("summarize", "dplyr")
+
+ggpairs(wine_data_clean, columns = c(2,5,7,14, 16), ggplot2::aes(colour=color_lump)) 
+
+glimpse(wine_data_clean)
+
+# %>%
+#   select(
+#     c(
+#       "country",
+#       "point_min",
+#       "point_avg",
+#       "point_max",
+#       "price_min",
+#       "price_avg",
+#       "price_max"
+#     )
+#   ) %>% ungroup() 
+
 #wine_data %>% filter( points == NA )
 
 
-ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") 
+ggplot(wine_data_clean, aes(log(price), points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") 
   
-ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") #+ xlim(0, 100)
+ggplot(wine_data_clean, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") #+ xlim(0, 100)
 
 
-ggplot(wine_data, aes(price, points, color = point_cat)) + geom_jitter(alpha =
+ggplot(wine_data_clean, aes(price, points, color = point_cat)) + geom_jitter(alpha =
                                                                          1 / 10) + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlim(0, 100)
 
 
-ggplot(wine_data, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlab("Points (0-100)") +
+ggplot(wine_data_clean, aes(price, points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price") + xlab("Points (0-100)") +
   ylab("Price ($)")
 
 
@@ -115,15 +129,15 @@ p <- ggplot(wine_data, aes(points, price, color = point_cat)) + geom_point() + t
 p1 <- ggMarginal(p, type="histogram", fill="slateblue") 
 p1  
 
-ggplot(wine_data_clean, aes(points, price, colour = color_lump)) + geom_point() + theme_fivethirtyeight() + facet_grid( taster_gender ~ point_cat)
+ggplot(wine_data_clean, aes(y=points, x=log(price), colour = color_lump)) + geom_point() + theme_fivethirtyeight() + facet_grid( taster_gender ~ .)
   
 
 
-wine_data %>% ggplot(aes(x = reorder(color, points), y = points, fill = color)) + geom_boxplot() + 
-  xlab("Color") + theme_clean() + facet_wrap(~ taster_gender + title_has_accents) #+ theme(legend.position = "none") 
+wine_data_clean %>% ggplot(aes(x = reorder(color, points), y = points, fill = color)) + geom_boxplot() + 
+  xlab("Color") + theme_clean() + facet_wrap(~ taster_gender) #+ theme(legend.position = "none") 
 
-wine_data %>% ggplot(aes(x = reorder(color_lump, points), y = points, fill = color_lump)) + geom_boxplot() + 
-  xlab("Color") + theme_clean() + facet_wrap(~ taster_gender + title_has_accents) + theme(legend.position = "none") 
+wine_data_clean %>% ggplot(aes(x = reorder(color_lump, points), y = points, fill = color_lump)) + geom_boxplot() + 
+  xlab("Color") + theme_clean() + facet_wrap(~ taster_gender + title_has_accents) + theme(legend.position = "none") + ggtitle("Wine Score vs color. Faceted by Gender and presence of accents in title")
 
 str(wine_data_clean)
 # Classes ‘tbl_df’, ‘tbl’ and 'data.frame':	91500 obs. of  19 variables:

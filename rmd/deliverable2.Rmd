@@ -1,0 +1,145 @@
+---
+title: "Deliverable 2"
+author: "Garrett Hawes"
+date: "11/13/2019"
+output:
+  prettydoc::html_pretty:
+    df_print: paged
+    theme: architect
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("conflicted")
+library("here")
+load(here::here("data","output","clean_wine.RData"))
+library("arsenal")
+library("tidyverse")
+library("knitr")
+library("kableExtra")
+library("ggExtra")
+library("ggthemes")
+library("GGally")
+conflict_prefer("mutate", "dplyr")
+```
+
+## Summary Statistics 
+Need to figure out a way to get this to look good on pdf or use html
+
+c("ID", "price", "country", "variety", "points", "point_cat", 
+"title_length", "title_has_accents", "variety_lump", "designation_lump", 
+"taster_name_lump", "taster_twitter_lump", "taster_gender", "taster_avg_points", 
+"taster_review_count", "taster_n_tweets", "color_lump", "country_lump", 
+"province_lump")
+
+```{r summary, results="asis"}
+#table_one <- tableby(point_cat ~ ., data = wine_data_clean %>% select(c("price", "points", "point_cat", "title_length", "taster_review_count", "taster_n_tweets", "country_lump")))
+table_one <- tableby(cut(price, breaks=4) ~ ., data = wine_data_clean %>% select(c("price", "variety_lump", "points", "point_cat", 
+"title_length", "title_has_accents", "variety_lump", "designation_lump", "taster_twitter_lump", "taster_gender", "taster_avg_points", 
+"taster_review_count", "taster_n_tweets", "country_lump", 
+"province_lump", "color_lump")))
+dput(names(wine_data_clean))
+summary(table_one, title = "Wine Data by Country")
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:'
+
+```{r map, message=FALSE}
+library(maps)
+world_map <- map_data("world")
+world_map <-
+  world_map %>% 
+  dplyr::mutate(region = ifelse(region == "USA", "US", region)) 
+colnames(world_map)[colnames(world_map)=="region"] <- "country"
+
+wmap <-
+  wine_data_clean %>%
+  #dplyr::filter(country!="England")%>%
+  dplyr::group_by(country) %>%
+  dplyr::summarize(
+    n = n(),
+    point_min = min(points, na.rm = TRUE),
+    point_avg = mean(points, na.rm = TRUE),
+    point_max = max(points, na.rm = TRUE),
+    price_min = min(price, na.rm = TRUE),
+    price_avg = mean(price, na.rm = TRUE),
+    price_max = max(price, na.rm = TRUE)
+  ) %>% dplyr::ungroup()
+
+wine_country_map <- dplyr::left_join(wmap, world_map, by = "country")
+
+
+.map_from_attribute <- function(att, title) {
+  return(
+    ggplot(wine_country_map, aes_string(map_id = "country", fill = att)) +
+      geom_map(map = wine_country_map,  color = "white") +
+      expand_limits(x = wine_country_map$long, y = wine_country_map$lat) +
+      scale_fill_viridis_c(option = "C") + theme_gdocs() + ggtitle(title)
+  )
+}
+
+.map_from_attribute("point_min", "Points Min by Country")
+# .save_pdf("point_min")
+.map_from_attribute("point_avg", "Points Average by Country")
+# .save_pdf("point_avg")
+.map_from_attribute("point_max", "Points Max by Country")
+
+```
+
+
+
+```{r plot1, fig.height=5, fig.width=10, message=FALSE}
+# world_map <- map_data("world")
+# world_map <-
+#   world_map %>% mutate(region = ifelse(region == "USA", "US", region)) %>% mutate (country = region) %>% mutate(country = ifelse(subregion == "Great Britain", "England", country))
+#14 16
+ggpairs(wine_data_clean, columns = c(2,5,7, 14, 16), ggplot2::aes(colour=color_lump))
+```
+
+```{r plot2, message=FALSE}
+p <- ggplot(wine_data_clean, aes(points, price, color = point_cat)) + geom_point() + theme_clean() + labs(title = "Price vs Points")  #+ facet_wrap(~ color_lump + taster_gender)
+p1 <- ggMarginal(p, type="histogram", fill="slateblue") 
+p1 
+```
+
+
+```{r plot3, fig.height=5, fig.width=10, message=FALSE}
+wine_data_clean %>% ggplot(aes(x = reorder(color_lump, points), y = points, fill = color_lump)) + geom_boxplot() + 
+  xlab("Color") + theme_clean() + theme(legend.position = "none") + ggtitle("Wine Score vs color. Faceted by Gender and presence of accents in title") + facet_wrap(~ country_lump)
+
+```
+
+```{r plot4, message=FALSE}
+ggplot(wine_data_clean, aes(log(price), points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs log of Price") + facet_wrap(~ taster_gender)
+
+```
+
+
+```{r plot5, message=FALSE}
+ggplot(wine_data_clean, aes(log(price), log(points), color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs log of Price") + facet_wrap(~ country_lump)
+
+```
+
+
+```{r plot6, fig.height=5, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
+ggplot(wine_data_clean, aes(x = price, y = country_lump, color = point_cat)) +
+  geom_jitter(alpha=1/2) + ggtitle("Price and Country Colored by Point_Cat")
+
+```
+
+#Same as above but with log(price)
+```{r plot7, fig.height=5, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
+ggplot(wine_data_clean, aes(x = log(price), y = country_lump, color = point_cat)) +
+  geom_jitter(alpha=1/2) + ggtitle("log(Price) and Country Colored by Point_Cat")
+
+```
+
+#Same as above but with log(price)
+```{r plot8, fig.height=5, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
+ggplot(wine_data_clean, aes(x = log(price), y = taster_n_tweets, color = point_cat)) +
+  geom_jitter(alpha=1/2) + ggtitle("log(Price) and Country Colored by Point_Cat")
+```

@@ -1,11 +1,16 @@
 # Load most commonly used libraries
 
-list.of.packages <- c("tidyverse", "plotly", "here", "ggthemes", "stringr", "plyr", "stringi", "readxl")
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) install.packages(new.packages)
+# list.of.packages <- c("tidyverse", "plotly", "here", "ggthemes", "stringr", "plyr", "stringi", "readxl", "PerformanceAnalytics", "ggExtra")
+# new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+# if(length(new.packages)) install.packages(new.packages)
 
 rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
 
+#install.packages("devtools")
+#install.packages("conflicted")
+
+library("conflicted")
+library("ggmap")
 library("plyr")
 library("tidyverse")
 library("here")
@@ -14,8 +19,29 @@ library("stringr")
 library("stringi")
 library("readxl")
 library("ggExtra")
+library("PerformanceAnalytics")
+library("GGally")
+library("qwraps2")
+library("plotROC")
+
+
+
+
 
 # ---- constants ----
+
+
+# Set fct_lump size for the various times that fct_lump is used.
+# FCT_LUMPS <-
+#   c(
+#     variery_color = 5,
+#     taster_name = 1,
+#     taster_twitter = 5,
+#     designation = 10,
+#     country = 10,
+#     variety = 10
+#   )
+# test4<-fct_lump(test, n=FCT_LUMPS["taster_name"])
 
 VARIETY_PER_COLOR_LUMP <- 5
 TASTER_NAME_LUMP <- 5
@@ -39,6 +65,8 @@ source("code/features.R")
 # ---- analysis ----
 # Step Three: Analyzing data for report:
 source("code/analysis.R")
+
+save(wine_data_clean, file = here::here("data","output","clean_wine.RData"))
 
 # ---- plots ----
 # Step Three: Analyzing data for report:
