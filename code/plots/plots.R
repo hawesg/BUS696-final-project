@@ -5,10 +5,11 @@
 # Get Lon and Lat to join then replace USA with US since our data set lists it as US also add country column for join
 
 world_map <- map_data("world")
+head(world_map)
+world_map$country <- world_map$region
 world_map <-
   world_map %>% 
-  dplyr::mutate(region = ifelse(region == "USA", "US", region)) 
-colnames(world_map)[colnames(world_map)=="region"] <- "country"
+  dplyr::mutate(region = ifelse(country == "USA", "US", country)) 
 head(world_map)
 
 
@@ -38,8 +39,6 @@ wine_country_map <- merge(wmap, world_map, by = "country")
       scale_fill_viridis_c(option = "C") + theme_gdocs() + ggtitle(title)
   )
 }
-
-?geom_map
 
 glimpse(wine_data_clean)
 

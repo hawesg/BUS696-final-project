@@ -27,7 +27,6 @@ wine_data <-
 
 # Title Length ------------------------------------------------------------
 
-
 wine_data <-
   wine_data %>% dplyr::mutate(title_length = nchar(as.character(wine_data$title)))
 
@@ -66,6 +65,19 @@ wine_data <- wd_a_tl
 
 wine_data <-
   wine_data %>% dplyr::mutate(title_has_accents = (title != stringi::stri_trans_general(title, "Latin-ASCII")))
+
+
+
+# Title Sentiment Analysis and Word Count ---------------------------------
+
+wine_data <- 
+  wine_data %>% dplyr::mutate(title_no_accents = stringi::stri_trans_general(title, "Latin-ASCII"))
+
+s <- sentiment_by(wine_data$title_no_accents)
+
+qplot(s$ave_sentiment, geom="histogram",binwidth=0.2,main="Wine Title Sentiment Histogram")
+
+wine_data <- wine_data %>% dplyr::mutate( title_sentement = s$ave_sentiment, title_word_count = s$word_count)
 
 ################### Designation column  ##################
 
@@ -242,6 +254,7 @@ glimpse(wine_data)
 summary(wine_data)
 
 str(wine_data)
+
 # Add stats about each reviewer
 
 #mutate(taster_name = factor(taster_name)) %>%
@@ -301,6 +314,8 @@ wine_data_clean <-
     color_lump,
     country_lump,
     province_lump,
+    title_word_count,
+    title_sentement
   ) %>% droplevels()
 
 setdiff(names(wine_data), names(wine_data_clean))

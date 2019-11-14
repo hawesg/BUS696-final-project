@@ -23,6 +23,7 @@ library("PerformanceAnalytics")
 library("GGally")
 library("qwraps2")
 library("plotROC")
+library('sentimentr')
 
 
 

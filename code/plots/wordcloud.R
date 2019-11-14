@@ -1,8 +1,8 @@
 ##Install Packages
-install.packages("tm")  # for text mining
-install.packages("SnowballC") # for text stemming
-install.packages("wordcloud") # word-cloud generator
-install.packages("RColorBrewer") # color palettes
+# install.packages("tm")  # for text mining
+# install.packages("SnowballC") # for text stemming
+# install.packages("wordcloud") # word-cloud generator
+# install.packages("RColorBrewer") # color palettes
 
 
 ##Load Require Library
@@ -18,7 +18,7 @@ library(stringr)
 
 
 wine_designations_word_cloud <-
-  wine_designations_word_cloud %>% mutate(designation = str_replace_all(designation, "([Rr].serv.)", "Reserve"))
+  wine_designations_word_cloud %>% dplyr::mutate(designation = str_replace_all(designation, "([Rr].serv.)", "Reserve"))
 
 ## Calculate Corpus
 
@@ -63,3 +63,28 @@ wordcloud(
 wordcloud(words = wineDesignation.clean, min.freq = 2,
           max.words=200, random.order=FALSE, rot.per=0.35,
           colors=brewer.pal(8, "Dark2"))
+
+
+
+#wordcloud2
+# library("wordcloud2")
+# 
+# head(demoFreq)
+# TDM <- TermDocumentMatrix(wineDesignation.clean)
+# 
+# TDMasMatrix <- as.matrix(TDM)
+# TDMasDF<-data.frame(TDMasMatrix)
+# TDMasDF$word <-rownames(TDMasDF)
+# 
+# # Column headers
+# colnames(TDMasDF) <- c("freq", "word")
+# # sorting (not really needed)
+# TDMasDF<-TDMasDF[order(-TDMasDF$freq),]
+# # Column order is important for wordcloud2
+# TDMasDF<-TDMasDF[, c("word", "freq")]
+# head(TDMasDF)
+wordcloud2(data=TDMasMatrix)
+# # 
+# https://cran.r-project.org/web/packages/wordcloud2/vignettes/wordcloud.html
+# http://antonio-ferraro.eu5.net/word-clouds-in-r-packages-wordcloud2-and-tm/
+

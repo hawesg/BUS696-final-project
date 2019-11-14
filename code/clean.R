@@ -158,4 +158,4 @@ wine_data <-
     country_lump = fct_lump(wine_data$country, n = 10)
   ) %>%
   dplyr::filter (country != "" &
-            variety != "" & taster_name != "") %>% drop_na(price) 
+                   variety != "" & taster_name != "") %>% drop_na(price) 
