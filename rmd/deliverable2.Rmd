@@ -1,28 +1,31 @@
 ---
 title: "Deliverable 2"
-author: "Garrett Hawes"
+author: "Garrett Hawes, Bart Ciastkowski, Ricky Lobel"
 date: "`r Sys.Date()`"
 output: 
   html_document: 
+    code_folding: show
+    css: includes/styles.css
     fig_caption: yes
     highlight: tango
     includes:
+      after_body: includes/footer.html
       before_body: includes/header.html
     number_sections: yes
-    self_contained: no
     theme: cerulean
     toc: yes
     toc_float:
-      collapsed: no
+      collapsed: yes
       smooth_scroll: no
 ---
 
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+#knitr::opts_chunk$set(cache = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
 library("conflicted")
 library("here")
-load(here::here("data","output","clean_wine.RData"))
 library("arsenal")
 library("tidyverse")
 library("knitr")
@@ -39,13 +42,15 @@ library('sentimentr')
 library("tm")
 library("SnowballC")
 library("RColorBrewer")
+library("wordcloud")
 conflict_prefer("mutate", "dplyr")
 conflict_prefer("summarize", "dplyr")
+
 ```
 
 # Load Data 
 
-```{r}
+```{r warning=FALSE}
 wine_data <-
   read.csv(here::here("data", "input", "winemag-data-130k-v2.csv"))
 colors <- read.csv(here::here("data", "input", "wine-colors.csv"))
@@ -66,7 +71,7 @@ wine_data <- dplyr::left_join(wine_data, twitter_stats, by = "taster_twitter_han
 # Clean
 
 ## Functions
-```{r}
+```{r fxns}
 .clean_text <- function(x) {
   x <- stringi::stri_trans_general(x, "Latin-ASCII")
   x <- str_replace_all(x, "[^A-Za-z]", " ")
@@ -84,7 +89,7 @@ wine_data <- dplyr::left_join(wine_data, twitter_stats, by = "taster_twitter_han
 
 ## Color Revalue
 
-```{r}
+```{r color-rvl}
 wine_data <-
   wine_data %>% dplyr::mutate(color = revalue(
     wine_data$color,
@@ -99,7 +104,7 @@ wine_data <-
 
 ## Apply Cleaning
 Apply the cleaning strategies from above
-```{r}
+```{r apply-clean}
 wine_data <-
   wine_data %>% dplyr::mutate(
     country = as.character(country),
@@ -118,7 +123,7 @@ wine_data <-
 
 ## Points Categories
  Turn score into categories per https://www.winespectator.com/articles/scoring-scale
-```{r}
+```{r points-cat}
 wine_data <-
   wine_data  %>% dplyr::mutate(point_cat = cut(
     wine_data$points,
@@ -134,33 +139,51 @@ wine_data <-
   ))
 ```
 
+## Price Categories
+ Turn score into categories per https://www.winespectator.com/articles/scoring-scale
+```{r price-cat}
+wine_data <-
+  wine_data  %>% 
+  dplyr::mutate(price_cat = cut(
+                            price,
+                            breaks = c(0, 4, 12, 50, 200, 750, 3000),
+                            labels = c( "Budget ($0-4)", 
+                                        "Every Day ($5-12)", 
+                                        "Premium ($13-50)", 
+                                        "Ultra Premium ($51-200)", 
+                                        "Luxury ($201-750)", 
+                                        "What the fuck is wrong with you? ($751+)" )))
+```
+
 ## Title Features {.tabset .tabset-fade .tabset-pills}
 
 ### Legth
 
-```{r}
+```{r title-length}
 wine_data <-
-  wine_data %>% dplyr::mutate(title_length = nchar(as.character(wine_data$title)))
+  wine_data %>% dplyr::mutate(title_length =  nchar(as.character(wine_data$title)))
 ```
 
 ### Has Accent(s)
 Has accents presuming the american market might pay more ... or less for wines that sound exotic.
-```{r}
+```{r title-accents}
 wine_data <-
-  wine_data %>% dplyr::mutate(title_has_accents = (title != stringi::stri_trans_general(title, "Latin-ASCII")))
+  wine_data %>% dplyr::mutate(title_has_accents = 
+                                (title != stringi::stri_trans_general(title, "Latin-ASCII")))
 ```
 
 ### Title Sentiment Analysis and Word Count
 
-```{r}
+```{r title-sentiment}
  wine_data <- 
    wine_data %>% dplyr::mutate(title_no_accents = stringi::stri_trans_general(title, "Latin-ASCII"))
-# 
+
 s <- sentiment_by(wine_data$title_no_accents)
 
 qplot(s$ave_sentiment, geom="histogram",binwidth=0.2,main="Wine Title Sentiment Histogram")
 
-wine_data <- wine_data %>% dplyr::mutate( title_sentement = s$ave_sentiment, title_word_count = s$word_count)
+wine_data <- wine_data %>% dplyr::mutate(title_sentement = s$ave_sentiment, 
+                                         title_word_count = s$word_count)
 ```
 
 ## Designation column {.tabset .tabset-fade .tabset-pills}
@@ -170,7 +193,6 @@ wine_data <- wine_data %>% dplyr::mutate( title_sentement = s$ave_sentiment, tit
 ```{r}
 wine_data <- wine_data %>% dplyr::mutate(designation = .clean_text(designation))
 wine_designations_word_cloud <- wine_data
-
 ```
  
 ### Identify Possible Groups
@@ -199,6 +221,9 @@ wineDesignation.clean <-
 wineDesignation.clean <-
   tm_map(wineDesignation.Corpus, stripWhitespace)
 
+wordcloud(words = wineDesignation.clean, min.freq = 2,
+          max.words=200, random.order=FALSE, rot.per=0.35,
+          colors=brewer.pal(8, "Dark2"))
 ```
 
 
@@ -268,12 +293,13 @@ replacements <-
     "No Designation"
   )
 
-# This is so that we can use the replacements object in str_replace_all rather than a single pattern/replacement
+# This is so that we can use the replacements object in str_replace_all 
+# rather than a single pattern/replacement
 
 names(replacements) <- patterns
 
 wine_data <-
-  wine_data %>% dplyr::mutate(designation = str_replace_all(designation, replacements)) %>% # replace per above
+  wine_data %>% dplyr::mutate(designation = str_replace_all(designation, replacements)) %>% 
   dplyr::mutate(designation = as.factor(designation))
 ```
 
@@ -329,7 +355,7 @@ wine_data <- tibble::rowid_to_column(wine_data, "ID")
 ```
 
 ## Drop unused point category factors 
-```{r}
+```{r message=FALSE, warning=FALSE, results='hide'}
 setdiff(levels(wine_data$point_cat), wine_data$point_cat)
 fct_drop(wine_data$point_cat)
 ```
@@ -358,8 +384,9 @@ wine_data_clean <-
     color_lump,
     country_lump,
     province_lump,
-    #title_word_count,
-    #title_sentement
+    price_cat,
+    title_word_count,
+    title_sentement
   ) %>% droplevels()
 ```
 
@@ -368,48 +395,41 @@ wine_data_clean <-
 setdiff(names(wine_data), names(wine_data_clean))
 ```
 
-# Summary Statistics 
-Need to figure out a way to get this to look good on pdf or use html
+# Summary Statistics {.tabset .tabset-fade .tabset-pills}
 
-c("ID", "price", "country", "variety", "points", "point_cat", 
-"title_length", "title_has_accents", "variety_lump", "designation_lump", 
-"taster_name_lump", "taster_twitter_lump", "taster_gender", "taster_avg_points", 
-"taster_review_count", "taster_n_tweets", "color_lump", "country_lump", 
-"province_lump")
+## Numeric Columns
+```{r numeric-simple, results="asis"}
+table_numeric <-
+  tableby(~ ., data = wine_data_clean %>% 
+            select_if(is.numeric))
+summary(table_numeric, title = "Wine Data by Price - Numeric Columns")
+```
 
+## Factor Columns 
+```{r factors, results="asis"}
+table_factor <-
+  tableby(~ ., data = wine_data_clean %>% 
+            select_if(is.factor))
+summary(table_factor, title = "Wine Data by Price - Factor Columns")
+```
+
+
+## Complete
 ```{r summary, results="asis"}
-#table_one <- tableby(point_cat ~ ., data = wine_data_clean %>% select(c("price", "points", "point_cat", "title_length", "taster_review_count", "taster_n_tweets", "country_lump")))
-table_one <-
-  tableby(cut(price, breaks = c(0,5,10,25,150,3000)) ~ ., data = wine_data_clean %>% select(
-    c(
-      "price",
-      "variety_lump",
-      "points",
-      "point_cat",
-      "title_length",
-      "title_has_accents",
-      "variety_lump",
-      "designation_lump",
-      "taster_twitter_lump",
-      "taster_gender",
-      "taster_avg_points",
-      "taster_review_count",
-      "taster_n_tweets",
-      "country_lump",
-      "province_lump",
-      "color_lump"
-    )
-  ))
-summary(table_one, title = "Wine Data by Country")
+table_complete <-
+  tableby(price_cat ~ ., data = wine_data_clean %>%
+    select(
+      -c(ID, country, variety)
+    ))
+summary(table_complete, title = "Wine Data by Price Group")
 
 ```
 
 
-
-
 # Plots 
 
-## Maps
+## Maps {.tabset .tabset-fade .tabset-pills}
+
 ```{r map, message=FALSE}
 world_map <- map_data("world")
 world_map <-
@@ -448,63 +468,109 @@ wmap <-
 # Create data frame with bounderies and values
 wine_country_map <- right_join(wmap, world_map, by = "country")
 
+#scale_fill_viridis_c(option = "C", limits = c(80, 100)) + theme_map() + ggtitle(title)
+
 .map_from_attribute <- function(att, title) {
   return(
     ggplot(wine_country_map, aes_string(map_id = "country", fill = att)) +
       geom_map(map = wine_country_map,  color = "white") +
       expand_limits(x = wine_country_map$long, y = wine_country_map$lat) +
-      scale_fill_viridis_c(option = "C") + theme_map() + ggtitle(title)
+      scale_fill_viridis_c(option = "C") + theme_map() + ggtitle(title) + 
+      theme(plot.title = element_text(hjust = 0.5)) + 
+      theme(plot.title = element_text(size=20)) +
+      theme(legend.title = element_blank()) 
   )
 }
-.map_from_attribute("point_min", "Points Min by Country")
+```
+### Points - Min
+```{r}
+.map_from_attribute("point_min", "Minimum Points")
 ```
 
+### Points - Average
+```{r}
+.map_from_attribute("point_avg", "Average Points")
+```
+
+### Points - Max
+```{r}
+.map_from_attribute("point_max", "Maximum Points") 
+```
+
+### Price - Min
+```{r}
+.map_from_attribute("price_min", "Minimum Price") 
+```
+
+### Price - Average
+```{r}
+.map_from_attribute("price_avg", "Average Price") 
+```
+
+### Price - Max
+```{r}
+.map_from_attribute("price_max", "Maximum Price") 
+```
 
 ## Corelation
 ```{r plot1, fig.height=9, fig.width=10, message=FALSE}
 ggpairs(wine_data_clean, columns = c(2,5,7, 14, 16), ggplot2::aes(colour=color_lump))
 ```
 
-# Scatter with marginal desnsity histogram
+## Price v Points
+
 ```{r plot2, message=FALSE}
-p <- ggplot(wine_data_clean, aes(points, price, color = point_cat)) + geom_point() + theme_clean() + labs(title = "Price vs Points")  #+ facet_wrap(~ color_lump + taster_gender)
+p <- ggplot(wine_data_clean, aes(points, price, color = point_cat)) + 
+      geom_point() + 
+      theme_clean() + 
+      labs(title = "Price vs Points")
 p1 <- ggMarginal(p, type="histogram", fill="slateblue") 
 p1 
 ```
 
-# Box Plot
+## Box Plot
 ```{r plot3, fig.height=8, fig.width=10, message=FALSE}
-wine_data_clean %>% ggplot(aes(x = reorder(color_lump, points), y = points, fill = color_lump)) + geom_boxplot() + 
-  xlab("Color") + theme_clean() + theme(legend.position = "none") + ggtitle("Wine Score vs color. Faceted by Gender and presence of accents in title") + facet_wrap(~ country_lump)
+wine_data_clean %>% ggplot(aes(x = reorder(color_lump, points), y = points, fill = color_lump)) + 
+  geom_boxplot() + 
+  xlab("Color") + 
+  theme_clean() + 
+  theme(legend.position = "none") + 
+  ggtitle("Wine Score vs color. Faceted by Gender and presence of accents in title") + facet_wrap(~ country_lump)
 ```
 
-## Score Vs log(price) faceted by Gender
+## Score v log(price) faceted by Gender
 ```{r plot4, message=FALSE}
-ggplot(wine_data_clean, aes(log(price), points, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs log of Price") + facet_wrap(~ taster_gender)
-
+ggplot(wine_data_clean, aes(log(price), points, color = point_cat)) + 
+  geom_point() + 
+  theme_fivethirtyeight() + 
+  labs(title = "Score vs log of Price") + 
+  facet_wrap(~ taster_gender)
 ```
 
-## log(price) vs log(points) faceted by Country
+## log(price) v log(points) by Country
 ```{r plot5, message=FALSE}
-ggplot(wine_data_clean, aes(log(price), log(points), color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs log of Price") + facet_wrap(~ country_lump)
-
+ggplot(wine_data_clean, aes(log(price), log(points), color = point_cat)) + 
+  geom_point() + 
+  theme_fivethirtyeight() + 
+  labs(title = "Score vs log of Price") + 
+  facet_wrap(~ country_lump)
 ```
 
-Price and Country colored by rating category
+## Country v Price by rating category
 ```{r plot6, fig.height=6, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
 ggplot(wine_data_clean, aes(x = price, y = country_lump, color = point_cat)) +
   geom_jitter(alpha=1/2) + ggtitle("Price and Country Colored by Point_Cat")
-
 ```
 
-log(Price) and Country colored by rating category
-#Same as above but with log(price)
+
+## Country v log(Price) by rating category
+
 ```{r plot7, fig.height=8, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
 ggplot(wine_data_clean, aes(x = log(price), y = country_lump, color = point_cat)) +
   geom_jitter(alpha=1/2) + ggtitle("log(Price) and Country Colored by Point_Cat")
 ```
 
-#Same as above but with log(price)
+## Taster Tweets v log(Price)
 ```{r plot8, fig.height=5, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
   ggplot(wine_data_clean, aes(x = log(price), y = taster_n_tweets, color = point_cat)) +
   geom_jitter(alpha=1/2) + ggtitle("log(Price) and Country Colored by Point_Cat")

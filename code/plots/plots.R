@@ -56,6 +56,20 @@ glimpse(wine_data_clean)
 # .save_pdf("price_max")
 
 
+# p1<-.map_from_attribute("point_min", "Points Min") + theme(legend.title = element_blank()) 
+# p2<-.map_from_attribute("point_avg", "Points Average") + theme(legend.title = element_blank())+ theme(legend.position="left") + theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size=22))
+# p3<-.map_from_attribute("point_max", "Points Max") + theme(legend.title = element_blank()) + theme(legend.position="right") + theme(plot.title = element_text(size=22))
+# p4<-.map_from_attribute("price_min", "Price Min") + theme(legend.title = element_blank()) + theme(legend.position="bottom") + theme(plot.title = element_text(size=22))
+# p5<-.map_from_attribute("price_avg", "Price Average") + theme(legend.position = "none") + theme(legend.position="top") + theme(plot.title = element_text(size=22))
+# p6<-.map_from_attribute("price_max", "Price Max") + theme(legend.position = "none") + theme(plot.title = element_text(size=22)) + theme(legend.position = c(0.7, 0.2),
+#                                                                                                                                         legend.direction = "horizontal")
+# library("gridExtra")
+# library("grid")
+# #grid.arrange(p1, p2, p3, nrow = 2)
+# grid.arrange(p1, p2, p3, ncol = 3, top=textGrob("POINTS", gp=gpar(fontsize=25,font=8) ) )
+# grid.arrange(p4, p5, p6, nrow = 1, top=textGrob("PRICE", gp=gpar(fontsize=25,font=8) ) )
+# select(which(sapply(.,class)=="factor"),price))
+
 # c(1,2,5,7,14,15)
 #chart.Correlation(wine_data_clean[,c(2,5,7,14,15)],col=wine_data_clean$color_lump)
 
@@ -185,4 +199,22 @@ summary(wine_data_clean)
 # 1,791  : 9497                 Portugal: 4870   Bordeaux      : 3990  
 # 1,534  : 6237                 Chile   : 4305   Northern Spain: 3769  
 # (Other):21269                 (Other) :13635   (Other)       :12736  
+
+
+
+qplot(y=log(price), x=points, data = wine_data_clean, color = color_lump,
+      +       geom=c("point", "smooth"))
+
+
+ggplot(wine_data_clean, aes(y=log(price), x=points, colour = color_lump)) + 
+  geom_point(alpha=1/10) + 
+  theme_fivethirtyeight() +
+  geom_smooth(method="auto") +
+  ggtitle("Log(price) as a function of points (gam smooth)")+
+  xlab("Price")
+  
+
+
+
+
   
