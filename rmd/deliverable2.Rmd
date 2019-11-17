@@ -576,5 +576,10 @@ ggplot(wine_data_clean, aes(x = log(price), y = country_lump, color = point_cat)
   geom_jitter(alpha=1/2) + ggtitle("log(Price) and Country Colored by Point_Cat")
 ```
 
+# Session info
+
+```{r}
+sessionInfo()
+```
 
 
