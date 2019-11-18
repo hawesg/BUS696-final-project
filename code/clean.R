@@ -134,7 +134,7 @@ ggplot(wine_data, aes(points, price, colour = color)) + geom_point() + theme_gdo
 # Color Revalue -----------------------------------------------------------
 
 wine_data <-
-  wine_data %>% mutate (color = revalue(
+  wine_data %>% dplyr::mutate(color = revalue(
     wine_data$color,
     c(
       "O" = "Other",
@@ -144,14 +144,11 @@ wine_data <-
     )
   ))
 
-
-
-
 # Cleaning ----------------------------------------------------------------
 # Apply the cleaning strategies from above
 
 wine_data <-
-  wine_data %>% mutate (
+  wine_data %>% dplyr::mutate(
     country = as.character(country),
     variety = as.character(variety),
     taster_name = as.character(taster_name),
@@ -160,15 +157,5 @@ wine_data <-
     province_lump = fct_lump(wine_data$province, n = 10),
     country_lump = fct_lump(wine_data$country, n = 10)
   ) %>%
-  filter (country != "" &
-            variety != "" & taster_name != "") %>% drop_na(price) 
-  #mutate(  )  
-  
-
-
-    
-    #province = as.factor(stringi::stri_trans_general(province, "Latin-ASCII") ) ) %>%
-
-
-
-
+  dplyr::filter (country != "" &
+                   variety != "" & taster_name != "") %>% drop_na(price) 

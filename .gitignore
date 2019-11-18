@@ -1,7 +1,8 @@
 .Rproj.user
 .Rhistory
-.RData
 .Ruserdata
 foo.csv
 packrat/lib*/
 .DS_Store
+packrat/bundles/wine-project-2019-11-13.tar.gz
+.RData

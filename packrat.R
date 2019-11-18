@@ -17,7 +17,7 @@ packrat::status()
 # install.packages("callr")
 # install.packages("cellranger")
 # install.packages("tidyverse")
-intall.packages("ggthemes")
+#install.packages("ggthemes")
 
 packrat::bundle()
 
