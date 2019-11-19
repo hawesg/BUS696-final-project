@@ -1,6 +1,8 @@
-library(partykit)
-library(rpart)       
-library(rpart.plot) 
+library('partykit')
+library('rpart')       
+library('rpart.plot') 
+library('leaps')
+conflict_prefer("mutate", "dplyr")
 
 
 #Mutate Data For Price Categories
@@ -79,3 +81,33 @@ prp(decision_tree)
 plot(decision_tree2)
 plot(decision_tree3)
 plot(decision_tree4)
+
+#Forward Fit Model
+
+fit_fwd <- regsubsets(price ~ country_lump + variety_lump + point_cat + title_length + title_has_accents + designation_lump + taster_gender + taster_twitter_lump + color_lump + taster_review_count + taster_n_tweets + title_sentement + title_word_count, data = wine_data_clean, method = "forward", nvmax = 10)
+
+summary(fit_fwd)
+
+plot(fit_fwd, scale = "adjr2", main = "Forward Fit Model")
+coef(fit_fwd, 10)
+
+ols_from_fwd_fit <- lm(price ~ country_lump + variety_lump + point_cat + taster_twitter_lump + color_lump, data = wine_data_clean)
+
+summary(ols_from_fwd_fit)
+preds_DF <- data.frame(preds = predict(ols_from_fwd_fit), wine_data_clean)
+head(preds_DF)
+
+
+#Backward Fit Model
+
+bkwd_fwd <- regsubsets(price ~ country_lump + variety_lump + point_cat + title_length + title_has_accents + designation_lump + taster_gender + taster_twitter_lump + color_lump + taster_review_count + taster_n_tweets + title_sentement + title_word_count, data = wine_data_clean, method = "backward", nvmax = 10)
+
+summary(bkwd_fwd)
+
+plot(bkwd_fwd, scale = "adjr2", main = "Backward Fit Model")
+coef(bkwd_fwd, 10)
+
+ols_from_bkwd_fit <- lm(price ~ country_lump + variety_lump + point_cat + taster_twitter_lump + color_lump + taster_review_count, data = wine_data_clean)
+
+summary(ols_from_bkwd_fit)
+
