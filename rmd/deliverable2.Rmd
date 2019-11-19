@@ -11,7 +11,9 @@ output:
     includes:
       after_body: includes/footer.html
       before_body: includes/header.html
+      in_header: includes/head.html
     number_sections: yes
+    self_contained: no
     theme: cerulean
     toc: yes
     toc_float:
@@ -24,6 +26,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 #knitr::opts_chunk$set(cache = TRUE)
 knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(fig.cap ="Click to enlarge")
 library("conflicted")
 library("here")
 library("arsenal")
@@ -169,18 +172,23 @@ Has accents presuming the american market might pay more ... or less for wines t
 ```{r title-accents}
 wine_data <-
   wine_data %>% dplyr::mutate(title_has_accents = 
-                                (title != stringi::stri_trans_general(title, "Latin-ASCII")))
+                                (title != stringi::stri_trans_general(title,
+                                                                      "Latin-ASCII")))
 ```
 
 ### Title Sentiment Analysis and Word Count
 
 ```{r title-sentiment}
  wine_data <- 
-   wine_data %>% dplyr::mutate(title_no_accents = stringi::stri_trans_general(title, "Latin-ASCII"))
+   wine_data %>% dplyr::mutate(title_no_accents = stringi::stri_trans_general(title, 
+                                                                              "Latin-ASCII"))
 
 s <- sentiment_by(wine_data$title_no_accents)
 
-qplot(s$ave_sentiment, geom="histogram",binwidth=0.2,main="Wine Title Sentiment Histogram")
+qplot(s$ave_sentiment, 
+      geom="histogram", 
+      binwidth=0.2, 
+      main="Wine Title Sentiment Histogram")
 
 wine_data <- wine_data %>% dplyr::mutate(title_sentement = s$ave_sentiment, 
                                          title_word_count = s$word_count)
@@ -199,7 +207,8 @@ wine_designations_word_cloud <- wine_data
 
 ```{r}
 wine_designations_word_cloud <-
-  wine_designations_word_cloud %>% mutate(designation = str_replace_all(designation, "([Rr].serv.)", "Reserve"))
+  wine_designations_word_cloud %>% 
+  mutate(designation = str_replace_all(designation, "([Rr].serv.)", "Reserve"))
 
 ## Calculate Corpus
 
@@ -299,7 +308,8 @@ replacements <-
 names(replacements) <- patterns
 
 wine_data <-
-  wine_data %>% dplyr::mutate(designation = str_replace_all(designation, replacements)) %>% 
+  wine_data %>% 
+  dplyr::mutate(designation = str_replace_all(designation, replacements)) %>% 
   dplyr::mutate(designation = as.factor(designation))
 ```
 
@@ -332,7 +342,8 @@ wine_data <-
 ## Lump Other Factors
 ```{r}
 wine_data <-
-  wine_data %>% dplyr::filter(as.character(taster_twitter_handle) != "") %>% dplyr::mutate(
+  wine_data %>% dplyr::filter(as.character(taster_twitter_handle) != "") %>% 
+  dplyr::mutate(
     taster_name_lump = fct_lump(taster_name, n = 5),
     taster_twitter_lump = fct_lump(taster_twitter_handle, n = 5),
     designation_lump = fct_lump(designation, n = 10),
@@ -468,7 +479,7 @@ wmap <-
 # Create data frame with bounderies and values
 wine_country_map <- right_join(wmap, world_map, by = "country")
 
-#scale_fill_viridis_c(option = "C", limits = c(80, 100)) + theme_map() + ggtitle(title)
+#scale_fill_viridis_c(option = "C", limits = c(80, 100))
 
 .map_from_attribute <- function(att, title) {
   return(
@@ -476,8 +487,7 @@ wine_country_map <- right_join(wmap, world_map, by = "country")
       geom_map(map = wine_country_map,  color = "white") +
       expand_limits(x = wine_country_map$long, y = wine_country_map$lat) +
       scale_fill_viridis_c(option = "C") + theme_map() + ggtitle(title) + 
-      theme(plot.title = element_text(hjust = 0.5)) + 
-      theme(plot.title = element_text(size=20)) +
+      theme(plot.title = element_text(hjust = 0.5, size=20)) +
       theme(legend.title = element_blank()) 
   )
 }
@@ -514,7 +524,9 @@ wine_country_map <- right_join(wmap, world_map, by = "country")
 
 ## Corelation
 ```{r plot1, fig.height=9, fig.width=10, message=FALSE}
-ggpairs(wine_data_clean, columns = c(2,5,7, 14, 16), ggplot2::aes(colour=color_lump))
+ggpairs(wine_data_clean, columns = c(2,5,7, 14, 16), 
+        ggplot2::aes(color=color_lump))
+dput(wine_data_clean)
 ```
 
 ## Price v Points
@@ -523,57 +535,138 @@ ggpairs(wine_data_clean, columns = c(2,5,7, 14, 16), ggplot2::aes(colour=color_l
 p <- ggplot(wine_data_clean, aes(points, price, color = point_cat)) + 
       geom_point() + 
       theme_clean() + 
-      labs(title = "Price vs Points")
+      labs(color = "Rating Category", title = "Price vs Points") +
+      theme(plot.title = element_text(hjust = 0.5)) 
+p1 <- ggMarginal(p, type="histogram", fill="slateblue") 
+p1 
+```
+
+## Price v Points (y log 10 scale)
+
+```{r plot3, message=FALSE}
+p <- ggplot(wine_data_clean, 
+            aes(points, price, color = point_cat)) + 
+      geom_point() + 
+      theme_clean() + 
+      scale_y_log10() + 
+      labs(color = "Rating Category", 
+           title = "Price vs Score", 
+           caption="Price is scaled to log 10", 
+           x = "Points", 
+           y="Price") +
+      theme(plot.title = element_text(hjust = 0.5)) 
 p1 <- ggMarginal(p, type="histogram", fill="slateblue") 
 p1 
 ```
 
 ## Box Plot
-```{r plot3, fig.height=8, fig.width=10, message=FALSE}
-wine_data_clean %>% ggplot(aes(x = reorder(color_lump, points), y = points, fill = color_lump)) + 
+```{r plot4, fig.height=8, fig.width=10, message=FALSE}
+wine_data_clean %>% 
+  ggplot( aes(x = reorder(color_lump, points), 
+              y = points, 
+              fill = color_lump)) + 
   geom_boxplot() + 
-  xlab("Color") + 
+  xlab("Color") +
+  labs(x="Color", 
+       y="Points", 
+       title="Wine Score by color", 
+       caption="Faceted by Gender") + 
   theme_clean() + 
-  theme(legend.position = "none") + 
-  ggtitle("Wine Score vs color. Faceted by Gender and presence of accents in title") + facet_wrap(~ country_lump)
-```
-
-## Score v log(price) faceted by Gender
-```{r plot4, message=FALSE}
-ggplot(wine_data_clean, aes(log(price), points, color = point_cat)) + 
-  geom_point() + 
-  theme_fivethirtyeight() + 
-  labs(title = "Score vs log of Price") + 
-  facet_wrap(~ taster_gender)
-```
-
-## log(price) v log(points) by Country
-```{r plot5, message=FALSE}
-ggplot(wine_data_clean, aes(log(price), log(points), color = point_cat)) + 
-  geom_point() + 
-  theme_fivethirtyeight() + 
-  labs(title = "Score vs log of Price") + 
+  theme(legend.position = "none", 
+        plot.title = element_text(hjust = 0.5)) + 
   facet_wrap(~ country_lump)
 ```
 
-## Country v Price by rating category
-```{r plot6, fig.height=6, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
-ggplot(wine_data_clean, aes(x = price, y = country_lump, color = point_cat)) +
-  geom_jitter(alpha=1/2) + ggtitle("Price and Country Colored by Point_Cat")
+
+```{r}
+ggplot(data = wine_data_clean) +
+  geom_hex(mapping = aes(x = points, y = price))
 ```
 
 
-## Country v log(Price) by rating category
+## Price v Score faceted by Gender
+```{r plot5, message=FALSE}
+ggplot(wine_data_clean, 
+       aes(points, price, color = point_cat)) + 
+  geom_point() + 
+  scale_y_log10()+
+  theme_clean() + 
+  labs(color = "Rating Category", 
+       title = "Price v Score by Taster Gender", 
+       x="Score", 
+       y="Price", 
+       caption="Price is scaled to log 10" ) + 
+  theme(plot.title = element_text(hjust = 0.5)) + 
+  facet_wrap(~ taster_gender)
+```
 
-```{r plot7, fig.height=8, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
-ggplot(wine_data_clean, aes(x = log(price), y = country_lump, color = point_cat)) +
-  geom_jitter(alpha=1/2) + ggtitle("log(Price) and Country Colored by Point_Cat")
+## Price v Points by Country
+```{r plot6, fig.height=10, fig.width=10, message=FALSE}
+ggplot(wine_data_clean, 
+       aes(y=price, 
+           x=points, 
+           color = point_cat)) + 
+  geom_point(alpha=1/2) + 
+  geom_smooth() +
+  scale_y_log10()+
+  theme_clean()+
+  theme(plot.title = element_text(hjust = 0.5))+
+  labs(color="Rating Category", 
+       title = "Score vs log of Price") + 
+  facet_wrap(~ country_lump)
+```
+
+## Price by Country
+```{r plot7, fig.height=6, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
+ggplot(wine_data_clean, 
+       aes(y = price, 
+           x = country_lump, 
+           color = point_cat)) +
+  theme_clean()+
+  theme(plot.title = element_text(hjust = 0.5))+
+  coord_flip()+
+  geom_jitter(alpha=1/2) + 
+  labs(color="Rating Category", 
+       title="Price and Country Colored by Rating Category", 
+       x="Country", 
+       y="Price")
+```
+
+## Country v Price (log10 scale)
+
+```{r plot8, fig.height=8, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
+ggplot(wine_data_clean, 
+       aes(x = country_lump, 
+           y = price, 
+           color = point_cat)) + 
+  scale_y_log10() +
+  geom_jitter(alpha=1/2) + 
+  coord_flip() +
+  labs(color = "Rating Category", 
+       title="Price by Country", 
+       caption="Price is scaled to log 10", 
+       x = "Country", 
+       y="Price") +
+    theme_clean()  +
+  theme(plot.title = element_text(hjust = 0.5))
 ```
 
 ## Taster Tweets v log(Price)
-```{r plot8, fig.height=5, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
-  ggplot(wine_data_clean, aes(x = log(price), y = taster_n_tweets, color = point_cat)) +
-  geom_jitter(alpha=1/2) + ggtitle("log(Price) and Country Colored by Point_Cat")
+```{r plot9, fig.height=5, fig.width=8, message=FALSE, warning=FALSE, paged.print=TRUE}
+  ggplot(wine_data_clean, 
+         aes(y = price, 
+             x = taster_n_tweets, 
+             color = point_cat)) +
+  theme_clean()+
+  theme(plot.title = element_text(hjust = 0.5))+
+  scale_x_log10()+
+  scale_y_log10()+
+  geom_jitter(alpha=1/2) + 
+  labs(color="Rating Category", 
+       title="Price v Number of Tweets", 
+       x="Number of Tweets from Taster", 
+       y="Price", 
+       caption="Price and Teets Scaled to log 10")
 ```
 
 # Session info
