@@ -298,7 +298,7 @@ summary(wine_data)
 # }
 # Bart Mutate -------------------------------------------------------------
 
-wine_data <- wine_data %>% mutate( taster_n_tweets_per = (taster_n_tweets - median(wine_data_clean$taster_n_tweets))/(max(wine_data_clean$taster_n_tweets) - min(wine_data_clean$taster_n_tweets)),
+wine_data <- wine_data %>% dplyr::mutate( taster_n_tweets_per = (taster_n_tweets - median(wine_data_clean$taster_n_tweets))/(max(wine_data_clean$taster_n_tweets) - min(wine_data_clean$taster_n_tweets)),
                                 title_word_count_per = (title_word_count - median(wine_data_clean$title_word_count))/(max(wine_data_clean$title_word_count) - min(wine_data_clean$title_word_count)),
                                 taster_review_count_per = (taster_review_count - median(wine_data_clean$taster_review_count))/(max(wine_data_clean$taster_review_count) - min(wine_data_clean$taster_review_count)),
                                 taster_avg_points_per = (taster_avg_points - median(wine_data_clean$taster_avg_points))/(max(wine_data_clean$taster_avg_points) - min(wine_data_clean$taster_avg_points)))
