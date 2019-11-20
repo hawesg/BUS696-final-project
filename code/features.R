@@ -291,6 +291,19 @@ glimpse(wine_data)
 
 summary(wine_data)
 
+
+
+# .bart <- function(x){
+#   taster_n_tweets - median(wine_data_clean$taster_n_tweets))/(max(wine_data_clean$taster_n_tweets) - min(wine_data_clean$taster_n_tweets)
+# }
+# Bart Mutate -------------------------------------------------------------
+
+wine_data <- wine_data %>% mutate( taster_n_tweets_per = (taster_n_tweets - median(wine_data_clean$taster_n_tweets))/(max(wine_data_clean$taster_n_tweets) - min(wine_data_clean$taster_n_tweets)),
+                                title_word_count_per = (title_word_count - median(wine_data_clean$title_word_count))/(max(wine_data_clean$title_word_count) - min(wine_data_clean$title_word_count)),
+                                taster_review_count_per = (taster_review_count - median(wine_data_clean$taster_review_count))/(max(wine_data_clean$taster_review_count) - min(wine_data_clean$taster_review_count)),
+                                taster_avg_points_per = (taster_avg_points - median(wine_data_clean$taster_avg_points))/(max(wine_data_clean$taster_avg_points) - min(wine_data_clean$taster_avg_points)))
+                               
+
 # TODO Add on to this
 wine_data_clean <-
   wine_data %>%
@@ -315,7 +328,11 @@ wine_data_clean <-
     country_lump,
     province_lump,
     title_word_count,
-    title_sentement
+    title_sentement,
+    taster_n_tweets_per,
+    title_word_count_per,
+    taster_review_count_per,
+    taster_avg_points_per
   ) %>% droplevels()
 
 setdiff(names(wine_data), names(wine_data_clean))
@@ -327,3 +344,7 @@ str(wine_data_clean)
 summary(wine_data_clean)
 
 head(wine_data)
+
+
+
+
