@@ -78,7 +78,7 @@ dput(colnames(wine_data))
 #     winery,
 #     color
 #   ))
-# 
+#
 # summary(sum_temp)
 
 # country            designation        points           price                    taster_name
@@ -112,10 +112,10 @@ dput(colnames(wine_data))
 #                   [ ] might be relevant that there are 3 tasters who don't use twitter
 #   title           [x] seems good but this should not be a factor since they are all distinct convert to character
 #                   [x] drop after feature engeneering - Length and has accent?
-#   variety         [x] Seems clean, factor_lump maybe although group by white and red somehow? ie: If we only look at the top 10 factors 
+#   variety         [x] Seems clean, factor_lump maybe although group by white and red somehow? ie: If we only look at the top 10 factors
 #                       we will likely only cover reds
 #   winery          [x] Drop this column they are mostly unique, maybe do something with sentement analysis on name
-#   color           [x] fct lump as R, W and Other, then rename to "Red", "White", "Other" - 
+#   color           [x] fct lump as R, W and Other, then rename to "Red", "White", "Other" -
 #                   [ ] NOTE: Does SW go with other or with white?
 
 
@@ -124,8 +124,12 @@ dput(colnames(wine_data))
 
 # These are just quick plots so i can get a sense of the data
 
-wine_data %>% ggplot(aes(x = reorder(color, points), y = points, fill = color)) + geom_boxplot() + 
-  xlab("Color") + theme_clean() #+ theme(legend.position = "none") 
+wine_data %>% ggplot(aes(
+  x = reorder(color, points),
+  y = points,
+  fill = color
+)) + geom_boxplot() +
+  xlab("Color") + theme_clean() #+ theme(legend.position = "none")
 
 ggplot(wine_data, aes(points, price, colour = color)) + geom_point() + theme_gdocs()
 
@@ -153,9 +157,12 @@ wine_data <-
     variety = as.character(variety),
     taster_name = as.character(taster_name),
     title = as.character(title),
-    color_lump = fct_lump(color, n = 2), 
+    color_lump = fct_lump(color, n = 2),
     province_lump = fct_lump(wine_data$province, n = 10),
     country_lump = fct_lump(wine_data$country, n = 10)
   ) %>%
   dplyr::filter (country != "" &
-                   variety != "" & taster_name != "") %>% drop_na(price) 
+                   variety != "" &
+                   taster_name != "") %>% drop_na(price)
+
+
