@@ -42,15 +42,6 @@ wineDesignation.clean <-
 # wineDesignation.clean <-
 #   tm_map(wineDesignation.Corpus, stemDocument)
 
-# All black
-
-wordcloud(
-  wineDesignation.clean,
-  max.words = 200,
-  random.color = TRUE,
-  random.order = FALSE
-)
-
 # Colors
 
 # scale: Indicates the range of sizes of the words.
@@ -60,31 +51,11 @@ wordcloud(
 # rot.per: Determines the fraction of words that are plotted vertically.
 # colors: The default value is black. If you want to use different colors based on frequency, you can specify a vector of colors or use one of the pre-defined color palettes.
 
-wordcloud(words = wineDesignation.clean, min.freq = 2,
-          max.words=200, random.order=FALSE, rot.per=0.35,
-          colors=brewer.pal(8, "Dark2"))
-
-
-
-#wordcloud2
-# library("wordcloud2")
-# 
-# head(demoFreq)
-# TDM <- TermDocumentMatrix(wineDesignation.clean)
-# 
-# TDMasMatrix <- as.matrix(TDM)
-# TDMasDF<-data.frame(TDMasMatrix)
-# TDMasDF$word <-rownames(TDMasDF)
-# 
-# # Column headers
-# colnames(TDMasDF) <- c("freq", "word")
-# # sorting (not really needed)
-# TDMasDF<-TDMasDF[order(-TDMasDF$freq),]
-# # Column order is important for wordcloud2
-# TDMasDF<-TDMasDF[, c("word", "freq")]
-# head(TDMasDF)
-wordcloud2(data=TDMasMatrix)
-# # 
-# https://cran.r-project.org/web/packages/wordcloud2/vignettes/wordcloud.html
-# http://antonio-ferraro.eu5.net/word-clouds-in-r-packages-wordcloud2-and-tm/
-
+wordcloud(
+  words = wineDesignation.clean,
+  min.freq = 2,
+  max.words = 200,
+  random.order = FALSE,
+  rot.per = 0.35,
+  colors = brewer.pal(8, "Dark2")
+)

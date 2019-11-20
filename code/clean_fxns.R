@@ -11,10 +11,3 @@
   x <- str_squish(x)
   return(x)
 }
-
-.clean_fct_text <- function(x) {
-  x <- as.character(x)
-  .clean_text(x)
-  return(x)
-}
-

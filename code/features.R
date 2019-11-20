@@ -21,14 +21,15 @@ wine_data <-
     )
   ))
 
-# TODO maybe change levels to ordered and also drop unused facttors
+# TODO maybe change levels to ordered 
 
 ################### Title Features ##################
 
 # Title Length ------------------------------------------------------------
 
 wine_data <-
-  wine_data %>% dplyr::mutate(title_length = nchar(as.character(wine_data$title)))
+  wine_data %>% 
+  dplyr::mutate( title_length = nchar( as.character(title) ) )
 
 
 wd_a_tl <- wine_data
@@ -52,8 +53,8 @@ wine_data <- wd_a_tl
 
 
 
-# Title has Accent(s) -----------------------------------------------------
 
+# Title has Accent(s) -----------------------------------------------------
 # Has accents presuming the american market might pay more ... or less for wines that sound exotic.
 
 # title_tibble <-
@@ -63,10 +64,11 @@ wine_data <- wd_a_tl
 # names(title_tibble)
 # title_tibble <- title_tibble %>% mutate(title_has_accent = (t1 != t2))
 
+# TODO MAYBE AS NUMERIC
+
 wine_data <-
-  wine_data %>% dplyr::mutate(title_has_accents = (title != stringi::stri_trans_general(title, "Latin-ASCII")))
-
-
+  wine_data %>% 
+  dplyr::mutate(title_has_accents = ( title != stringi::stri_trans_general(title, "Latin-ASCII") ) )
 
 # Title Sentiment Analysis and Word Count ---------------------------------
 
@@ -87,6 +89,10 @@ wine_data <- wine_data %>% dplyr::mutate( title_sentement = s$ave_sentiment, tit
 #     str_replace_all(designation, "[^A-Za-z]", " ")
 #   ))) # get rid of all non letter charecters then trim white space and make lower case
 
+wdx <- wine_data
+
+# wine_data <- wine_data %>%
+#   dplyr::mutate(designation = stringi::stri_trans_general(designation, "Latin-ASCII"))
 wine_data <- wine_data %>%
   dplyr::mutate(designation = .clean_text(designation))
 
@@ -95,6 +101,8 @@ wine_designations_word_cloud <- wine_data
 ###### USE WORDCLOUD.R TO NARROW DOWN POTENTIAL FACTORS
 
 # List of regular expressions to match
+
+levels(factor(wine_data$designation))
 
 patterns <-
   c(
@@ -159,34 +167,36 @@ replacements <-
   )
 
 # This is so that we can use the replacements object in str_replace_all rather than a single pattern/replacement
+# dput(replacements)
+# names(replacements) <- patterns
+# wine_data <-
+#   wine_data %>% 
+#   dplyr::mutate(designation = stringr::str_replace_all(wine_data$designation, replacements)) %>% # replace per above
+#   dplyr::mutate(designation = as.factor(designation))
 
-names(replacements) <- patterns
+designation_rp <- stringr::str_replace_all(wine_data$designation, replacements)
+wine_data$designation <- as.factor(designation_rp )
 
-wine_data <-
-  wine_data %>% dplyr::mutate(designation = str_replace_all(designation, replacements)) %>% # replace per above
-  dplyr::mutate(designation = as.factor(designation))
-
-
-summary(wine_data)
-
-glimpse(wine_data)
-
-dim(wine_data %>% dplyr::filter(grepl("[¡]", designation)))
-# 1
-dim(wine_data %>% dplyr::filter(grepl("[\\;]", designation)))
-# 12
-dim(wine_data %>% dplyr::filter(grepl("[\\-]", designation)))
-# 2037
-
-# Find records that match one but not another
-
-x <-
-  wine_data %>% dplyr::filter(grepl("r[ei]serv[ae]", designation))
-y <-
-  wine_data %>% dplyr::filter(grepl("[ei]serv", designation))
-setdiff(x, y)
-
-glimpse(wine_data)
+# summary(wine_data)
+# 
+# glimpse(wine_data)
+# 
+# dim(wine_data %>% dplyr::filter(grepl("[¡]", designation)))
+# # 1
+# dim(wine_data %>% dplyr::filter(grepl("[\\;]", designation)))
+# # 12
+# dim(wine_data %>% dplyr::filter(grepl("[\\-]", designation)))
+# # 2037
+# 
+# # Find records that match one but not another
+# 
+# x <-
+#   wine_data %>% dplyr::filter(grepl("r[ei]serv[ae]", designation))
+# y <-
+#   wine_data %>% dplyr::filter(grepl("[ei]serv", designation))
+# setdiff(x, y)
+# 
+# glimpse(wine_data)
 
 wd_a_des <- wine_data
 
@@ -200,17 +210,26 @@ wine_data <- wd_a_des
   return(variety)
 }
 
-head(table(wine_data$variety, wine_data$color_lump))
+# head(table(wine_data$variety, wine_data$color_lump))
 
-VARIETY_PER_COLOR_LUMP <- 5
+# FCT_LUMPS <-
+#   list(
+#     variety_color = 5,
+#     taster_name = 1,
+#     taster_twitter = 5,
+#     designation = 10,
+#     country = 10,
+#     variety = 10,
+#     province = 10
+#   )
 
 red <-
   wine_data %>% dplyr::filter(color_lump == "Red") %>%
-  dplyr::mutate(variety_lump = fct_lump(variety, n = VARIETY_PER_COLOR_LUMP)) %>%
+  dplyr::mutate(variety_lump = fct_lump(variety, n = FCT_LUMPS$variety_color)) %>%
   dplyr::mutate(variety_lump = .append_color_to_factor(variety_lump, "(R)"))
 white <-
   wine_data %>% dplyr::filter(color_lump == "White") %>%
-  dplyr::mutate(variety_lump = fct_lump(variety, n = VARIETY_PER_COLOR_LUMP)) %>%
+  dplyr::mutate(variety_lump = fct_lump(variety, n = FCT_LUMPS$variety_color)) %>%
   dplyr::mutate(variety_lump = .append_color_to_factor(variety_lump, "(W)"))
 other <-
   wine_data %>% dplyr::filter(color_lump == "Other") %>%
@@ -219,13 +238,11 @@ other <-
 wine_data_bind <- do.call("rbind", list(red, white, other))
 
 wine_data <-
-  wine_data_bind %>% dplyr::mutate(variety_lump = factor(variety_lump))
+  wine_data_bind %>% dplyr::mutate(variety_lump = as.factor(variety_lump))
 
-
-
-glimpse(wine_data_bind)
-summary(wine_data)
-levels(wine_data$variety_lump)
+# glimpse(wine_data_bind)
+# summary(wine_data)
+# levels(wine_data$variety_lump)
 
 # temp_fct <- factor(red$variety_lump)
 # unique(other$variety_lump)
@@ -238,22 +255,21 @@ levels(wine_data$variety_lump)
 
 # Lump Factors ---------------------------------------------------------------
 
-# TODO look up constants and replace these with variables
-
 wine_data <-
-  wine_data %>% dplyr::filter(as.character(taster_twitter_handle) != "") %>% dplyr::mutate(
-    taster_name_lump = fct_lump(taster_name, n = TASTER_NAME_LUMP),
-    taster_twitter_lump = fct_lump(taster_twitter_handle, n = TASTER_TWITTER_LUMP),
-    designation_lump = fct_lump(designation, n = DESIGNATION_LUMP),
-    country_lump = fct_lump(country, n = COUNTRY_LUMP),
-    variety_lump = fct_lump(variety, n = VARIETY_LUMP)
+  wine_data %>% 
+  dplyr::mutate(
+    taster_name_lump = fct_lump(taster_name, n = FCT_LUMPS$taster_name),
+    taster_twitter_lump = fct_lump(taster_twitter_handle, n = FCT_LUMPS$taster_twitter),
+    designation_lump = fct_lump(designation, n = FCT_LUMPS$designation),
+    country_lump = fct_lump(country, n = FCT_LUMPS$country),
+    variety_lump = fct_lump(variety, n = FCT_LUMPS$variety)
   )
 
-glimpse(wine_data)
-
-summary(wine_data)
-
-str(wine_data)
+# glimpse(wine_data)
+# 
+# summary(wine_data)
+# 
+# str(wine_data)
 
 # Add stats about each reviewer
 
@@ -267,43 +283,41 @@ wine_data <- wine_data %>%
 # summarize(taster_avg_points = mean(points),
 #      taster_review_count = 1000 )
 
-glimpse(wine_data)
+# glimpse(wine_data)
 
 # Add ID Column -----------------------------------------------------------
 
 wine_data <- tibble::rowid_to_column(wine_data, "ID")
 
-names(wine_data)
+# names(wine_data)
 
 
 
 # Drop unused point cat factors -------------------------------------------
-setdiff(levels(wine_data$point_cat), wine_data$point_cat)
+# setdiff(levels(wine_data$point_cat), wine_data$point_cat)
 fct_drop(wine_data$point_cat)
 
 # Get list of column names in vector form
 
 dput(colnames(wine_data))
 
-names(wine_data)
+# names(wine_data)
+# 
+# glimpse(wine_data)
+# 
+# summary(wine_data)
+# 
 
-glimpse(wine_data)
 
-summary(wine_data)
-
-
-
-# .bart <- function(x){
-#   taster_n_tweets - median(wine_data_clean$taster_n_tweets))/(max(wine_data_clean$taster_n_tweets) - min(wine_data_clean$taster_n_tweets)
-# }
 # Bart Mutate -------------------------------------------------------------
-
-wine_data <- wine_data %>% dplyr::mutate( taster_n_tweets_per = (taster_n_tweets - median(wine_data_clean$taster_n_tweets))/(max(wine_data_clean$taster_n_tweets) - min(wine_data_clean$taster_n_tweets)),
-                                title_word_count_per = (title_word_count - median(wine_data_clean$title_word_count))/(max(wine_data_clean$title_word_count) - min(wine_data_clean$title_word_count)),
-                                taster_review_count_per = (taster_review_count - median(wine_data_clean$taster_review_count))/(max(wine_data_clean$taster_review_count) - min(wine_data_clean$taster_review_count)),
-                                taster_avg_points_per = (taster_avg_points - median(wine_data_clean$taster_avg_points))/(max(wine_data_clean$taster_avg_points) - min(wine_data_clean$taster_avg_points)))
+.bart <- function(x){
+  return((x - median(x))/diff(range(x)))
+}
+wine_data <- wine_data %>% dplyr::mutate( taster_n_tweets_per = .bart(taster_n_tweets),
+                                          title_word_count_per = .bart(title_word_count),
+                                          taster_review_count_per = .bart(taster_review_count),
+                                          taster_avg_points_per = .bart(taster_avg_points) )
                                
-
 # TODO Add on to this
 wine_data_clean <-
   wine_data %>%
@@ -311,7 +325,7 @@ wine_data_clean <-
     ID,
     price,
     country,
-    variety,
+    # variety,
     points,
     point_cat,
     title_length,
@@ -337,13 +351,13 @@ wine_data_clean <-
 
 setdiff(names(wine_data), names(wine_data_clean))
 
-glimpse(wine_data_clean)
-
-str(wine_data_clean)
-
-summary(wine_data_clean)
-
-head(wine_data)
+# glimpse(wine_data_clean)
+# 
+# str(wine_data_clean)
+# 
+# summary(wine_data_clean)
+# 
+# head(wine_data)
 
 
 

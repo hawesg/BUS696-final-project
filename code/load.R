@@ -1,13 +1,14 @@
 ################### LOAD DATA ###################
+
 wine_data <-
   read.csv(here::here("data", "input", "winemag-data-130k-v2.csv"))
 colors <- read.csv(here::here("data", "input", "wine-colors.csv"))
 twitter_stats <- read.csv(here::here("data", "input", "twitter-data.csv"))
-dim(wine_data)
 
-glimpse(colors)
-str(twitter_stats)
-glimpse(twitter_stats)
+# dim(wine_data)
+# glimpse(colors)
+# str(twitter_stats)
+# glimpse(twitter_stats)
 
 #Export to csv for analysis
 # x <- wine_data %>% select(taster_twitter_handle)
@@ -18,9 +19,10 @@ glimpse(twitter_stats)
 
 # Add color
 # wine_data_with_color <- left_join(wine_data, colors, by = "variety")
+
 wine_data <- dplyr::left_join(wine_data, colors, by = "variety")
 
-summary(wine_data)
+# summary(wine_data)
 
 
 # Add in twitter stats  ---------------------------------------------------
@@ -51,14 +53,11 @@ wine_data_with_twitter_data <- dplyr::left_join(wine_data, twitter_stats, by = "
 # 
 # wine_data <- wine_data_with_color
 
-# Add in twitter stats  ---------------------------------------------------
 
-wine_data_with_twitter_data <- dplyr::left_join(wine_data, twitter_stats, by = "taster_twitter_handle")
-
-summary(wine_data_with_twitter_data)
+# summary(wine_data_with_twitter_data)
 
 
-wine_data_original <- wine_data
+# wine_data_original <- wine_data
 
 wine_data <- wine_data_with_twitter_data
 
