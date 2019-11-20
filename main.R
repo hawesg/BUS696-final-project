@@ -5,7 +5,7 @@
 # if(length(new.packages)) install.packages(new.packages)
 
 rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
-
+gc()
 #install.packages("devtools")
 #install.packages("conflicted")
 
@@ -33,16 +33,19 @@ library('sentimentr')
 
 
 # Set fct_lump size for the various times that fct_lump is used.
-# FCT_LUMPS <-
-#   c(
-#     variery_color = 5,
-#     taster_name = 1,
-#     taster_twitter = 5,
-#     designation = 10,
-#     country = 10,
-#     variety = 10
-#   )
+FCT_LUMPS <-
+  list(
+    variety_color = 5,
+    taster_name = 1,
+    taster_twitter = 5,
+    designation = 10,
+    country = 10,
+    variety = 10
+  )
+
+
 # test4<-fct_lump(test, n=FCT_LUMPS["taster_name"])
+
 
 VARIETY_PER_COLOR_LUMP <- 5
 TASTER_NAME_LUMP <- 5
@@ -63,17 +66,21 @@ source("code/clean.R")
 # Step Three: Feature Engeneering:
 source("code/features.R")
 
+# TODO Look up how to just erase all the variables other than wine_data_clean
+save(wine_data_clean, file = here::here("data","output","clean_wine.RData"))
+rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
+load(here::here("data","output","clean_wine.RData"))
+
 # ---- analysis ----
 # Step Three: Analyzing data for report:
 source("code/analysis.R")
 
-save(wine_data_clean, file = here::here("data","output","clean_wine.RData"))
 
 # ---- plots ----
 # Step Three: Analyzing data for report:
-source("code/plots/plots.R")
+#source("code/plots/plots.R")
 
 # ---- render ----
-# Step Three: Knitting Report
+# Step : Knitting Report
 #rmarkdown::render("rmd/README.Rmd","github_document", "../README.md")
 #rmarkdown::render("rmd/README.Rmd","pdf_document", "../analysis.pdf")

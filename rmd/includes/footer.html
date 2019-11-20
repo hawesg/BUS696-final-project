@@ -1,8 +1,23 @@
-<!-- Add icon library -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <script>
   $(document).ready(function() {
-    $('#TOC').append('<div id=\"nav_logo\" class=\"hidden-xs\"><img src=\"http://www.garretthawes.com/r/wine-logo.jpeg"></div>');
+    $('#TOC').append('<div id=\"nav_logo\" class=\"hidden-xs\"><img src=\"http://www.garretthawes.com/r/wine-logo.jpeg" style="width:100%!important"></div>');
+    
+    $("img").click(function(){
+      $(this).toggleClass("max-width");
+    });
+    
+    
+    	  $('#theme-button ul a').click(function() {
+	    if ($(this).attr('name') != 'current') {
+	      var urlbeg = 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/'
+	      var urlend = '/bootstrap.min.css'
+	      var themeurl = urlbeg + $(this).text().toLowerCase() + urlend;
+	      var link = $('link[rel="stylesheet"][href$=".min.css"]').attr('href', themeurl);
+
+	      $('#theme-button ul a[name="current"]').text($(this).text());
+	    }
+	  });
+
   });
 </script>

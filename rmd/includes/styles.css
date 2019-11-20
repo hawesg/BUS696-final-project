@@ -4,3 +4,22 @@
 #nav_logo {
   padding: 1em;
 }
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.max-width{
+  width:100%;
+}
+
+.caption{
+  text-align: center;
+}
+
+div.navbar{
+  margin-right: 4em;
+}
