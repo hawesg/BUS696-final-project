@@ -23,6 +23,10 @@ library("GGally")
 library("qwraps2")
 library("plotROC")
 library('sentimentr')
+library('partykit')
+library('rpart')       
+library('rpart.plot') 
+library('leaps')
 
 
 
@@ -84,3 +88,26 @@ source("code/analysis.R")
 # Step : Knitting Report
 #rmarkdown::render("rmd/README.Rmd","github_document", "../README.md")
 #rmarkdown::render("rmd/README.Rmd","pdf_document", "../analysis.pdf")
+
+
+# 
+# #!/usr/bin/env Rscript
+# args = commandArgs(trailingOnly = TRUE)
+# 
+# if (length(args) == 0) {
+#   FCT_LUMPS <-
+#     list(
+#       variety_color = 5,
+#       taster_name = 1,
+#       taster_twitter = 5,
+#       designation = 10,
+#       country = 10,
+#       variety = 10
+#     )
+# } else {
+#   FCT_LUMPS <- dget(args[1])
+# }
+# 
+# 
+# 
+
