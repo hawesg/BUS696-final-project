@@ -77,7 +77,7 @@ wine_data <-
 
 s <- sentiment_by(wine_data$title_no_accents)
 
-qplot(s$ave_sentiment, geom="histogram",binwidth=0.2,main="Wine Title Sentiment Histogram")
+#qplot(s$ave_sentiment, geom="histogram",binwidth=0.2,main="Wine Title Sentiment Histogram")
 
 wine_data <- wine_data %>% dplyr::mutate( title_sentement = s$ave_sentiment, title_word_count = s$word_count)
 
@@ -102,7 +102,7 @@ wine_designations_word_cloud <- wine_data
 
 # List of regular expressions to match
 
-levels(factor(wine_data$designation))
+#levels(factor(wine_data$designation))
 
 patterns <-
   c(
@@ -168,7 +168,7 @@ replacements <-
 
 # This is so that we can use the replacements object in str_replace_all rather than a single pattern/replacement
 # dput(replacements)
-# names(replacements) <- patterns
+names(replacements) <- patterns
 # wine_data <-
 #   wine_data %>% 
 #   dplyr::mutate(designation = stringr::str_replace_all(wine_data$designation, replacements)) %>% # replace per above
@@ -198,9 +198,9 @@ wine_data$designation <- as.factor(designation_rp )
 # 
 # glimpse(wine_data)
 
-wd_a_des <- wine_data
-
-wine_data <- wd_a_des
+# wd_a_des <- wine_data
+# 
+# wine_data <- wd_a_des
 
 # Lump Varieties ----------------------------------------------------------
 
@@ -299,7 +299,7 @@ fct_drop(wine_data$point_cat)
 
 # Get list of column names in vector form
 
-dput(colnames(wine_data))
+#dput(colnames(wine_data))
 
 # names(wine_data)
 # 

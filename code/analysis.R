@@ -75,18 +75,137 @@
 
 fwd_fit <- 
   regsubsets(price ~ ., 
-             data = wine_data_clean%>%select(-ID, -country, -variety, -taster_avg_points, -taster_n_tweets, -taster_review_count, -title_word_count),
-             nvmax = 20,
+             data = wine_data_clean%>%select(-ID, -country, -taster_avg_points, -taster_n_tweets, -taster_review_count, -title_word_count),
+             nvmax = 24,
              method = "forward")
+
+bkwd_fit <- 
+  regsubsets(price ~ ., 
+             data = wine_data_clean%>%select(-ID, -country, -taster_avg_points, -taster_n_tweets, -taster_review_count, -title_word_count),
+             nvmax = 24,
+             method = "backward")
 
 names(wine_data_clean)
 
-reg.summary = summary(fwd_fit)
+reg.summary.fw = summary(fwd_fit)
+reg.summary = summary(bkwd_fit)
 
 names(reg.summary)
 
+reg.summary.fw$rsq
 reg.summary$rsq
 
 plot(fwd_fit,scale="bic")
 
 plot(fwd_fit, scale = "adjr2")
+
+library(ggvis)
+rsq <- as.data.frame(reg.summary$rsq)
+names(rsq) <- "R2"
+rsq %>% 
+  ggvis(x=~ c(1:nrow(rsq)), y=~R2 ) %>%
+  layer_points(fill = ~ R2 ) %>%
+  add_axis("y", title = "R2") %>% 
+  add_axis("x", title = "Number of variables")
+par(mfrow=c(2,2))
+plot(reg.summary$rss ,xlab="Number of Variables ",ylab="RSS",type="l")
+plot(reg.summary$adjr2 ,xlab="Number of Variables ", ylab="Adjusted RSq",type="l")
+#which.max(reg.summary$adjr2)
+points(11,reg.summary$adjr2[11], col="red",cex=2,pch=20)
+plot(reg.summary$cp ,xlab="Number of Variables ",ylab="Cp", type='l')
+#which.min(reg.summary$cp )
+points(10,reg.summary$cp [10],col="red",cex=2,pch=20)
+plot(reg.summary$bic ,xlab="Number of Variables ",ylab="BIC",type='l')
+# which.min(reg.summary$bic )
+points(6,reg.summary$bic [6],col="red",cex=2,pch=20)
+print(reg.summary)
+view(reg.summary)
+plot(bkwd_fit,scale="bic")
+coef(bkwd_fit ,10)
+plot(bkwd_fit, scale = "Cp")
+
+
+# Load most commonly used libraries
+
+# need to include: caret + lattice + glmnet + glmnetUtils + coefplot
+
+# Elasticnet --------------------------------------------------------------
+
+
+names(wine_data_clean)
+
+
+set.seed(1861)
+trainSize <- 0.30
+train_idx <- sample(1:nrow(wine_data_clean), size = floor(nrow(wine_data_clean) * trainSize))
+
+wine_data_clean_rm_model <- wine_data_clean %>%
+  select (
+    price,
+    points,
+    point_cat,   
+    variety_lump,  
+    country_lump,
+    province_lump,   
+    taster_name_lump,
+    # taster_twitter_lump,  #not helpful
+    taster_gender,
+    #taster_avg_points,
+    taster_avg_points_per,   # no added value
+    #taster_review_count,
+    taster_review_count_per,  # no added value
+    #taster_n_tweets,
+    taster_n_tweets_per,
+    designation_lump,
+    color_lump,
+    #title_word_count,
+    # title_word_count_per, # no added value
+    #title_sentement # no added value
+  ) 
+
+ElasticNetModel_train <- wine_data_clean_rm_model %>% slice(train_idx)
+ElasticNetModel_test <- wine_data_clean_rm_model %>% slice(-train_idx)
+
+
+# remove n/a values
+ElasticNetModel_train <- ElasticNetModel_train[apply(is.na(ElasticNetModel_train),1,sum)==0,]
+ElasticNetModel_test <- ElasticNetModel_test[apply(is.na(ElasticNetModel_test),1,sum)==0,]
+
+#using length 100
+alpha_list <- seq(0,1,len = 101)
+alpha_list
+
+#get the model
+conflict_prefer("mutate", "dplyr")
+enet_fit <- cva.glmnet(price ~ ., 
+                       data = ElasticNetModel_train, 
+                       alpha = alpha_list)
+
+print(enet_fit)
+
+
+### minlossplot
+minlossplot(enet_fit)
+?minlossplot
+plot(enet_fit)
+
+#  from the above the optimal elasticnet model is at alpha 0.28, this is more towards ridge (alpha =0) and less towards lasso (alpha=1); but it kind of lands in the middle so it is the best of both worlds
+# best value at alpha =0.28 where the cross validation loss is the lowest
+
+plot(enet_fit$modlist[[28]])
+
+# other candidates
+plot(enet_fit$modlist[[1]])  ## alphas zero, ridge model
+plot(enet_fit$modlist[[20]])
+plot(enet_fit$modlist[[28]]) ## best
+plot(enet_fit$modlist[[42]])
+plot(enet_fit$modlist[[66]])
+plot(enet_fit$modlist[[101]]) ## alphas zero, lasso  model
+
+
+# coefficient matrix for the optimal elasticnet model using lambda.1se
+coef(enet_fit, alpha = 0.28, 
+     s = enet_fit$modlist[[28]]$lambda.1se)
+
+
+

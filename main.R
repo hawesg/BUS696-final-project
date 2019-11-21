@@ -11,7 +11,6 @@ gc()
 
 library("conflicted")
 library("ggmap")
-library("plyr")
 library("tidyverse")
 library("here")
 library("ggthemes")
@@ -40,19 +39,20 @@ FCT_LUMPS <-
     taster_twitter = 5,
     designation = 10,
     country = 10,
-    variety = 10
+    variety = 10,
+    province = 10
   )
 
 
-# test4<-fct_lump(test, n=FCT_LUMPS["taster_name"])
+# test4<-fct_lump(test, n=FCT_LUMPS["taster_name"]) or FCT_LUMPS$taster_name
 
 
-VARIETY_PER_COLOR_LUMP <- 5
-TASTER_NAME_LUMP <- 5
-TASTER_TWITTER_LUMP <- 5
-DESIGNATION_LUMP <- 10
-COUNTRY_LUMP <- 10
-VARIETY_LUMP <- 10
+# VARIETY_PER_COLOR_LUMP <- 5
+# TASTER_NAME_LUMP <- 5
+# TASTER_TWITTER_LUMP <- 5
+# DESIGNATION_LUMP <- 10
+# COUNTRY_LUMP <- 10
+# VARIETY_LUMP <- 10
 
 # ---- begin ----
 # Step One: Load Data:
