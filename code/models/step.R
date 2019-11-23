@@ -1,4 +1,27 @@
-# Forward Step Model ------------------------------------------------------
+
+
+################################################################################
+#                                                                              #
+# Purpose:       Forward and Backward Step Regression for selecting variables  #
+#                                                                              #
+# Author:        Garrett Hawes                                                 #
+# Contact:       hawes102@mail.chapman.edu                                     #
+# Client:        Garrett Hawes                                                 #
+#                                                                              #
+# Code created:  2019-11-22                                                    #
+# Last updated:  2019-11-22                                                    #
+# Source:        /Users/garretthawes/wine-project                              #
+#                                                                              #
+# Comment:       I have only started to play around with this some             #
+#                                                                              #
+################################################################################
+
+# header_comment(
+#     'Forward and Backward Step Regression for selecting variables', # Purpose
+#     'I have only started to play around with this some'# Comment
+#   )
+
+############################## Forward Step Model ##############################
 ? sqrt
 # + I(points^2)
 # rm(fwd_fit)
@@ -20,6 +43,8 @@ fwd_fit <-
 
 names(wine_train)
 
+############################# Backward Step Model ##############################
+
 bkwd_fit <-
   regsubsets(
     log(price) ~ .,
@@ -38,7 +63,7 @@ bkwd_fit <-
 
 # Find linear dependencies
 
-
+\
 names(wine_train)
 
 reg.summary.fw <- summary(fwd_fit)
@@ -58,10 +83,14 @@ reg.summary.bk$rsq
 # [1] 0.3921120 0.4173112 0.4367624 0.4532179 0.4643926 0.4687823 0.4767820 0.4833105 0.4887640 0.4923295 0.4953244 0.4964609 0.4977307 0.4995556 0.5028151
 # [16] 0.5064748 0.5087196 0.5107489 0.5138512 0.5164968 0.5190115 0.5200636 0.5209665 0.5229720
 
-# Backward Fit
+line_comment("Plots")
+
+#################################### Plots #####################################
+
 plot(bkwd_fit, scale = "bic")
 
 plot(bkwd_fit, scale = "adjr2")
+
 
 library(ggvis)
 rsq <- as.data.frame(reg.summary.bk$rsq)
@@ -183,6 +212,9 @@ print(reg.summary.fw)
 view(reg.summary.fw)
 par(mfrow = c(1, 1))
 plot(fwd_fit, scale = "bic")
+
+################################### Results ####################################
+
 coef(fwd_fit , 24)
 # (Intercept)                points    point_catVery good  point_catOutstanding      variety_lumpRosé  designation_lumpBrut        taster_genderM
 # -8.3698279             0.1352688            -0.2724367            -0.2759206            -0.2688027             0.3317582            -0.1361889

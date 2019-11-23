@@ -133,9 +133,9 @@ color_sum
 wine_data %>% ggplot(aes(x = reorder(color, points), y = points, fill = color)) + geom_boxplot() + 
   xlab("Color") + theme_clean() #+ theme(legend.position = "none") 
 
-ggplot(wine_data, aes(points, price, colour = color)) + geom_point() + theme_gdocs()
+ggplot(wine_data_clean, aes(points, price, colour = color_lump)) + geom_point() + theme_gdocs()
 
-ggplot(wine_data, aes(points, price, color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price")
+ggplot(wine_data_clean, aes(points, log(price), color = point_cat)) + geom_point() + theme_fivethirtyeight() + labs(title = "Score vs Price")
 
 
 p <- ggplot(wine_data, aes(points, price, color = point_cat)) + geom_point() + theme_gdocs() + labs(title = "Price vs Points")  #+ facet_wrap(~ color_lump + taster_gender)
