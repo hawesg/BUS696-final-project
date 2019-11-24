@@ -7,7 +7,7 @@ date: "2019/10/20 (updated: `r Sys.Date()`)"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: xaringan-themer.css
+    css: ["kunoichi", "ninjutsu"]
     nature:
       highlightStyle: solarized-dark
       highlightLines: true
@@ -17,7 +17,7 @@ output:
 
 ```{r xaringan-themer, include = FALSE}
 library(xaringanthemer)
-xaringanthemer::solarized_dark(code_font_url = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css")
+# xaringanthemer::solarized_dark(code_font_url = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css")
 # solarized_dark(
 #   base_color = "#1c5253",
 #   header_font_google = google_font("Josefin Sans"),
@@ -68,10 +68,12 @@ class: inverse, center, middle
 ```{r warning=FALSE}
 load(here::here("data","output","clean_wine.RData"))
 
-x<-213
 ```
 ---
-# Plots 
+# Plots
+```{r}
+  #r <- lm(wine_data_clean, price ~ fct_other(country_lump, keep=c("France", "Italy")))
+```
 ---
 # Maps 
 

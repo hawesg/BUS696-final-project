@@ -4,7 +4,8 @@
     <title>Reading Between the Wines…</title>
     <meta charset="utf-8" />
     <meta name="author" content="Garrett Hawes | Ricky Lobel | Bart" />
-    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link href="libs/remark-css/kunoichi.css" rel="stylesheet" />
+    <link href="libs/remark-css/ninjutsu.css" rel="stylesheet" />
   </head>
   <body>
     <textarea id="source">
@@ -14,7 +15,7 @@ class: center, middle, inverse, title-slide
 ## Some subtitle
 ### Garrett Hawes | Ricky Lobel | Bart
 ### Chapman University
-### 2019/10/20 (updated: 2019-11-21)
+### 2019/10/20 (updated: 2019-11-22)
 
 ---
 
@@ -39,11 +40,13 @@ class: inverse, center, middle
 
 ```r
 load(here::here("data","output","clean_wine.RData"))
-
-x&lt;-213
 ```
 ---
-# Plots 
+# Plots
+
+```r
+  #r &lt;- lm(wine_data_clean, price ~ fct_other(country_lump, keep=c("France", "Italy")))
+```
 ---
 # Maps 
 
@@ -106,7 +109,7 @@ wine_country_map &lt;- right_join(wmap, world_map, by = "country")
 .map_from_attribute("point_min", "Minimum Points")
 ```
 
-![](present_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+![](present_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
 ---
 # Points - Average
 
@@ -114,7 +117,7 @@ wine_country_map &lt;- right_join(wmap, world_map, by = "country")
 .map_from_attribute("point_avg", "Average Points")
 ```
 
-![](present_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+![](present_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
 ---
 # Points - Max
 
@@ -122,7 +125,7 @@ wine_country_map &lt;- right_join(wmap, world_map, by = "country")
 .map_from_attribute("point_max", "Maximum Points") 
 ```
 
-![](present_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+![](present_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
 ---
 # Price - Min
 
@@ -130,7 +133,7 @@ wine_country_map &lt;- right_join(wmap, world_map, by = "country")
 .map_from_attribute("price_min", "Minimum Price") 
 ```
 
-![](present_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+![](present_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
 ---
 # Price - Average
 
@@ -138,7 +141,7 @@ wine_country_map &lt;- right_join(wmap, world_map, by = "country")
 .map_from_attribute("price_avg", "Average Price") 
 ```
 
-![](present_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+![](present_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
 ---
 # Price - Max
 
@@ -146,7 +149,7 @@ wine_country_map &lt;- right_join(wmap, world_map, by = "country")
 .map_from_attribute("price_max", "Maximum Price") 
 ```
 
-![](present_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+![](present_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
 # Price v Points
 
 
@@ -193,7 +196,7 @@ ggplot(data = wine_data_clean) +
   geom_hex(mapping = aes(x = points, y = price))
 ```
 
-![](present_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+![](present_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
 ---
 # Price v Score faceted by Gender
 
@@ -308,7 +311,7 @@ sessionInfo()
 ## Running under: macOS Mojave 10.14.6
 ## 
 ## Matrix products: default
-## BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib
+## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
 ## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
@@ -318,26 +321,43 @@ sessionInfo()
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] xaringanthemer_0.2.0       wordcloud_2.6              RColorBrewer_1.1-2         SnowballC_0.6.0            tm_0.7-6                  
-##  [6] NLP_0.2-0                  sentimentr_2.8.0           PerformanceAnalytics_1.5.3 xts_0.11-2                 zoo_1.8-6                 
-## [11] stringi_1.4.3              ggmap_3.0.0                GGally_1.4.0               ggthemes_4.2.0             ggExtra_0.9               
-## [16] kableExtra_1.1.0           knitr_1.26                 forcats_0.4.0              stringr_1.4.0              dplyr_0.8.3               
-## [21] purrr_0.3.3                readr_1.3.1                tidyr_1.0.0                tibble_2.1.3               ggplot2_3.2.1             
-## [26] tidyverse_1.2.1            arsenal_3.3.0              here_0.1                   conflicted_1.0.4           DT_0.10                   
+##  [1] wordcloud_2.6              RColorBrewer_1.1-2        
+##  [3] SnowballC_0.6.0            tm_0.7-6                  
+##  [5] NLP_0.2-0                  sentimentr_2.8.0          
+##  [7] PerformanceAnalytics_1.5.3 xts_0.11-2                
+##  [9] zoo_1.8-6                  stringi_1.4.3             
+## [11] ggmap_3.0.0                GGally_1.4.0              
+## [13] ggthemes_4.2.0             ggExtra_0.9               
+## [15] kableExtra_1.1.0           knitr_1.26                
+## [17] forcats_0.4.0              stringr_1.4.0             
+## [19] dplyr_0.8.3                purrr_0.3.3               
+## [21] readr_1.3.1                tidyr_1.0.0               
+## [23] tibble_2.1.3               ggplot2_3.2.1             
+## [25] tidyverse_1.2.1            arsenal_3.3.0             
+## [27] here_0.1                   conflicted_1.0.4          
+## [29] xaringanthemer_0.2.0      
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] colorspace_1.4-1  rjson_0.2.20      ellipsis_0.3.0    qdapRegex_0.7.2   rprojroot_1.3-2   fs_1.3.1          rstudioapi_0.10   xaringan_0.13.1  
-##  [9] remotes_2.1.0     lubridate_1.7.4   textclean_0.9.3   xml2_1.2.2        splines_3.6.1     pkgload_1.0.2     zeallot_0.1.0     jsonlite_1.6     
-## [17] packrat_0.5.0     broom_0.5.2       servr_0.15        png_0.1-7         shiny_1.4.0       compiler_3.6.1    httr_1.4.1        backports_1.1.5  
-## [25] assertthat_0.2.1  Matrix_1.2-17     fastmap_1.0.1     lazyeval_0.2.2    cli_1.1.0         later_1.0.0       prettyunits_1.0.2 htmltools_0.4.0  
-## [33] tools_3.6.1       gtable_0.3.0      glue_1.3.1        maps_3.3.0        Rcpp_1.0.3        slam_0.1-46       cellranger_1.1.0  lexicon_1.2.1    
-## [41] vctrs_0.2.0       nlme_3.1-141      xfun_0.11         ps_1.3.0          testthat_2.3.0    rvest_0.3.5       mime_0.7          miniUI_0.1.1.1   
-## [49] lifecycle_0.1.0   devtools_2.2.1    scales_1.0.0      hms_0.5.2         promises_1.1.0    parallel_3.6.1    curl_4.2          yaml_2.2.0       
-## [57] memoise_1.1.0     reshape_0.8.8     desc_1.2.0        pkgbuild_1.0.6    RgoogleMaps_1.4.4 rlang_0.4.1       pkgconfig_2.0.3   bitops_1.0-6     
-## [65] evaluate_0.14     lattice_0.20-38   htmlwidgets_1.5.1 labeling_0.3      processx_3.4.1    tidyselect_0.2.5  plyr_1.8.4        magrittr_1.5     
-## [73] R6_2.4.1          generics_0.0.2    pillar_1.4.2      haven_2.2.0       withr_2.1.2       mgcv_1.8-29       modelr_0.1.5      crayon_1.3.4     
-## [81] rmarkdown_1.17.4  usethis_1.5.1     jpeg_0.1-8.1      syuzhet_1.0.4     grid_3.6.1        readxl_1.3.1      data.table_1.12.6 callr_3.3.2      
-## [89] digest_0.6.22     webshot_0.5.1     xtable_1.8-4      httpuv_1.5.2      munsell_0.5.0     viridisLite_0.3.0 sessioninfo_1.1.1 quadprog_1.5-7
+##  [1] nlme_3.1-141      bitops_1.0-6      lubridate_1.7.4   webshot_0.5.1    
+##  [5] httr_1.4.1        rprojroot_1.3-2   tools_3.6.1       backports_1.1.5  
+##  [9] R6_2.4.1          mgcv_1.8-29       lazyeval_0.2.2    colorspace_1.4-1 
+## [13] withr_2.1.2       tidyselect_0.2.5  compiler_3.6.1    cli_1.1.0        
+## [17] rvest_0.3.5       xml2_1.2.2        labeling_0.3      slam_0.1-46      
+## [21] scales_1.1.0      hexbin_1.27.3     quadprog_1.5-7    digest_0.6.22    
+## [25] rmarkdown_1.17.4  jpeg_0.1-8.1      pkgconfig_2.0.3   htmltools_0.4.0  
+## [29] maps_3.3.0        fastmap_1.0.1     rlang_0.4.1       readxl_1.3.1     
+## [33] rstudioapi_0.10   xaringan_0.13.1   shiny_1.4.0       farver_2.0.1     
+## [37] generics_0.0.2    jsonlite_1.6      qdapRegex_0.7.2   magrittr_1.5     
+## [41] textclean_0.9.3   Matrix_1.2-17     Rcpp_1.0.3        munsell_0.5.0    
+## [45] lifecycle_0.1.0   yaml_2.2.0        plyr_1.8.4        grid_3.6.1       
+## [49] parallel_3.6.1    promises_1.1.0    crayon_1.3.4      miniUI_0.1.1.1   
+## [53] lattice_0.20-38   splines_3.6.1     haven_2.2.0       hms_0.5.2        
+## [57] zeallot_0.1.0     pillar_1.4.2      rjson_0.2.20      glue_1.3.1       
+## [61] evaluate_0.14     data.table_1.12.6 modelr_0.1.5      png_0.1-7        
+## [65] vctrs_0.2.0       lexicon_1.2.1     httpuv_1.5.2      RgoogleMaps_1.4.4
+## [69] cellranger_1.1.0  gtable_0.3.0      reshape_0.8.8     assertthat_0.2.1 
+## [73] xfun_0.11         mime_0.7          syuzhet_1.0.4     xtable_1.8-4     
+## [77] broom_0.5.2       later_1.0.0       viridisLite_0.3.0 memoise_1.1.0
 ```
 ---
     </textarea>
@@ -448,3 +468,5 @@ slideshow._releaseMath(document);
 </script>
   </body>
 </html>
+
+
