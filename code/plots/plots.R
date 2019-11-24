@@ -2,9 +2,9 @@
 #                                                                              #
 # Purpose:       A general repository for plots                                #
 #                                                                              #
-# Author:        Garrett H.                                                    #
+# Author:        Garrett H, Bart C, Ricky L                                    #
 # Contact:       hawes102@mail.chapman.edu                                     #
-# Client:        Garrett H.                                                    #
+# Client:        Jonathan Hersh                                                #
 #                                                                              #
 # Code created:  2019-11-23                                                    #
 # Last updated:  2019-11-23                                                    #

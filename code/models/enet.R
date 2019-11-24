@@ -2,9 +2,9 @@
 #                                                                              #
 # Purpose:       Elastic Net Regression Model                                  #
 #                                                                              #
-# Author:        Garrett Hawes                                                 #
+# Author:        Garrett H, Bart C, Ricky L                                    #
 # Contact:       hawes102@mail.chapman.edu                                     #
-# Client:        Garrett Hawes                                                 #
+# Client:        Jonathan Hersh                                                #
 #                                                                              #
 # Code created:  2019-11-22                                                    #
 # Last updated:  2019-11-22                                                    #

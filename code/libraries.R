@@ -3,9 +3,9 @@
 # Purpose:       Libraries used are stored here, you can include it or just u  #
 #                se it as a reference                                          #
 #                                                                              #
-# Author:        Garrett H.                                                    #
+# Author:        Garrett H, Bart C, Ricky L                                    #
 # Contact:       hawes102@mail.chapman.edu                                     #
-# Client:        Garrett H.                                                    #
+# Client:        Jonathan Hersh                                                #
 #                                                                              #
 # Code created:  2019-11-23                                                    #
 # Last updated:  2019-11-23                                                    #

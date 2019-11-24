@@ -3,9 +3,9 @@
 # Purpose:       This is the jumping off point for analysis. Individual model  #
 #                s can be found in code/models/                                #
 #                                                                              #
-# Author:        Garrett Hawes                                                 #
+# Author:        Garrett H, Bart C, Ricky L                                    #
 # Contact:       hawes102@mail.chapman.edu                                     #
-# Client:        Garrett Hawes                                                 #
+# Client:        Jonathan Hersh                                                #
 #                                                                              #
 # Code created:  2019-11-22                                                    #
 # Last updated:  2019-11-22                                                    #
