@@ -28,38 +28,27 @@ source("code/libraries.R")
 
 ################################### Contants ###################################
 
-# Set fct_lump size for the various times that fct_lump is used.
-# FCT_LUMPS <-
-#   list(
-#     taster_name = 5,
-#     taster_twitter = 5,
-#     designation = 10,
-#     country = 10,
-#     variety = 10,
-#     variety.red = 5,
-#     variety.white = 5,
-#     variety.other = 5,
-#     province = 10
-#   )
-
-# These are all the levels with min 50 observations
+################################## PARAMETERS ##################################
+#                                                                              #
+# Can set the individual factor lump numbers here, by_count will override all  #
+# others if it is not 0 by lumping only factors that have n observations       #
+#                                                                              #
+################################################################################
 
 FCT_LUMPS <-
   list(
-    taster_name = 13,
-    taster_twitter = 13,
-    designation = 25,
-    country = 17,
-    variety = 109,
-    variety.red = 56,
-    variety.white = 45,
+    by_count = 0,
+    taster_name = 5,
+    taster_twitter = 5,
+    designation = 15,
+    country = 15,
+    variety = 15,
+    variety.red = 5,
+    variety.white = 5,
     variety.other = 5,
-    province = 100,
-    winery = 166
+    province = 15,
+    winery = 15
   )
-
-
-
 # Ex: test4<-fct_lump(test, n=FCT_LUMPS["taster_name"]) or FCT_LUMPS$taster_name
 
 # ---- begin ----

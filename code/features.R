@@ -218,7 +218,28 @@ wine_data$designation <- as.factor(designation_rp)
 #     winery = 166
 #   )
 
+
+
 # Lump Factors ---------------------------------------------------------------
+
+# .number_of_factors_containing_n_levels <- function(fct, num){
+#   x <- nrow(fct_count(fct, sort = TRUE) %>% dplyr::filter(n>num))
+#   return(x)
+# }
+# if(FCT_LUMPS$by_count!=0){
+#   FCT_LUMPS[['taster_name']] <- .number_of_factors_containing_n_levels(wine_data$)
+#     
+#     
+#     taster_name = 5,
+#   taster_twitter = 5,
+#   designation = 10,
+#   country = 10,
+#   variety = 10,
+#   variety.red = 5,
+#   variety.white = 5,
+#   variety.other = 5,
+#   province = 10
+# }
 
 wine_data <-
   wine_data %>% 
