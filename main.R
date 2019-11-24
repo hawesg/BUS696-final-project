@@ -1,3 +1,21 @@
+################################################################################
+#                                                                              #
+# Purpose:       Jumping off point for the project                             #
+#                                                                              #
+# Author:        Garrett H.                                                    #
+# Contact:       hawes102@mail.chapman.edu                                     #
+# Client:        Garrett H.                                                    #
+#                                                                              #
+# Code created:  2019-11-23                                                    #
+# Last updated:  2019-11-23                                                    #
+# Source:        /Users/garretthawes/wine-project                              #
+#                                                                              #
+# Comment:       I am planning on inserting some command line options so that  #
+#                I can fine tune things from an SSH shell stay tuned.          #
+#                                                                              #
+################################################################################
+
+
 
 ################################### Clean up ###################################
 
@@ -6,21 +24,7 @@ gc()
 
 ################################## Libraries ###################################
 
-library("conflicted")
-library("ggmap")
-library("tidyverse")
-library("here")
-library("ggthemes")
-library("stringr")
-library("stringi")
-library("readxl")
-library("ggExtra")
-library("PerformanceAnalytics")
-library("GGally")
-library("qwraps2")
-library("plotROC")
-library('sentimentr')
-library('commentr')
+source("code/libraries.R")
 
 ################################### Contants ###################################
 
@@ -36,16 +40,7 @@ FCT_LUMPS <-
     province = 10
   )
 
-
 # Ex: test4<-fct_lump(test, n=FCT_LUMPS["taster_name"]) or FCT_LUMPS$taster_name
-
-
-# VARIETY_PER_COLOR_LUMP <- 5
-# TASTER_NAME_LUMP <- 5
-# TASTER_TWITTER_LUMP <- 5
-# DESIGNATION_LUMP <- 10
-# COUNTRY_LUMP <- 10
-# VARIETY_LUMP <- 10
 
 # ---- begin ----
 # Step One: Load Data:
