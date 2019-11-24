@@ -74,59 +74,63 @@ print(enet_fit)
 
 ############## Helper function, minlossplot with additional info ###############
 
-.mlossp <- function (x, ..., cv.type = c("1se", "min"))
-{
-  alpha <- x$alpha
-  cv.type <- match.arg(cv.type)
-  cv.type <- paste0("lambda.", cv.type)
-  cvm <- sapply(x$modlist, function(mod) {
-    mod$cvm[mod$lambda == mod[[cv.type]]]
-  })
-  min_cv <- which.min(cvm)
-  qplot(alpha,
-        cvm,
-        ylab = "CV loss",
-        xlab = paste0("alpha (min ", alpha[min_cv], ")"),
-        ...)
-  points(
-    x = alpha[min_cv],
-    y = cvm[min_cv],
-    pch = 20,
-    col = "red",
-    bg = "yellow",
-    cex = 0.90
-  )
-  #text(x=alpha[min_cv]+.01, y = cvm[min_cv], paste0("    alpha=",alpha[min_cv]), cex = .8)
-  invisible(x)
-}
-
-
-### minlossplot
-.mlossp(enet_fit)
-plot(enet_fit)
-
-# from the above the optimal elasticnet model is at alpha 0.47, this is more towards ridge 
-# (alpha =0) and less towards lasso (alpha=1); but it kind of lands in the middle so it is the 
-# best of both worlds 
-# best value at alpha =0.47 where the cross validation loss is the lowest
-
-# .47 is element 48
-
-plot(enet_fit$modlist[[48]])
-
-# # other candidates
-# plot(enet_fit$modlist[[1]])  ## alphas zero, ridge model
-# plot(enet_fit$modlist[[20]])
-# plot(enet_fit$modlist[[28]]) ## best
-# plot(enet_fit$modlist[[42]])
-# plot(enet_fit$modlist[[66]])
-# plot(enet_fit$modlist[[101]]) ## alphas zero, lasso  model
-
-# coefficient matrix for the optimal elasticnet model using lambda.1se
-coef(enet_fit, alpha = .47,
-     s = enet_fit$modlist[[48]]$lambda.1se) %>% round(3)
-
-######################### Different method using carat #########################
+# .mlossp <- function (x, ..., cv.type = c("1se", "min"))
+# {
+#   alpha <- x$alpha
+#   cv.type <- match.arg(cv.type)
+#   cv.type <- paste0("lambda.", cv.type)
+#   cvm <- sapply(x$modlist, function(mod) {
+#     mod$cvm[mod$lambda == mod[[cv.type]]]
+#   })
+#   min_cv <- which.min(cvm)
+#   qplot(alpha,
+#         cvm,
+#         ylab = "CV loss",
+#         xlab = paste0("alpha (min ", alpha[min_cv], ")"),
+#         ...)
+#   points(
+#     x = alpha[min_cv],
+#     y = cvm[min_cv],
+#     pch = 20,
+#     col = "red",
+#     bg = "yellow",
+#     cex = 0.90
+#   )
+#   #text(x=alpha[min_cv]+.01, y = cvm[min_cv], paste0("    alpha=",alpha[min_cv]), cex = .8)
+#   invisible(x)
+# }
+# 
+# 
+# ### minlossplot
+# minlossplot(enet_fit)
+# plot(enet_fit)
+# cvm <- sapply(enet_fit$modlist, function(mod) {
+#   mod$cvm[mod$lambda == mod[['lambda.1se']]]
+# })
+# min_cv <- which.min(cvm)
+# 
+# # from the above the optimal elasticnet model is at alpha 0.47, this is more towards ridge 
+# # (alpha =0) and less towards lasso (alpha=1); but it kind of lands in the middle so it is the 
+# # best of both worlds 
+# # best value at alpha =0.47 where the cross validation loss is the lowest
+# 
+# # .47 is element 48
+# 
+# plot(enet_fit$modlist[[min_cv]])
+# 
+# # # other candidates
+# # plot(enet_fit$modlist[[1]])  ## alphas zero, ridge model
+# # plot(enet_fit$modlist[[20]])
+# # plot(enet_fit$modlist[[28]]) ## best
+# # plot(enet_fit$modlist[[42]])
+# # plot(enet_fit$modlist[[66]])
+# # plot(enet_fit$modlist[[101]]) ## alphas zero, lasso  model
+# 
+# # coefficient matrix for the optimal elasticnet model using lambda.1se
+# coef(enet_fit, alpha = enet_fit['alpha'][min_cv],
+#      s = enet_fit$modlist[[min_cv]]$lambda.1se) %>% round(3)
+# 
+# ######################### Different method using carat #########################
 
 library(caret)
 
