@@ -2,6 +2,8 @@
 #Helper functions
 source("code/clean_fxns.R")
 
+wine_data_original <- wine_data
+
 # Exploritory Analysis Comments  ------------------------------------------
 
 
@@ -135,21 +137,24 @@ source("code/clean_fxns.R")
 # 
 # ggplot(wine_data, aes(points, price, colour = color)) + geom_point() + theme_gdocs()
 
-
-
-
-
 # Color Revalue -----------------------------------------------------------
+# wine_data <-
+#   wine_data %>% dplyr::mutate(color = revalue(
+#     wine_data$color,
+#     c(
+#       "O" = "Other",
+#       "R" = "Red",
+#       "W" = "White",
+#       "SW" = "Sparkling White"
+#     )
+#   ))
+
+# Switched to dplyr from plyr syntax
+
 wine_data <-
-  wine_data %>% dplyr::mutate(color = revalue(
-    wine_data$color,
-    c(
-      "O" = "Other",
-      "R" = "Red",
-      "W" = "White",
-      "SW" = "Sparkling White"
-    )
-  ))
+  wine_data %>% dplyr::mutate(color = recode(wine_data$color, O="Other", R="Red", W="White", SW="Sparkling White") )
+
+
 
 # Cleaning ----------------------------------------------------------------
 

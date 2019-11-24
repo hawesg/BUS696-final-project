@@ -2,9 +2,9 @@
 #                                                                              #
 # Purpose:       Jumping off point for the project                             #
 #                                                                              #
-# Author:        Garrett H.                                                    #
+# Author:        Garrett H, Bart C, Ricky L                                    #
 # Contact:       hawes102@mail.chapman.edu                                     #
-# Client:        Garrett H.                                                    #
+# Client:        Jonathan Hersh                                                #
 #                                                                              #
 # Code created:  2019-11-23                                                    #
 # Last updated:  2019-11-23                                                    #
@@ -29,16 +29,36 @@ source("code/libraries.R")
 ################################### Contants ###################################
 
 # Set fct_lump size for the various times that fct_lump is used.
+# FCT_LUMPS <-
+#   list(
+#     taster_name = 5,
+#     taster_twitter = 5,
+#     designation = 10,
+#     country = 10,
+#     variety = 10,
+#     variety.red = 5,
+#     variety.white = 5,
+#     variety.other = 5,
+#     province = 10
+#   )
+
+# These are all the levels with min 50 observations
+
 FCT_LUMPS <-
   list(
-    variety_color = 5,
-    taster_name = 1,
-    taster_twitter = 5,
-    designation = 10,
-    country = 10,
-    variety = 10,
-    province = 10
+    taster_name = 13,
+    taster_twitter = 13,
+    designation = 25,
+    country = 17,
+    variety = 109,
+    variety.red = 56,
+    variety.white = 45,
+    variety.other = 5,
+    province = 100,
+    winery = 166
   )
+
+
 
 # Ex: test4<-fct_lump(test, n=FCT_LUMPS["taster_name"]) or FCT_LUMPS$taster_name
 

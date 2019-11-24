@@ -1,4 +1,4 @@
-################################################################################
+###############################################################################-
 #                                                                              #
 # Purpose:       A general repository for plots                                #
 #                                                                              #
@@ -12,7 +12,7 @@
 #                                                                              #
 # Comment:       Check side menu to navigate                                   #
 #                                                                              #
-################################################################################
+###############################################################################-
 
 ################################ CHOROPLETH MAP ################################
 
@@ -37,7 +37,8 @@ wmap <-
     point_max = max(points, na.rm = TRUE),
     price_min = min(price, na.rm = TRUE),
     price_avg = mean(price, na.rm = TRUE),
-    price_max = max(price, na.rm = TRUE)
+    price_max = max(price, na.rm = TRUE),
+    count = n()
   ) %>%
   dplyr::select(
     c(
@@ -47,7 +48,8 @@ wmap <-
       "point_max",
       "price_min",
       "price_avg",
-      "price_max"
+      "price_max",
+      "count"
     )
   )
 # Create data frame with bounderies and values

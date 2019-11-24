@@ -43,9 +43,12 @@ source("code/libraries.R")
 # ? sqrt
 # + I(points^2)
 # rm(fwd_fit)
+# + I(sqrt(points))
+
+# dput(names(wine_train))
 fwd_fit <-
   regsubsets(
-    log2(price) ~ . + I(sqrt(points)),
+    log2(price) ~ .,
     data = wine_train %>% select(
       -ID,
       -country,
@@ -53,9 +56,10 @@ fwd_fit <-
       -taster_n_tweets_per,
       -taster_review_count_per,
       -title_word_count_per,
-      -taster_twitter_lump
+      -taster_twitter_lump,
+      -variety
     ),
-    nvmax = 24,
+    nvmax = 18,
     method = "forward"
   )
 

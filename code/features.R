@@ -64,11 +64,11 @@ wine_data <- wd_a_tl
 # names(title_tibble)
 # title_tibble <- title_tibble %>% mutate(title_has_accent = (t1 != t2))
 
-# TODO MAYBE AS NUMERIC
+# TODO MAYBE AS NUMERIC also combine the logic for the next two 
 
 wine_data <-
   wine_data %>% 
-  dplyr::mutate(title_has_accents = ( title != stringi::stri_trans_general(title, "Latin-ASCII") ) )
+  dplyr::mutate(title_has_accents = as.numeric( title != stringi::stri_trans_general(title, "Latin-ASCII") ) )
 
 # Title Sentiment Analysis and Word Count ---------------------------------
 
@@ -76,6 +76,8 @@ wine_data <-
   wine_data %>% dplyr::mutate(title_no_accents = stringi::stri_trans_general(title, "Latin-ASCII"))
 
 s <- sentiment_by(wine_data$title_no_accents)
+
+# TODO 
 
 #qplot(s$ave_sentiment, geom="histogram",binwidth=0.2,main="Wine Title Sentiment Histogram")
 
@@ -175,7 +177,8 @@ names(replacements) <- patterns
 #   dplyr::mutate(designation = as.factor(designation))
 
 designation_rp <- stringr::str_replace_all(wine_data$designation, replacements)
-wine_data$designation <- as.factor(designation_rp )
+
+wine_data$designation <- as.factor(designation_rp)
 
 # summary(wine_data)
 # 
@@ -202,12 +205,40 @@ wine_data$designation <- as.factor(designation_rp )
 # 
 # wine_data <- wd_a_des
 
+# FCT_LUMPS <-
+#   list(
+#     taster_name = 13,
+#     taster_twitter = 13,
+#     designation = 25,
+#     country = 17,
+#     variety = 109,
+#     variety.red = 56,
+#     variety.white = 45,
+#     province = 100,
+#     winery = 166
+#   )
+
+# Lump Factors ---------------------------------------------------------------
+
+wine_data <-
+  wine_data %>% 
+  dplyr::mutate(
+    taster_name_lump = fct_lump(taster_name, n = FCT_LUMPS$taster_name),
+    taster_twitter_lump = fct_lump(taster_twitter_handle, n = FCT_LUMPS$taster_twitter),
+    designation_lump = fct_lump(designation, n = FCT_LUMPS$designation),
+    country_lump = fct_lump(country, n = FCT_LUMPS$country),
+    variety_lump = fct_lump(variety, n = FCT_LUMPS$variety),
+    province_lump = fct_lump(province, n = FCT_LUMPS$province), 
+    color_lump = fct_lump(color, n = 2),
+    winery_lump = fct_lump(winery, n=FCT_LUMPS$winery)
+  )
+
 # Lump Varieties ----------------------------------------------------------
 
-.append_color_to_factor <- function(variety, color) {
-  variety = as.character(variety)
-  variety = paste(variety, color)
-  return(variety)
+.append_color_to_factor <- function(var, col) {
+  var = as.character(var)
+  var = paste(var, col)
+  return(var)
 }
 
 # head(table(wine_data$variety, wine_data$color_lump))
@@ -222,14 +253,29 @@ wine_data$designation <- as.factor(designation_rp )
 #     variety = 10,
 #     province = 10
 #   )
+# wine_data %>% dplyr::filter(color == "Other") %>% group_by(variety) %>%  summarise(count = n()) %>% View()
+
+
+
+# FCT_LUMPS <-
+#   list(
+#     taster_name = 13,
+#     taster_twitter = 13,
+#     designation = 25,
+#     country = 17,
+#     variety = 109,
+#     variety.red = 56,
+#     variety.white = 45,
+#     province = 100
+#   )
 
 red <-
   wine_data %>% dplyr::filter(color_lump == "Red") %>%
-  dplyr::mutate(variety_lump = fct_lump(variety, n = FCT_LUMPS$variety_color)) %>%
+  dplyr::mutate(variety_lump = fct_lump(variety, n = FCT_LUMPS$variety.red)) %>%
   dplyr::mutate(variety_lump = .append_color_to_factor(variety_lump, "(R)"))
 white <-
   wine_data %>% dplyr::filter(color_lump == "White") %>%
-  dplyr::mutate(variety_lump = fct_lump(variety, n = FCT_LUMPS$variety_color)) %>%
+  dplyr::mutate(variety_lump = fct_lump(variety, n = FCT_LUMPS$variety.white)) %>%
   dplyr::mutate(variety_lump = .append_color_to_factor(variety_lump, "(W)"))
 other <-
   wine_data %>% dplyr::filter(color_lump == "Other") %>%
@@ -253,17 +299,6 @@ wine_data <-
 # summary(red)
 # levels(white$variety_lump)
 
-# Lump Factors ---------------------------------------------------------------
-
-wine_data <-
-  wine_data %>% 
-  dplyr::mutate(
-    taster_name_lump = fct_lump(taster_name, n = FCT_LUMPS$taster_name),
-    taster_twitter_lump = fct_lump(taster_twitter_handle, n = FCT_LUMPS$taster_twitter),
-    designation_lump = fct_lump(designation, n = FCT_LUMPS$designation),
-    country_lump = fct_lump(country, n = FCT_LUMPS$country),
-    variety_lump = fct_lump(variety, n = FCT_LUMPS$variety)
-  )
 
 # glimpse(wine_data)
 # 
@@ -295,7 +330,47 @@ wine_data <- tibble::rowid_to_column(wine_data, "ID")
 
 # Drop unused point cat factors -------------------------------------------
 # setdiff(levels(wine_data$point_cat), wine_data$point_cat)
-fct_drop(wine_data$point_cat)
+# fct_drop(wine_data$point_cat)
+
+# Drop unused color factors -------------------------------------------
+# fct_drop(wine_data$color)
+
+wine_data <- wine_data %>% droplevels()
+
+# dput(names(wine_data%>%select_if(is.factor)))
+# 
+# 
+# 
+# nlevels(wine_data$country)
+# nlevels(wine_data$description)  
+# nlevels(wine_data$designation)  
+# nlevels(wine_data$province)  
+# nlevels(wine_data$region_1)  
+# nlevels(wine_data$region_2)  
+# nlevels(wine_data$winery)  
+# nlevels(wine_data$color)  
+# nlevels(wine_data$taster_gender)  
+# nlevels(wine_data$color_lump)  
+# nlevels(wine_data$province_lump) 
+# nlevels(wine_data$country_lump) 
+# nlevels(wine_data$point_cat)
+# nlevels(wine_data$variety_lump)
+# nlevels(wine_data$taster_name_lump) 
+# nlevels(wine_data$taster_twitter_lump)
+# nlevels(wine_data$designation_lump)
+# 
+# 
+# levels.names <- c("country", "description", "designation", "province", "region_1", 
+#                   "region_2", "winery", "color", "taster_gender", "color_lump", 
+#                   "province_lump", "country_lump", "point_cat", "variety_lump", 
+#                   "taster_name_lump", "taster_twitter_lump", "designation_lump")
+# 
+# levels.dl <- c(nlevels(wine_data_drop$country), nlevels(wine_data_drop$description), nlevels(wine_data_drop$designation), nlevels(wine_data_drop$province), nlevels(wine_data_drop$region_1), nlevels(wine_data_drop$region_2), nlevels(wine_data_drop$winery), nlevels(wine_data_drop$color), nlevels(wine_data_drop$taster_gender), nlevels(wine_data_drop$color_lump), nlevels(wine_data_drop$province_lump), nlevels(wine_data_drop$country_lump), nlevels(wine_data_drop$point_cat), nlevels(wine_data_drop$variety_lump), nlevels(wine_data_drop$taster_name_lump), nlevels(wine_data_drop$taster_twitter_lump), nlevels(wine_data_drop$designation_lump))
+# 
+# levels.wd <- c(nlevels(wine_data$country), nlevels(wine_data$description)  , nlevels(wine_data$designation)  , nlevels(wine_data$province)  , nlevels(wine_data$region_1)  , nlevels(wine_data$region_2)  , nlevels(wine_data$winery)  , nlevels(wine_data$color)  , nlevels(wine_data$taster_gender)  , nlevels(wine_data$color_lump)  , nlevels(wine_data$province_lump) , nlevels(wine_data$country_lump) , nlevels(wine_data$point_cat), nlevels(wine_data$variety_lump), nlevels(wine_data$taster_name_lump) , nlevels(wine_data$taster_twitter_lump), nlevels(wine_data$designation_lump))
+# 
+# levels.frame <- data.frame("column" = levels.names, "or" =levels.wd, "dl" = levels.dl)
+# View(levels.frame)
 
 # Get list of column names in vector form
 
@@ -307,7 +382,6 @@ fct_drop(wine_data$point_cat)
 # 
 # summary(wine_data)
 # 
-
 
 # Bart Mutate -------------------------------------------------------------
 .bart <- function(x){
@@ -325,7 +399,7 @@ wine_data_clean <-
     ID,
     price,
     country,
-    # variety,
+    variety,
     points,
     point_cat,
     title_length,
@@ -341,6 +415,7 @@ wine_data_clean <-
     color_lump,
     country_lump,
     province_lump,
+    winery_lump,
     title_word_count,
     title_sentement,
     taster_n_tweets_per,
