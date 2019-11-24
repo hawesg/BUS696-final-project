@@ -25,7 +25,7 @@ library("leaps")
 
 # load(here::here("data", "output", "clean_wine.RData"))
 
-
+load(here::here("data","output","clean_wine.RData"))
 
 ############################### Test/Train Setup ###############################
 
