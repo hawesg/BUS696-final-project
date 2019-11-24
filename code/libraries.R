@@ -1,0 +1,36 @@
+################################################################################
+#                                                                              #
+# Purpose:       Libraries used are stored here, you can include it or just u  #
+#                se it as a reference                                          #
+#                                                                              #
+# Author:        Garrett H.                                                    #
+# Contact:       hawes102@mail.chapman.edu                                     #
+# Client:        Garrett H.                                                    #
+#                                                                              #
+# Code created:  2019-11-23                                                    #
+# Last updated:  2019-11-23                                                    #
+# Source:        /Users/garretthawes/wine-project                              #
+#                                                                              #
+# Comment:       You don't need to load every package every time               #
+#                                                                              #
+################################################################################
+
+
+library("conflicted")
+library("ggmap")
+library("tidyverse")
+library("here")
+library("ggthemes")
+library("stringr")
+library("stringi")
+library("readxl")
+library("ggExtra")
+library("PerformanceAnalytics")
+library("GGally")
+library("qwraps2")
+library("plotROC")
+library('sentimentr')
+library('commentr')
+library('leaps')
+library("hexbin")
+library("svMisc")

@@ -1,6 +1,4 @@
-
-
-################################################################################
+###############################################################################-
 #                                                                              #
 # Purpose:       Forward and Backward Step Regression for selecting variables  #
 #                                                                              #
@@ -14,15 +12,37 @@
 #                                                                              #
 # Comment:       I have only started to play around with this some             #
 #                                                                              #
-################################################################################
+###############################################################################-
 
-# header_comment(
-#     'Forward and Backward Step Regression for selecting variables', # Purpose
-#     'I have only started to play around with this some'# Comment
-#   )
+
+###############################################################################-
+#                                                                              #
+#  Copy this stuff into the top of any script you are working on for modeling  #
+#                                                                              #
+###############################################################################-
+
+# rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
+
+load(here::here("data","output","clean_wine.RData"))
+
+if(!(exists("wine_train")&&exists("wine_train"))) {
+  load(here::here("data","output","wine_train.RData"))
+  load(here::here("data","output","wine_test.RData")) 
+}
+
+###############################################################################-
+
+################################## Libraries ###################################
+#                                                                              #
+#  Omit this if you want to just load them manually                            #
+#                                                                              #
+###############################################################################-
+#
+source("code/libraries.R")
+
 
 ############################## Forward Step Model ##############################
-? sqrt
+# ? sqrt
 # + I(points^2)
 # rm(fwd_fit)
 fwd_fit <-
@@ -63,8 +83,7 @@ bkwd_fit <-
 
 # Find linear dependencies
 
-\
-names(wine_train)
+# names(wine_train)
 
 reg.summary.fw <- summary(fwd_fit)
 
@@ -77,8 +96,10 @@ names(reg.summary.fw)
 
 
 reg.summary.fw$rsq
+
 # [1] 0.3921120 0.4209773 0.4395742 0.4530567 0.4681209 0.4762943 0.4828847 0.4882901 0.4928486 0.4969633 0.5006699 0.5034785 0.5064814 0.5091531 0.5111293
 # [16] 0.5134877 0.5156343 0.5175077 0.5192894 0.5207811 0.5216558 0.5225177 0.5233079 0.5239052
+
 reg.summary.bk$rsq
 # [1] 0.3921120 0.4173112 0.4367624 0.4532179 0.4643926 0.4687823 0.4767820 0.4833105 0.4887640 0.4923295 0.4953244 0.4964609 0.4977307 0.4995556 0.5028151
 # [16] 0.5064748 0.5087196 0.5107489 0.5138512 0.5164968 0.5190115 0.5200636 0.5209665 0.5229720

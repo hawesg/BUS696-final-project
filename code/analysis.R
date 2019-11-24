@@ -30,6 +30,7 @@ library("leaps")
 ############################### Test/Train Setup ###############################
 
 set.seed(1861)
+options(scipen = 50)
 train_idx <-
   sample(1:nrow(wine_data_clean), size = floor(nrow(wine_data_clean) * .75))
 wine_train <- wine_data_clean %>% slice(train_idx)
