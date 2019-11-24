@@ -15,6 +15,30 @@
 #                                                                              #
 ################################################################################
 
+###############################################################################-
+#                                                                              #
+#  Copy this stuff into the top of any script you are working on for modeling  #
+#                                                                              #
+###############################################################################-
+
+# rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
+
+load(here::here("data","output","clean_wine.RData"))
+
+if(!(exists("wine_train")&&exists("wine_train"))) {
+  load(here::here("data","output","wine_train.RData"))
+  load(here::here("data","output","wine_test.RData")) 
+}
+
+###############################################################################-
+
+################################## Libraries ###################################
+#                                                                              #
+#  Omit this if you want to just load them manually                            #
+#                                                                              #
+###############################################################################-
+#
+source("code/libraries.R")
 
 
 .sig <- function(column, keep_vars) {
