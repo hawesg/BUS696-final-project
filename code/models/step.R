@@ -37,6 +37,7 @@ if(!(exists("wine_train")&&exists("wine_train"))) {
 ###############################################################################-
 #
 source("code/libraries.R")
+library("leaps")
 
 
 ############################## Forward Step Model ##############################
@@ -44,7 +45,7 @@ source("code/libraries.R")
 # + I(points^2)
 # rm(fwd_fit)
 # + I(sqrt(points))
-
+names(wine_train)
 # dput(names(wine_train))
 fwd_fit <-
   regsubsets(
@@ -59,7 +60,6 @@ fwd_fit <-
       -taster_twitter_lump,
       -variety
     ),
-    nvmax = 18,
     method = "forward"
   )
 
@@ -73,13 +73,14 @@ bkwd_fit <-
     data = wine_train %>% select(
       -ID,
       -country,
-      -taster_avg_points,
-      -taster_n_tweets,
-      -taster_review_count,
-      -title_word_count,
-      -taster_twitter_lump
+      -taster_avg_points_per,
+      -taster_n_tweets_per,
+      -taster_review_count_per,
+      -title_word_count_per,
+      -taster_twitter_lump,
+      -variety
     ),
-    nvmax = 24,
+    nvmax = 18,
     method = "backward"
   )
 
@@ -106,7 +107,7 @@ reg.summary.bk$rsq
 # [1] 0.3921120 0.4173112 0.4367624 0.4532179 0.4643926 0.4687823 0.4767820 0.4833105 0.4887640 0.4923295 0.4953244 0.4964609 0.4977307 0.4995556 0.5028151
 # [16] 0.5064748 0.5087196 0.5107489 0.5138512 0.5164968 0.5190115 0.5200636 0.5209665 0.5229720
 
-line_comment("Plots")
+# line_comment("Plots")
 
 #################################### Plots #####################################
 
@@ -134,10 +135,10 @@ plot(reg.summary.bk$adjr2 ,
      xlab = "Number of Variables ",
      ylab = "Adjusted RSq",
      type = "l")
-# which.max(reg.summary.bk$adjr2)
+max.adjr2 <- which.max(reg.summary.bk$adjr2)
 points(
-  24,
-  reg.summary.bk$adjr2[24],
+  max.adjr2,
+  reg.summary.bk$adjr2[max.adjr2],
   col = "red",
   cex = 2,
   pch = 20
@@ -146,9 +147,9 @@ plot(reg.summary.bk$cp ,
      xlab = "Number of Variables ",
      ylab = "Cp",
      type = 'l')
-# which.min(reg.summary.bk$cp )
-points(24,
-       reg.summary.bk$cp [24],
+max.cp <- which.min(reg.summary.bk$cp )
+points(max.cp,
+       reg.summary.bk$cp [max.cp],
        col = "red",
        cex = 2,
        pch = 20)
@@ -156,9 +157,9 @@ plot(reg.summary.bk$bic ,
      xlab = "Number of Variables ",
      ylab = "BIC",
      type = 'l')
-# which.min(reg.summary.bk$bic )
-points(24,
-       reg.summary.bk$bic [24],
+max.bic <- which.min(reg.summary.bk$bic )
+points(max.bic,
+       reg.summary.bk$bic [max.bic],
        col = "red",
        cex = 2,
        pch = 20)
@@ -166,7 +167,7 @@ print(reg.summary.bk)
 view(reg.summary.bk)
 par(mfrow = c(1, 1))
 plot(bkwd_fit, scale = "bic")
-coef(bkwd_fit , 24)
+coef(bkwd_fit , max.bic)
 # (Intercept)                        points            point_catVery good          point_catOutstanding              variety_lumpRosé
 # -8.54014926                    0.13228942                   -0.26868907                   -0.27829891                   -0.33775411
 # variety_lumpOther          designation_lumpBrut       designation_lumpReserve designation_lumpSome Vineyard         designation_lumpOther
