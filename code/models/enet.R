@@ -47,9 +47,8 @@ source("code/libraries.R")
 # using length 100
 alpha_list <- seq(0, 1, len = 101)
 alpha_list
-which(0.47 %in% alpha_list)
 
-match(alpha_list,0.47)
+#match(alpha_list,0.47)
 
 library(glmnet)
 library(glmnetUtils)
@@ -64,8 +63,9 @@ enet_fit <- cva.glmnet(
     -taster_n_tweets,
     -taster_review_count,
     -title_word_count,
-    -taster_twitter_lump
-  )
+    -taster_twitter_lump,
+    -variety
+  )%>%sample_n(10000)
   ,
   alpha = alpha_list
 )
@@ -138,10 +138,11 @@ model <- train(
     -taster_n_tweets,
     -taster_review_count,
     -title_word_count,
-    -taster_twitter_lump
+    -taster_twitter_lump,
+    -variety
   ), method = "glmnet",
-  trControl = trainControl("cv", number = 10),
-  tuneLength = 10
+  trControl = trainControl("cv", number = 50),
+  tuneLength = 60
 )
 
 model$bestTune
