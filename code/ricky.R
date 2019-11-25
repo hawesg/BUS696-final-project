@@ -1,16 +1,16 @@
+#Source Libraries----
+
 library('partykit')
 library('rpart')
 library('rpart.plot')
 library('leaps')
 library('tidyverse')
 
-
-
-#Mutate Data For Price Categories
+#Mutate Data For Price Categories ----
 
 wine_data_clean_tree <-
-  wine_data_clean %>%  mutate (price_lump = cut(
-    wine_data_clean$price,
+  wine_train %>%  mutate (price_lump = cut(
+    wine_train$price,
     breaks = c(0, 4, 12, 50, 200, 750, 1000000),
     labels = c(
       "Budget ($(0-4)",
@@ -22,26 +22,22 @@ wine_data_clean_tree <-
     )
   ))
 
-#Play Around With This Model
+#Create R-Part Tree With Country Lump and Color Lump ----
 
 form <- as.formula(price_lump ~ country_lump + color_lump)
 tree.1 <-
   rpart(form, data = wine_data_clean_tree, control = rpart.control(minsplit =
                                                                      20, cp = 0))
-
 prp(tree.1)
 
-#Basic Price Model
+#Basic Decision Tree Price Model ----
 
 decision_tree5 <-
   ctree(price_lump ~ point_cat, data = wine_data_clean_tree)
 
-
-
 plot(decision_tree5, main = "Price Lump Vs Point_Cat")
 
-
-#RPart Model (Price Lump and Point Cat)
+#RPart Model (Price Lump and Point Cat) ----
 
 wine_data_mod_tree <- rpart(
   price_lump ~ point_cat,
@@ -66,7 +62,7 @@ print(wine_data_mod_tree)
 wine_data_mod_tree$cptable
 summary(wine_data_mod_tree)
 
-#Attempt at One with Country_Lump
+#Attempt at One with Country_Lump ----
 
 wine_data_mod_tree2 <- rpart(
   price_lump ~ country_lump,
@@ -88,35 +84,42 @@ rpart.plot(
   main = "Price Lump and Country Lump"
 )
 
-#Random Simple Trees
+#Random Simple Trees (Also Mutate Country to 5 Lump) ----
 
-wine_data_cleanc <-
-  wine_data_clean %>% mutate(country_lump2 = fct_lump(country, 5))
+wine_data_clean_treec <-
+  wine_train %>% mutate(country_lump2 = fct_lump(country, 5))
 
 decision_tree <- ctree(point_cat ~ color_lump,
-                       data = wine_data_clean)
+                       data = wine_train)
 
 
 decision_tree2 <- ctree(point_cat ~ taster_gender,
-                        data = wine_data_clean)
+                        data = wine_train)
 
 decision_tree3 <- ctree(point_cat ~ taster_name_lump,
-                        data = wine_data_clean)
+                        data = wine_train)
 
 decision_tree4 <- ctree(point_cat ~ country_lump2,
-                        data = wine_data_cleanc)
+                        data = wine_data_clean_treec)
+
+decision_tree5 <-
+  ctree(price_lump ~ point_cat, data = wine_data_clean_tree)
+
+decision_tree6 <-
+  ctree(price_lump ~ winery_lump, data = wine_data_clean_tree)
 
 plot(decision_tree)
-prp(decision_tree)
 plot(decision_tree2)
 plot(decision_tree3)
 plot(decision_tree4)
+plot(decision_tree5)
+plot(decision_tree6)
 
-#Forward Fit Model
+#Forward Fit Model ----
 
 fit_fwd <-
   regsubsets(
-    log(price) ~ country_lump + variety_lump + point_cat + title_length + title_has_accents + designation_lump + taster_gender + taster_twitter_lump + color_lump + taster_review_count + taster_n_tweets + title_sentement + title_word_count + taster_n_tweets_per + title_word_count_per + taster_review_count_per + taster_avg_points_per,
+    log(price) ~ country_lump + variety_lump + point_cat + title_length + title_has_accents + designation_lump + taster_gender + taster_twitter_lump + color_lump + taster_review_count + taster_n_tweets + title_sentement + title_word_count + taster_n_tweets_per + title_word_count_per + taster_review_count_per + taster_avg_points_per + winery_lump,
     data = wine_train,
     method = "forward",
     nvmax = 10
@@ -128,34 +131,34 @@ plot(fit_fwd, scale = "adjr2", main = "Forward Fit Model")
 coef(fit_fwd, 10)
 
 ols_from_fwd_fit <-
-  lm(log(price) ~ country + variety_lump + point_cat + taster_twitter_lump + color_lump + designation_lump,
-     data = wine_train)
+  lm(
+    log(price) ~ country_lump + variety_lump + point_cat + taster_twitter_lump + color_lump + designation_lump + taster_review_count + winery_lump,
+    data = wine_train
+  )
 
 summary(ols_from_fwd_fit)
 
+#Predictions and Resids (With Plots) ----
+
 preds <- predict(ols_from_fwd_fit)
 
-mod1_df <- data.frame(
-  preds = preds,
-  true = wine_train$price
-)
+mod1_df <- data.frame(preds = preds,
+                      true = wine_train$price)
 
-ggplot(mod1_df, aes(x = true, y = preds)) + geom_point(color = "purple") + 
-  geom_abline(color = "red", linetype = "dashed") 
+ggplot(mod1_df, aes(x = true, y = preds)) + geom_point(color = "purple") +
+  geom_abline(color = "red", linetype = "dashed")
 
-mod1_df <- data.frame(
-  preds = preds,
-  true = wine_train$price,
-  resids = ols_from_fwd_fit$residuals
-)
+mod1_df <- data.frame(preds = preds,
+                      true = wine_train$price,
+                      resids = ols_from_fwd_fit$residuals)
 
-ggplot(mod1_df, aes(x = exp(preds), y = exp(resids))) + geom_point(color = "purple")
+ggplot(mod1_df, aes(x = preds, y = expresids)) + geom_point(color = "purple")
 
-#Backward Fit Model
+#Backward Fit Model ----
 
 bkwd_fwd <-
   regsubsets(
-    log(price) ~ country_lump + variety_lump + point_cat + title_length + title_has_accents + designation_lump + taster_gender + taster_twitter_lump + color_lump + taster_review_count + taster_n_tweets + title_sentement + title_word_count,
+    log(price) ~ country_lump + variety_lump + point_cat + title_length + title_has_accents + designation_lump + taster_gender + taster_twitter_lump + color_lump + taster_review_count + taster_n_tweets + title_sentement + title_word_count + winery_lump,
     data = wine_train,
     method = "backward",
     nvmax = 10
@@ -168,46 +171,57 @@ coef(bkwd_fwd, 10)
 
 ols_from_bkwd_fit <-
   lm(
-    log(price) ~ country + variety_lump + point_cat + taster_twitter_lump + color_lump + taster_review_count,
+    log(price) ~ country_lump + variety_lump + point_cat + taster_twitter_lump + designation_lump + title_sentement,
     data = wine_train
   )
 
 summary(ols_from_bkwd_fit)
 
+#Predictions and Resids (W/Plots)----
+
 preds <- predict(ols_from_bkwd_fit)
 
-mod2_df <- data.frame(
-  preds = preds,
-  true = wine_train$price
-)
+mod2_df <- data.frame(pred = preds,
+                      true = wine_train$price)
 
-ggplot(mod2_df, aes(x = true, y = preds)) + geom_point(color = "purple") + 
-  geom_abline(color = "red", linetype = "dashed") 
+ggplot(mod2_df, aes(x = true, y = exp(preds))) + geom_point(color = "purple") +
+  geom_abline(color = "red", linetype = "dashed")
 
 mod2_df <- data.frame(
-  preds = preds,
-  true = wine_train$price,
-  resids = ols_from_bkwd_fit$residuals
+  pred = exp(preds),
+  actual = exp(wine_train$price),
+  resids = -exp(preds) + exp(wine_train$price)
 )
 
-ggplot(mod2_df, aes(x = exp(preds), y = resids)) + geom_point(color = "purple")
+mod3_df <- data.frame(pred = preds,
+                      actual = wine_train$price,
+                      resids = ols_from_bkwd_fit$residuals)
+
+ggplot(mod3_df, aes(x = pred, y = resids)) +
+  geom_point(color = "purple")
 
 
-
-#Mutate Variables to Fit Fwd Models
+#Mutate Variables to Fit Fwd Models----
 #Italy, France, Variety(Pinot Noir, Rose, Other), Point_Cat(Outstanding, Classic), designation(Brut), taster_twitter(@vboone), color(white)
 
-ols_from_fwd_fit_improved <- lm(price ~ country + variety_lump + designation_lump + point_cat + taster_twitter_lump + color_lump, data = wine_data_clean %>% 
-                                  mutate(country = fct_other(country, keep = c("France", "Italy") ),
-                                         point_cat = fct_other(point_cat, keep = c("Outstanding", "Classic") ),
-                                         designation_lump = fct_other(designation_lump, keep = c("Brut") ),
-                                         taster_twitter_lump = fct_other(taster_twitter_lump, keep = c("@vboone") ),
-                                         color_lump = fct_other(color_lump, keep = c("White") )) %>% 
-                                  mutate(county = fct_relevel(country, "Other"),
-                                         point_cat = fct_relevel(point_cat, "Other"),
-                                         designation_lump = fct_relevel(designation_lump, "Other"),
-                                         taster_twitter_lump = fct_relevel(taster_twitter_lump, "Other"),
-                                         color_lump = fct_relevel(color_lump, "Other")))
+ols_from_fwd_fit_improved <-
+  lm(
+    price ~ country + variety_lump + designation_lump + point_cat + taster_twitter_lump + color_lump,
+    data = wine_data_clean %>%
+      mutate(
+        country = fct_other(country, keep = c("France", "Italy")),
+        point_cat = fct_other(point_cat, keep = c("Outstanding", "Classic")),
+        designation_lump = fct_other(designation_lump, keep = c("Brut")),
+        taster_twitter_lump = fct_other(taster_twitter_lump, keep = c("@vboone")),
+        color_lump = fct_other(color_lump, keep = c("White"))
+      ) %>%
+      mutate(
+        county = fct_relevel(country, "Other"),
+        point_cat = fct_relevel(point_cat, "Other"),
+        designation_lump = fct_relevel(designation_lump, "Other"),
+        taster_twitter_lump = fct_relevel(taster_twitter_lump, "Other"),
+        color_lump = fct_relevel(color_lump, "Other")
+      )
+  )
 
 summary(ols_from_fwd_fit_improved)
-                             
