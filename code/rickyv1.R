@@ -105,8 +105,12 @@ decision_tree4 <- ctree(point_cat ~ country_lump2,
 decision_tree5 <-
   ctree(price_lump ~ point_cat, data = wine_data_clean_tree)
 
+<<<<<<< HEAD
 decision_tree6 <-
   ctree(price_lump ~ winery_lump, data = wine_data_clean_tree)
+=======
+  decision_tree6 <- ctree(price_lump ~ winery_lump, data = wine_data_clean_tree)
+>>>>>>> de9eaee04bc234a2147cf3bb1984fd9e2b88c161
 
 plot(decision_tree)
 plot(decision_tree2)
@@ -191,11 +195,25 @@ mod2_df <- data.frame(
   pred = exp(preds),
   actual = exp(wine_train$price),
   resids = -exp(preds) + exp(wine_train$price)
+  <<<<<<< HEAD
 )
 
 mod3_df <- data.frame(pred = preds,
                       actual = wine_train$price,
                       resids = ols_from_bkwd_fit$residuals)
+=======
+  )
+
+mod3_df <- data.frame(
+  pred = preds,
+  actual = wine_train$price,
+  resids = ols_from_bkwd_fit$residuals
+)
+
+ggplot(mod3_df, aes(x = pred, y = resids)) + 
+  geom_point(color = "purple")
+
+>>>>>>> de9eaee04bc234a2147cf3bb1984fd9e2b88c161
 
 ggplot(mod3_df, aes(x = pred, y = resids)) +
   geom_point(color = "purple")
