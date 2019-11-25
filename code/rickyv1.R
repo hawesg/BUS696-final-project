@@ -1,11 +1,15 @@
 #Source Libraries----
 
+install.packages('rcompanion')
+
 library('partykit')
 library('rpart')
 library('rpart.plot')
 library('leaps')
 library('tidyverse')
 library('caret')
+library('rcompanion')
+library('MASS')
 
 #Import Data----
 load(here::here("data", "output", "clean_wine.RData"))
@@ -232,6 +236,7 @@ ols_from_bkwd_fit <-
 
 summary(ols_from_bkwd_fit)
 
+
 #Predictions and Resids (W/Plots)----
 
 preds <- predict(ols_from_bkwd_fit)
@@ -263,27 +268,114 @@ ggplot(mod4_df, aes(x = pred, y = resids)) +
 
 RMSE(mod4_df$pred, wine_train$price)
 
-#Mutate Variables to Fit Fwd Models----
-#Italy, France, Variety(Pinot Noir, Rose, Other), Point_Cat(Outstanding, Classic), designation(Brut), taster_twitter(@vboone), color(white)
+#Tukey Experimentation----
 
-ols_from_fwd_fit_improved <-
-  lm(
-    price ~ country + variety_lump + designation_lump + point_cat + taster_twitter_lump + color_lump,
-    data = wine_data_clean %>%
-      mutate(
-        country = fct_other(country, keep = c("France", "Italy")),
-        point_cat = fct_other(point_cat, keep = c("Outstanding", "Classic")),
-        designation_lump = fct_other(designation_lump, keep = c("Brut")),
-        taster_twitter_lump = fct_other(taster_twitter_lump, keep = c("@vboone")),
-        color_lump = fct_other(color_lump, keep = c("White"))
-      ) %>%
-      mutate(
-        county = fct_relevel(country, "Other"),
-        point_cat = fct_relevel(point_cat, "Other"),
-        designation_lump = fct_relevel(designation_lump, "Other"),
-        taster_twitter_lump = fct_relevel(taster_twitter_lump, "Other"),
-        color_lump = fct_relevel(color_lump, "Other")
-      )
+sample <- sample(wine_train$price,size = 5000)
+Tukey <- transformTukey(sample)
+plotNormalHistogram(Tukey)
+
+#Forward Fit Model-W/Tukey ----
+
+fit_fwd_tukey <-
+  regsubsets(
+    -1 * price^(-.3) ~ country_lump +
+      variety_lump +
+      points +
+      title_length +
+      title_has_accents +
+      designation_lump +
+      taster_gender +
+      taster_twitter_lump +
+      #taster_name_lump +
+      #color_lump +
+      taster_review_count +
+      taster_n_tweets +
+      title_sentement +
+      title_word_count +
+      taster_avg_points +
+      winery_lump,
+    data = wine_train,
+    method = "forward",
+    nvmax = 10
   )
 
-summary(ols_from_fwd_fit_improved)
+summary(fit_fwd_tukey)
+
+plot(fit_fwd_tukey, scale = "adjr2", main = "Forward Fit Model")
+coef(fit_fwd_tukey, 10)
+
+ols_from_fwd_fit_tukey <-
+  lm(
+    -1 * price^(-.3) ~ country_lump + variety_lump + points + taster_twitter_lump + designation_lump,
+    data = wine_train
+  )
+
+summary(ols_from_fwd_fit_tukey)
+
+#Predictions----
+
+preds <- -predict(ols_from_fwd_fit_tukey)
+preds
+
+mod5_df <- data.frame(pred = preds,
+                      actual = wine_train$price)
+
+ggplot(mod5_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
+  geom_abline(color = "red", linetype = "dashed")
+
+mod5_df <- data.frame(pred = preds,
+                      actual = wine_train$price,
+                      resids = ols_from_fwd_fit_tukey$residuals)
+
+mod6_df <- data.frame(
+  pred = exp(preds),
+  actual = exp(wine_train$price),
+  resids = -exp(preds) + exp(wine_train$price)
+)
+
+
+ggplot(mod5_df, aes(x = pred, y = resids)) +
+  geom_point(color = "purple", alpha = 1/100)
+
+ggplot(mod6_df, aes(x = pred, y = resids)) +
+  geom_point(color = "purple")
+
+RMSE(mod5_df$pred, wine_train$price)
+
+#Backward Fit Model----
+
+bkwd_fwd_tukey <-
+  regsubsets(
+    -1 * price^(-.3) ~ country_lump +
+      variety_lump +
+      points +
+      title_length +
+      title_has_accents +
+      designation_lump +
+      taster_gender +
+      taster_twitter_lump +
+      #taster_name_lump +
+      #color_lump +
+      taster_review_count +
+      taster_n_tweets +
+      title_sentement +
+      title_word_count +
+      taster_avg_points +
+      winery_lump,
+    data = wine_train,
+    method = "backward",
+    nvmax = 10
+  )
+
+summary(bkwd_fwd_tukey)
+
+plot(bkwd_fwd_tukey, scale = "adjr2", main = "Backward Fit Model")
+coef(bkwd_fwd_tukey, 10)
+
+ols_from_bkwd_fit_tukey <-
+  lm(
+    -1 * price^(-.3) ~ country_lump + variety_lump + points + taster_twitter_lump + taster_review_count + designation_lump,
+    data = wine_train
+  )
+
+summary(ols_from_bkwd_fit_tukey)
