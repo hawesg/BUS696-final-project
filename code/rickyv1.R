@@ -5,6 +5,16 @@ library('rpart')
 library('rpart.plot')
 library('leaps')
 library('tidyverse')
+library('caret')
+
+#Import Data----
+load(here::here("data", "output", "clean_wine.RData"))
+set.seed(1861)
+options(scipen = 50)
+train_idx <-
+  sample(1:nrow(wine_data_clean), size = floor(nrow(wine_data_clean) * .75))
+wine_train <- wine_data_clean %>% slice(train_idx)
+wine_test <- wine_data_clean %>% slice(-train_idx)
 
 #Mutate Data For Price Categories ----
 
@@ -105,12 +115,12 @@ decision_tree4 <- ctree(point_cat ~ country_lump2,
 decision_tree5 <-
   ctree(price_lump ~ point_cat, data = wine_data_clean_tree)
 
-<<<<<<< HEAD
 decision_tree6 <-
   ctree(price_lump ~ winery_lump, data = wine_data_clean_tree)
-=======
-  decision_tree6 <- ctree(price_lump ~ winery_lump, data = wine_data_clean_tree)
->>>>>>> de9eaee04bc234a2147cf3bb1984fd9e2b88c161
+
+decision_tree6 <-
+  ctree(price_lump ~ winery_lump, data = wine_data_clean_tree)
+
 
 plot(decision_tree)
 plot(decision_tree2)
@@ -123,7 +133,22 @@ plot(decision_tree6)
 
 fit_fwd <-
   regsubsets(
-    log(price) ~ country_lump + variety_lump + point_cat + title_length + title_has_accents + designation_lump + taster_gender + taster_twitter_lump + color_lump + taster_review_count + taster_n_tweets + title_sentement + title_word_count + taster_n_tweets_per + title_word_count_per + taster_review_count_per + taster_avg_points_per + winery_lump,
+    log(price) ~ country_lump +
+      variety_lump +
+      points +
+      title_length +
+      title_has_accents +
+      designation_lump +
+      taster_gender +
+      taster_twitter_lump +
+      #taster_name_lump +
+      #color_lump +
+      taster_review_count +
+      taster_n_tweets +
+      title_sentement +
+      title_word_count +
+      taster_avg_points +
+      winery_lump,
     data = wine_train,
     method = "forward",
     nvmax = 10
@@ -136,7 +161,7 @@ coef(fit_fwd, 10)
 
 ols_from_fwd_fit <-
   lm(
-    log(price) ~ country_lump + variety_lump + point_cat + taster_twitter_lump + color_lump + designation_lump + taster_review_count + winery_lump,
+    log(price) ~ country_lump + variety_lump + points + taster_twitter_lump + designation_lump,
     data = wine_train
   )
 
@@ -146,23 +171,49 @@ summary(ols_from_fwd_fit)
 
 preds <- predict(ols_from_fwd_fit)
 
-mod1_df <- data.frame(preds = preds,
-                      true = wine_train$price)
+mod1_df <- data.frame(pred = preds,
+                      actual = wine_train$price)
 
-ggplot(mod1_df, aes(x = true, y = preds)) + geom_point(color = "purple") +
+ggplot(mod1_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
   geom_abline(color = "red", linetype = "dashed")
 
-mod1_df <- data.frame(preds = preds,
-                      true = wine_train$price,
+mod1_df <- data.frame(pred = preds,
+                      actual = wine_train$price,
                       resids = ols_from_fwd_fit$residuals)
 
-ggplot(mod1_df, aes(x = preds, y = expresids)) + geom_point(color = "purple")
+mod2_df <- data.frame(
+  pred = exp(preds),
+  actual = exp(wine_train$price),
+  resids = -exp(preds) + exp(wine_train$price)
+  
+)
+
+ggplot(mod1_df, aes(x = preds, y = resids)) + geom_point(color = "purple")
+
+ggplot(mod2_df, aes(x = pred, y = resids)) + geom_point(color = "purple")
+
+RMSE(mod2_df$pred, wine_train$price)
 
 #Backward Fit Model ----
 
 bkwd_fwd <-
   regsubsets(
-    log(price) ~ country_lump + variety_lump + point_cat + title_length + title_has_accents + designation_lump + taster_gender + taster_twitter_lump + color_lump + taster_review_count + taster_n_tweets + title_sentement + title_word_count + winery_lump,
+    log(price) ~ country_lump +
+      variety_lump +
+      points +
+      title_length +
+      title_has_accents +
+      designation_lump +
+      taster_gender +
+      taster_twitter_lump +
+      #taster_name_lump +
+      #color_lump +
+      taster_review_count +
+      taster_n_tweets +
+      title_sentement +
+      title_word_count +
+      taster_avg_points +
+      winery_lump,
     data = wine_train,
     method = "backward",
     nvmax = 10
@@ -175,7 +226,7 @@ coef(bkwd_fwd, 10)
 
 ols_from_bkwd_fit <-
   lm(
-    log(price) ~ country_lump + variety_lump + point_cat + taster_twitter_lump + designation_lump + title_sentement,
+    log(price) ~ country_lump + variety_lump + points + taster_twitter_lump + taster_review_count + designation_lump,
     data = wine_train
   )
 
@@ -185,39 +236,32 @@ summary(ols_from_bkwd_fit)
 
 preds <- predict(ols_from_bkwd_fit)
 
-mod2_df <- data.frame(pred = preds,
-                      true = wine_train$price)
+mod3_df <- data.frame(pred = preds,
+                      actual = wine_train$price)
 
-ggplot(mod2_df, aes(x = true, y = exp(preds))) + geom_point(color = "purple") +
+ggplot(mod3_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
   geom_abline(color = "red", linetype = "dashed")
-
-mod2_df <- data.frame(
-  pred = exp(preds),
-  actual = exp(wine_train$price),
-  resids = -exp(preds) + exp(wine_train$price)
-  <<<<<<< HEAD
-)
 
 mod3_df <- data.frame(pred = preds,
                       actual = wine_train$price,
                       resids = ols_from_bkwd_fit$residuals)
-=======
-  )
 
-mod3_df <- data.frame(
-  pred = preds,
-  actual = wine_train$price,
-  resids = ols_from_bkwd_fit$residuals
+mod4_df <- data.frame(
+  pred = exp(preds),
+  actual = exp(wine_train$price),
+  resids = -exp(preds) + exp(wine_train$price)
+  
 )
 
-ggplot(mod3_df, aes(x = pred, y = resids)) + 
-  geom_point(color = "purple")
-
->>>>>>> de9eaee04bc234a2147cf3bb1984fd9e2b88c161
 
 ggplot(mod3_df, aes(x = pred, y = resids)) +
   geom_point(color = "purple")
 
+
+ggplot(mod4_df, aes(x = pred, y = resids)) +
+  geom_point(color = "purple")
+
+RMSE(mod4_df$pred, wine_train$price)
 
 #Mutate Variables to Fit Fwd Models----
 #Italy, France, Variety(Pinot Noir, Rose, Other), Point_Cat(Outstanding, Classic), designation(Brut), taster_twitter(@vboone), color(white)
