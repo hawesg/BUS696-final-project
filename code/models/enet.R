@@ -152,6 +152,9 @@ model <- train(
 model$bestTune
 coef(model$finalModel, model$bestTune$lambda)
 
+
+plot_min_depth_distribution
+
 # Make predictions on the test data
 x.train <- model.matrix(log(price) ~., wine_train)[,-1]
 predictions <- model %>% predict(wine_train)

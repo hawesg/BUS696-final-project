@@ -20,7 +20,6 @@
 ################################### Clean up ###################################
 
 rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
-gc()
 
 ################################## Libraries ###################################
 
@@ -65,10 +64,12 @@ source("code/features.R")
 
 ################################### Clean up ###################################
 
-# TODO Look up how to just erase all the variables other than wine_data_clean
-save(wine_data_clean, file = here::here("data","output","clean_wine.RData"))
-rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
-load(here::here("data","output","clean_wine.RData"))
+# will clear all objects includes hidden objects other than wine_data_clean as well 
+# as save a fresh copy
+
+
+rm(list=setdiff(ls(), "wine_data_clean"))
+# load(here::here("data","output","clean_wine.RData"))
 
 # ---- analysis ----
 # Step Three: Analyzing data for report:

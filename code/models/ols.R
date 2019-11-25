@@ -23,9 +23,9 @@
 
 # rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
 
-if(!(exists("wine_train")&&exists("wine_train"))) {
-  load(here::here("data","output","wine_train.RData"))
-  load(here::here("data","output","wine_test.RData")) 
+if (!(exists("wine_train") && exists("wine_train"))) {
+  load(here::here("data", "output", "wine_train.RData"))
+  load(here::here("data", "output", "wine_test.RData"))
 }
 
 ###############################################################################-
@@ -43,6 +43,9 @@ source("code/libraries.R")
   return(fct_relevel(fct_other(column, keep = keep_vars), "Other"))
 }
 m1 <- lm(log(price) ~ points, data = wine_train)
+summary(m1)
+
+m_test <- lm(log(price) ~ points, data = wine_train)
 summary(m1)
 
 # Call:
@@ -147,11 +150,34 @@ summary(m4)
 
 m5 <-
   lm(
-    log(price) ~ points + .sig(country_lump, c("Italy", "France")) + .sig(variety_lump, c("Pinot Noir")) + fct_relevel(color_lump, "Other"),
+    log(price) ~ points + .sig(country_lump, c("Italy", "France")) + 
+      .sig(variety_lump, c("Pinot Noir")) + 
+      fct_relevel(color_lump, "Other"),
     data = wine_train
   )
 summary(m5)
 
+
+m6 <-
+  lm(
+    log(price) ~ points + country_lump + 
+     variety_lump + 
+      color_lump,
+    data = wine_train
+  )
+summary(m6)
+
+m7 <-
+  lm(
+    log(price) ~ points + country_lump + 
+      variety_lump + 
+      color_lump,
+    data = wine_train
+  )
+summary(m7)
+
+
+str(wine_train)
 # Call:
 #   lm(formula = log(price) ~ points + .sig(country_lump, c("Italy",
 #                                                           "France")) + .sig(variety_lump, c("Pinot Noir")) + fct_relevel(color_lump,
@@ -176,5 +202,15 @@ summary(m5)
 # Residual standard error: 0.495 on 91493 degrees of freedom
 # Multiple R-squared:  0.4394,	Adjusted R-squared:  0.4394
 # F-statistic: 1.195e+04 on 6 and 91493 DF,  p-value: < 2.2e-16
+
+
+########################## Fucking around with caret ###########################
+library("skimr")
+skim(wine_data_clean)
+xray::anomalies(wine_data_clean)
+
+log_price <- log(wine_data_clean$price)
+skim(log_price)
+qplot(log_price)
 
 

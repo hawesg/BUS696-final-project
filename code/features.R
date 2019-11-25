@@ -404,6 +404,7 @@ wine_data <- wine_data %>% droplevels()
 # summary(wine_data)
 # 
 
+# TODO does this help?
 # Bart Mutate -------------------------------------------------------------
 .bart <- function(x){
   return((x - median(x))/diff(range(x)))
@@ -412,6 +413,8 @@ wine_data <- wine_data %>% dplyr::mutate( taster_n_tweets_per = .bart(taster_n_t
                                           title_word_count_per = .bart(title_word_count),
                                           taster_review_count_per = .bart(taster_review_count),
                                           taster_avg_points_per = .bart(taster_avg_points) )
+
+wine_data <- wine_data %>% dplyr::mutate( variety = as_factor(variety))
                                
 # TODO Add on to this
 wine_data_clean <-

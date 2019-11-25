@@ -22,7 +22,7 @@
 #                                                                              #
 ###############################################################################-
 
-rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
+#rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
 
 if(!(exists("wine_train")&&exists("wine_train"))) {
   load(here::here("data","output","wine_train.RData"))
