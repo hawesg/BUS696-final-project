@@ -1,6 +1,10 @@
 # Load most commonly used libraries
 
-# need to include: ElemStatLearn + partykit + randomForest + randomForestExplainer
+
+# libarries to include note -----------------------------------------------
+
+
+# need to include: ElemStatLearn + partykit + randomForest + randomForestExplainer + analogue
 
 
 list.of.packages <- c("tidyverse", "plotly", "here", "ggthemes", "stringr", "plyr", "stringi", "readxl",".")
@@ -9,12 +13,8 @@ if(length(new.packages)) install.packages(new.packages)
 
 rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
 
-#install.packages("devtools")
-#install.packages("conflicted")
 
 library("conflicted")
-#library("ggmap")
-#library("plyr")
 library("tidyverse")
 library("here")
 library("ggthemes")
@@ -23,79 +23,63 @@ library("stringi")
 library("readxl")
 library("ggExtra")
 library("PerformanceAnalytics")
-#library("GGally")
-#library("qwraps2")
 library('sentimentr')
-
 library('ElemStatLearn')
 library('partykit')
 library('magrittr')
-
 library('randomForest')
 library('randomForestExplainer')
+library('analogue')
 
-# ---- constants ----
+conflict_prefer("mutate", "dplyr")
 
 
-# Set fct_lump size for the various times that fct_lump is used.
-# FCT_LUMPS <-
-#   c(
-#     variery_color = 5,
-#     taster_name = 1,
-#     taster_twitter = 5,
-#     designation = 10,
-#     country = 10,
-#     variety = 10
-#   )
-# test4<-fct_lump(test, n=FCT_LUMPS["taster_name"])
-
-VARIETY_PER_COLOR_LUMP <- 5
-TASTER_NAME_LUMP <- 5
-TASTER_TWITTER_LUMP <- 5
-DESIGNATION_LUMP <- 10
-COUNTRY_LUMP <- 10
-VARIETY_LUMP <- 10
-
+# Load data 100 (could use other) -----------------------------------------
 
 rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
-load(here::here("data","output","clean_wine.RData"))
+load(here::here("data","output//more_than_100_obs","clean_wine.RData"))
 
 #wine_data_clean <- wine_data
 
 names(wine_data_clean)
 
 
+# Seeding, not needed with Garrett's code ---------------------------------
+
+
 set.seed(1861)
+
+# Train sample only at 0.10 for testing -----------------------------------
 trainSize <- 0.10
 train_idx <- sample(1:nrow(wine_data_clean), size = floor(nrow(wine_data_clean) * trainSize))
 
+
+# Bootstrap: Selecting Specific Columns that work  -----------------------
+
 wine_data_clean_rm_model <- wine_data_clean %>%
+  #mutate(price=log(price)) %>% 
   select (
     price,
     points,
-    point_cat,   
-    variety_lump,  
-    country_lump,
-    province_lump,   
-    taster_name_lump,
-    # taster_twitter_lump,  #not helpful
-    taster_gender,
-    #taster_avg_points,
-    taster_avg_points_per,   # no added value
-    #taster_review_count,
-    taster_review_count_per,  # no added value
-    #taster_n_tweets,
-    taster_n_tweets_per,
-    designation_lump,
-    color_lump,
-    #title_word_count,
-    # title_word_count_per, # no added value
-    #title_sentement # no added value
+    #points.category,  # cannot use it along with points
+    country,
+    # province, #breaks bootstrap
+    color,
+    #variety,  #breaks bootstrap
+    winery,
+    taster.gender, 
+    taster.avg_points,
+    #variety_and_color,  #breaks bootstrap
+    title.n_words,
+    title.n_chars,
+    title.sentement,
+    title.has_accents
   ) 
 
 Model_train <- wine_data_clean_rm_model %>% slice(train_idx)
 Model_test <- wine_data_clean_rm_model %>% slice(-train_idx)
 
+names(Model_train)
 
 # remove n/a values
 Model_train <- Model_train[apply(is.na(Model_train),1,sum)==0,]
@@ -106,41 +90,49 @@ Model_train_preds <- Model_train %>% rownames_to_column() %>%
   mutate(rowname = as.numeric(rowname))
 
 # bagging - bootstrapp aggregation
-B <- 100      # number of bootstrap samples
-num_b <- 250  # sample size of each bootstrap
+B <- 30      # number of bootstrap samples
+num_b <- 1000  # sample size of each bootstrap
 boot_mods <- list() # store our bagging models
 for(i in 1:B){
   boot_idx <- sample(1:nrow(Model_train), 
                      size = num_b,
                      replace = FALSE)
   # fit a tree on each bootstrap sample
-  boot_tree <- ctree(price ~ ., 
-                     data = Model_train %>% 
-                       slice(boot_idx)) 
+  data_slice = Model_train %>%     slice(boot_idx)
+  
+  # Log(price) bootstrap model ----
+  boot_tree <- ctree(log(price) ~ ., 
+                     data = data_slice) 
   # store bootstraped model
   boot_mods[[i]] <- boot_tree
   # generate predictions for that bootstrap model
   preds_boot <- data.frame(
     preds_boot = predict(boot_tree),
+    #resid =  data_slice$price - predict(boot_tree),
     rowname = boot_idx 
   )  
+  
   
   # rename prediction to indicate which boot iteration it came from
   names(preds_boot)[1] <- paste("preds_boot",i,sep = "")
   
   # merge predictions to Model_train dataset
   Model_train_preds <- left_join(x = Model_train_preds, y = preds_boot,
-                              by = "rowname")
+                                 by = "rowname")
 }
 
-
-## examine some of the individual models
+names(Model_train_preds)
+## Examine individual models, will need to spend more time here ----
 plot(boot_mods[[1]])
-
+plot(boot_mods[[2]])
+plot(boot_mods[[3]])
+plot(boot_mods[[4]])
+plot(boot_mods[[5]])
+plot(boot_mods[[6]])
+plot(boot_mods[[7]])
+plot(boot_mods[[8]])
+plot(boot_mods[[9]])
 plot(boot_mods[[10]])
-
-plot(boot_mods[[20]])
-
 
 # must convert factor into numeric, note that class "0" = 1, 
 # and class "1" = 2, so we need to subtract 1 from every column
@@ -149,60 +141,104 @@ Model_train_preds %<>% mutate_if(is.factor, as.numeric) %>%
 
 # calculate mean over all the bootstrap predictions
 Model_train_preds %<>% mutate(preds_bag = 
-                             select(., preds_boot1:preds_boot100) %>% 
-                             rowMeans(na.rm = TRUE))
+                                select(., preds_boot1:preds_boot30) %>% 
+                                rowMeans(na.rm = TRUE))
 
 # congratulations! You have bagged your first model!
+
+# plot bagged model -------------------------------------------------------
 ggplot(Model_train_preds, aes(x = preds_bag)) + geom_histogram()
 
+#residuals(Model_train_preds, which = c("model", "bootstrap"))
 
+#############################################+
+# Random Forest -----------------------------------------------------------
+#############################################+
 
-#---------------------------------------------------------------
-# Random Forests
-#---------------------------------------------------------------
+# rf_fit <- randomForest(price ~ . ,
+#                        data = Model_train,
+#                        type = classification,
+#                        mtry = 3,
+#                        ntree = 1000,
+#                        importance = TRUE,
+#                        localImp = TRUE)
 
-rf_fit <- randomForest(price ~ . ,
+rf_fit <- randomForest(log(price) ~ . ,
                        data = Model_train,
-                       type = classification,
-                       mtry = 3,
-                       ntree = 1000,
                        importance = TRUE,
                        localImp = TRUE)
 
+# RForest model review ------
 rf_fit
 
-#---------------------------------------------------------------
-# Explaining Random Forests
-#---------------------------------------------------------------
+# Gini Coefficient --------------------------------------------------------
+rf_fit$importance
+# Plot variable vs IncNodePurity ----
+# IncNodePurity - Total decrease in node impurities from splitting on the variable, averaged over all trees. Impurity is measured by residual sum of squares. Impurity is calculated only at node at which that variable is used for that split. Impurity before that node, and impurity after the split has occurred.
+# here points and then title.n_chars matter most
+varImpPlot(rf_fit,type=2)
+
+#############################################+
+# Explaining Random Forests ----
+#############################################+
+
 # install.packages('randomForestExplainer')
 library(randomForestExplainer)
-# plot min
-plot_min_depth_distribution(rf_fit)
-
-plot_multi_way_importance(rf_fit)
-
-plot_multi_way_importance(rf_fit, x_measure = "mse_increase",
-                          y_measure = "node_purity_increase")
+# # plot min
+# plot_min_depth_distribution(rf_fit)
 # 
-plot_predict_interaction(rf_fit, Model_train, "taster_n_tweets_per", "points")
+# plot_multi_way_importance(rf_fit)
+# 
+# plot_multi_way_importance(rf_fit, x_measure = "mse_increase",
+#                           y_measure = "node_purity_increase")
+# # 
+# plot_predict_interaction(rf_fit, Model_train, "taster.avg_points", "points")
+# 
+# # relations between measure of importance
+# plot_importance_ggpairs(rf_fit)
 
-# explanation file 
+# RForest Explanation file render ---- 
 explain_forest(rf_fit, interactions = TRUE, data = Model_train)
 
-# relations between measure of importance
-plot_importance_ggpairs(rf_fit)
 
-#---------------------------------------------------------------
-# Tuning Random Forests
-#---------------------------------------------------------------
+# prediction
+# pred = predict(rf_fit, newdata=Model_test)
+# summary(pred)
+
+### RForest predictions and residuals -----
+preds_trainset<- data.frame (
+  scores_rf = predict(rf_fit,newdata=Model_train),
+  residuals = Model_train$price - exp(predict(rf_fit,newdata=Model_train)),
+  Model_train
+) 
+summary (preds_trainset$residuals)
+
+# Plot these residuals maybe? ---------------------------------------------
+#plot(preds_testset)
+
+## test set
+preds_testset<- data.frame (
+  scores_rf = predict(rf_fit,newdata=Model_test),
+  residuals = Model_test$price - exp(predict(rf_fit,newdata=Model_test)),
+  Model_test
+) 
+summary (preds_testset$residuals)
+# Plot these residuals maybe? ---------------------------------------------
+#plot(preds_testset)
+
+#---------------------------------------------------------------+
+# Tuning Random Forests - not too sure what to do here ----
+#---------------------------------------------------------------+
+
 rf_mods <- list()
 oob_err <- NULL
 test_err <- NULL
 for(mtry in 1:9){
   rf_fit <- randomForest(price ~ ., 
                          data = Model_train,
-                         mtry = mtry,
-                         ntree = 500)
+                         mtry = mtry #,
+                         #ntree = 500
+                         )
   oob_err[mtry] <- rf_fit$err.rate[500]
   
   cat(mtry," ")
