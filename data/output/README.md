@@ -74,7 +74,7 @@ There are a series of different versions that can be found in the following fold
 - **taster.avg_points** -
 - **taster.n_reviews** -
 - **taster.n_tweets** -
-- **taster.n_followers ** -
+- **taster.n_followers** -
 
 You need to select out either `variety` + `color` or `variety_color` and also either `taster.name` or `taster.twitter_handle`
 
