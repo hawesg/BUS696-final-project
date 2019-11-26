@@ -8,7 +8,7 @@ There are a series of different versions that can be found in the following fold
 - more_than_100_obs
 - more_than_250_obs
 
-##Inside of each of those folders you will find 5 files
+## Inside of each of those folders you will find 5 files
 
 - clean_wine.RData - This is the fully processed data set including country.map which is for the maps, this data set should be used for any plots.
 - wine_train.RData - Training set where variables not altered re barts suggestion (ie values are normal not compared to the median)
