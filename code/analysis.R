@@ -29,6 +29,18 @@ load(here::here("data","output","clean_wine.RData"))
 
 ############################### Test/Train Setup ###############################
 
+wine_data_non_bart <-
+  subset(wine_data_clean, select=-c(title.n_words_per,
+                        taster.avg_points_per,
+                        taster.n_reviews_per,
+                        taster.n_tweets_per,
+                        taster.n_followers_per))
+wine_data_bart <- wine_data_non_bart %>% mutate(title.n_words = wine_data_clean$title.n_words_per,
+                                                 taster.avg_points = wine_data_clean$taster.avg_points_per,
+                                                 taster.n_reviews = wine_data_clean$taster.n_reviews_per,
+                                                 taster.n_tweets = wine_data_clean$taster.n_tweets_per,
+                                                 taster.n_followers = wine_data_clean$taster.n_followers_per)
+wine_data_clean <- wine_data_bart
 set.seed(1861)
 options(scipen = 50)
 train_idx <-
@@ -36,8 +48,8 @@ train_idx <-
 wine_train <- wine_data_clean %>% slice(train_idx)
 wine_test <- wine_data_clean %>% slice(-train_idx)
 
-# save(wine_train, file = here::here("data","output","wine_train.RData"))
-# save(wine_test, file = here::here("data","output","wine_test.RData"))
+save(wine_train, file = here::here("data","output","wine_train.RData"))
+save(wine_test, file = here::here("data","output","wine_test.RData"))
 
 
 #################################### Models ####################################

@@ -165,7 +165,6 @@ wine_data <-
     taster_name = as.character(taster_name),
     title = as.character(title),
     color_lump = fct_other(color, keep=c("Red", "White")),
-    province_lump = fct_lump(wine_data$province, n = FCT_LUMPS$province),
     country_lump = fct_lump(wine_data$country, n = FCT_LUMPS$country)
   ) %>%
   dplyr::filter (country != "" &

@@ -149,7 +149,7 @@ Some differences between using remark.js (left) and using **xaringan** (right):
 
 .pull-left[
 ```{r}
-x <- 223 + test
+x <- 223 
 ```
 
 ]
@@ -238,6 +238,8 @@ See the next page for two HTML widgets.
 library(leaflet)
 leaflet() %>% addTiles() %>% setView(-93.65, 42.0285, zoom = 17)
 ```
+
+???
 
 ---
 
