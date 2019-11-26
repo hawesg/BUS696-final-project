@@ -78,7 +78,7 @@ There are a series of different versions that can be found in the following fold
 
 You need to select out either `variety` + `color` or `variety_color` and also either `taster.name` or `taster.twitter_handle`
 
-You can alter the load calls like this 
+### You can alter the load calls like this 
 `load(here::here("data","output","limited_factors","wine_train.RData"))`
 `load(here::here("data","output","limited_factors","wine_test.RData"))`
 or 
@@ -87,7 +87,7 @@ or
 
 replacing `limited_factors` with the one you want from above listed folders
 
-clean data set can be loaded with 
+### Clean data set can be loaded with 
 
 `load(here::here("data","output","limited_factors","clean_wine.RData"))` 
 
