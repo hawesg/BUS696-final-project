@@ -37,56 +37,21 @@ conflict_prefer("mutate", "dplyr")
 # Load data 100 (could use other) -----------------------------------------
 
 rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
-load(here::here("data","output//more_than_100_obs","clean_wine.RData"))
 
-#wine_data_clean <- wine_data
-
-names(wine_data_clean)
-
-
-# Seeding, not needed with Garrett's code ---------------------------------
-
-
-set.seed(1861)
-
-# Train sample only at 0.10 for testing -----------------------------------
-trainSize <- 0.10
-train_idx <- sample(1:nrow(wine_data_clean), size = floor(nrow(wine_data_clean) * trainSize))
+##
+# Load Model_train / Model_test ----
+load(here::here("data","output","limited_factors","wine_train.RData"))
+load(here::here("data","output","limited_factors","wine_test.RData"))
+names(wine_train)
+names(wine_test)
 
 
-# Bootstrap: Selecting Specific Columns that work  -----------------------
-
-wine_data_clean_rm_model <- wine_data_clean %>%
-  #mutate(price=log(price)) %>% 
-  select (
-    price,
-    points,
-    #points.category,  # cannot use it along with points
-    country,
-    # province, #breaks bootstrap
-    color,
-    #variety,  #breaks bootstrap
-    winery,
-    taster.gender, 
-    taster.avg_points,
-    #variety_and_color,  #breaks bootstrap
-    title.n_words,
-    title.n_chars,
-    title.sentement,
-    title.has_accents
-  ) 
-
-Model_train <- wine_data_clean_rm_model %>% slice(train_idx)
-Model_test <- wine_data_clean_rm_model %>% slice(-train_idx)
-
-names(Model_train)
-
-# remove n/a values
-Model_train <- Model_train[apply(is.na(Model_train),1,sum)==0,]
-Model_test <- Model_test[apply(is.na(Model_test),1,sum)==0,]
+# Might have to limit wine_train size ------------------------------------------
+wine_train <- wine_train[apply(is.na(wine_train),1,sum)==0,]  # %>% sample_n(8000)
+wine_test <- wine_test[apply(is.na(wine_test),1,sum)==0,] # %>% sample_n(8000)
 
 # store rownames as columns
-Model_train_preds <- Model_train %>% rownames_to_column() %>% 
+wine_train_preds <- wine_train %>% rownames_to_column() %>% 
   mutate(rowname = as.numeric(rowname))
 
 # bagging - bootstrapp aggregation
@@ -94,15 +59,32 @@ B <- 30      # number of bootstrap samples
 num_b <- 1000  # sample size of each bootstrap
 boot_mods <- list() # store our bagging models
 for(i in 1:B){
-  boot_idx <- sample(1:nrow(Model_train), 
+  boot_idx <- sample(1:nrow(wine_train), 
                      size = num_b,
                      replace = FALSE)
   # fit a tree on each bootstrap sample
-  data_slice = Model_train %>%     slice(boot_idx)
+  data_slice = wine_train %>%     slice(boot_idx)
   
   # Log(price) bootstrap model ----
   boot_tree <- ctree(log(price) ~ ., 
-                     data = data_slice) 
+                     data = data_slice %>% select (
+                         price,
+                         points,
+                         #points.category,  # cannot use it along with points
+                         country,
+                         # province, #breaks bootstrap
+                         color,
+                         #variety,  #breaks bootstrap
+                         winery,
+                         taster.gender, 
+                         taster.avg_points,
+                         #variety_and_color,  #breaks bootstrap
+                         title.n_words,
+                         title.n_chars,
+                         title.sentement,
+                         title.has_accents
+                       ) 
+                     ) 
   # store bootstraped model
   boot_mods[[i]] <- boot_tree
   # generate predictions for that bootstrap model
@@ -116,12 +98,12 @@ for(i in 1:B){
   # rename prediction to indicate which boot iteration it came from
   names(preds_boot)[1] <- paste("preds_boot",i,sep = "")
   
-  # merge predictions to Model_train dataset
-  Model_train_preds <- left_join(x = Model_train_preds, y = preds_boot,
+  # merge predictions to wine_train dataset
+  wine_train_preds <- left_join(x = wine_train_preds, y = preds_boot,
                                  by = "rowname")
 }
 
-names(Model_train_preds)
+names(wine_train_preds)
 ## Examine individual models, will need to spend more time here ----
 plot(boot_mods[[1]])
 plot(boot_mods[[2]])
@@ -136,27 +118,27 @@ plot(boot_mods[[10]])
 
 # must convert factor into numeric, note that class "0" = 1, 
 # and class "1" = 2, so we need to subtract 1 from every column
-Model_train_preds %<>% mutate_if(is.factor, as.numeric) %>% 
+wine_train_preds %<>% mutate_if(is.factor, as.numeric) %>% 
   mutate_all(function(x){x - 1})
 
 # calculate mean over all the bootstrap predictions
-Model_train_preds %<>% mutate(preds_bag = 
+wine_train_preds %<>% mutate(preds_bag = 
                                 select(., preds_boot1:preds_boot30) %>% 
                                 rowMeans(na.rm = TRUE))
 
 # congratulations! You have bagged your first model!
 
 # plot bagged model -------------------------------------------------------
-ggplot(Model_train_preds, aes(x = preds_bag)) + geom_histogram()
+ggplot(wine_train_preds, aes(x = preds_bag)) + geom_histogram()
 
-#residuals(Model_train_preds, which = c("model", "bootstrap"))
+#residuals(wine_train_preds, which = c("model", "bootstrap"))
 
 #############################################+
 # Random Forest -----------------------------------------------------------
 #############################################+
 
 # rf_fit <- randomForest(price ~ . ,
-#                        data = Model_train,
+#                        data = wine_train,
 #                        type = classification,
 #                        mtry = 3,
 #                        ntree = 1000,
@@ -164,7 +146,23 @@ ggplot(Model_train_preds, aes(x = preds_bag)) + geom_histogram()
 #                        localImp = TRUE)
 
 rf_fit <- randomForest(log(price) ~ . ,
-                       data = Model_train,
+                       data = wine_train %>% select (
+                         price,
+                         points,
+                         #points.category,  # cannot use it along with points
+                         country,
+                         # province, #breaks bootstrap
+                         color,
+                         #variety,  #breaks bootstrap
+                         winery,
+                         taster.gender, 
+                         taster.avg_points,
+                         #variety_and_color,  #breaks bootstrap
+                         title.n_words,
+                         title.n_chars,
+                         title.sentement,
+                         title.has_accents
+                       ) ,
                        importance = TRUE,
                        localImp = TRUE)
 
@@ -192,24 +190,24 @@ library(randomForestExplainer)
 # plot_multi_way_importance(rf_fit, x_measure = "mse_increase",
 #                           y_measure = "node_purity_increase")
 # # 
-# plot_predict_interaction(rf_fit, Model_train, "taster.avg_points", "points")
+# plot_predict_interaction(rf_fit, wine_train, "taster.avg_points", "points")
 # 
 # # relations between measure of importance
 # plot_importance_ggpairs(rf_fit)
 
 # RForest Explanation file render ---- 
-explain_forest(rf_fit, interactions = TRUE, data = Model_train)
+explain_forest(rf_fit, interactions = TRUE, data = wine_train)
 
 
 # prediction
-# pred = predict(rf_fit, newdata=Model_test)
+# pred = predict(rf_fit, newdata=wine_test)
 # summary(pred)
 
 ### RForest predictions and residuals -----
 preds_trainset<- data.frame (
-  scores_rf = predict(rf_fit,newdata=Model_train),
-  residuals = Model_train$price - exp(predict(rf_fit,newdata=Model_train)),
-  Model_train
+  scores_rf = predict(rf_fit,newdata=wine_train),
+  residuals = wine_train$price - exp(predict(rf_fit,newdata=wine_train)),
+  wine_train
 ) 
 summary (preds_trainset$residuals)
 
@@ -218,16 +216,16 @@ summary (preds_trainset$residuals)
 
 ## test set
 preds_testset<- data.frame (
-  scores_rf = predict(rf_fit,newdata=Model_test),
-  residuals = Model_test$price - exp(predict(rf_fit,newdata=Model_test)),
-  Model_test
+  scores_rf = predict(rf_fit,newdata=wine_test),
+  residuals = wine_test$price - exp(predict(rf_fit,newdata=wine_test)),
+  wine_test
 ) 
 summary (preds_testset$residuals)
 # Plot these residuals maybe? ---------------------------------------------
 #plot(preds_testset)
 
 #---------------------------------------------------------------+
-# Tuning Random Forests - not too sure what to do here ----
+# Tuning Random Forests - this may take a while ----
 #---------------------------------------------------------------+
 
 rf_mods <- list()
@@ -235,9 +233,9 @@ oob_err <- NULL
 test_err <- NULL
 for(mtry in 1:9){
   rf_fit <- randomForest(price ~ ., 
-                         data = Model_train,
-                         mtry = mtry #,
-                         #ntree = 500
+                         data = wine_train,
+                         mtry = mtry,
+                         ntree = 500
                          )
   oob_err[mtry] <- rf_fit$err.rate[500]
   
