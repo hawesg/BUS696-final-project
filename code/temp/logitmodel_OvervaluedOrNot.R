@@ -50,8 +50,8 @@ load(here::here("data","output","limited_factors","wine_test.RData"))
 names(wine_train)
 names(wine_test)
 
-wine_train <- wine_train[apply(is.na(wine_train),1,sum)==0,]
-wine_test <- wine_test[apply(is.na(wine_test),1,sum)==0,]
+# wine_train <- wine_train[apply(is.na(wine_train),1,sum)==0,]
+#wine_test <- wine_test[apply(is.na(wine_test),1,sum)==0,]
 
 
 # getting the ratio from train data ---- 
@@ -60,6 +60,9 @@ min_points_model_value = min(wine_train$points)
 min_points_model_value
 min_price_model_value = 2.5
 min_price_model_value
+
+# the following formula takes into consideration dimishing returns i.e. marginal increase in points is accompanied by a higher and higher increase in price
+# also a lowest price for acceptable wine is set at $2.5 
 median_price_to_points_ratio = 
   (median(wine_train$points)-min_points_model_value)/(median(log(ifelse(min_price_model_value > wine_train$price,min_price_model_value + 0.1,wine_train$price))) - log(min_price_model_value))
 median_price_to_points_ratio
@@ -96,27 +99,29 @@ wine_test <- wine_test  %>% select (-price,-points)
 
 
 # remove n/a values ----
-wine_train <- wine_train[apply(is.na(wine_train),1,sum)==0,]
-wine_test <- wine_test[apply(is.na(wine_test),1,sum)==0,]
+# wine_train <- wine_train[apply(is.na(wine_train),1,sum)==0,]
+# wine_test <- wine_test[apply(is.na(wine_test),1,sum)==0,]
 
 names(wine_train)
 
 # let's create the model ----
 logit_mod <- glm( well_priced ~ .,
-                  data = wine_train %>%   select (
-                    well_priced,
-                    points.category,   
-                    variety,  
-                    country,
-                    province,   
-                    taster.name,
-                    taster.gender,
-                    taster.avg_points,
-                    designation,
-                    color,
-                    title.n_words,
-                    title.sentement
-                  ) ,
+                  data = wine_train
+                  # %>%   select (
+                  #   well_priced,
+                  #   points.category,   
+                  #   variety,  
+                  #   country,
+                  #   province,   
+                  #   taster.name,
+                  #   taster.gender,
+                  #   taster.avg_points,
+                  #   designation,
+                  #   color,
+                  #   title.n_words,
+                  #   title.sentement
+                  #) 
+                  ,
                   family = binomial) #our varaible can be 0 or 1, a binomial
 # summary of model ----
 summary(logit_mod)
