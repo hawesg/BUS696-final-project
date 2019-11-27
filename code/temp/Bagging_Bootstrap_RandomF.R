@@ -47,8 +47,8 @@ names(wine_test)
 
 
 # Might have to limit wine_train size ------------------------------------------
-wine_train <- wine_train[apply(is.na(wine_train),1,sum)==0,]  # %>% sample_n(8000)
-wine_test <- wine_test[apply(is.na(wine_test),1,sum)==0,] # %>% sample_n(8000)
+#wine_train <- wine_train[apply(is.na(wine_train),1,sum)==0,]  # %>% sample_n(8000)
+#wine_test <- wine_test[apply(is.na(wine_test),1,sum)==0,] # %>% sample_n(8000)
 
 # store rownames as columns
 wine_train_preds <- wine_train %>% rownames_to_column() %>% 
@@ -68,23 +68,23 @@ for(i in 1:B){
   # Log(price) bootstrap model ----
   boot_tree <- ctree(log(price) ~ ., 
                      data = data_slice %>% select (
-                         price,
-                         points,
-                         #points.category,  # cannot use it along with points
-                         country,
-                         # province, #breaks bootstrap
-                         color,
-                         #variety,  #breaks bootstrap
-                         winery,
-                         taster.gender, 
-                         taster.avg_points,
-                         #variety_and_color,  #breaks bootstrap
-                         title.n_words,
-                         title.n_chars,
-                         title.sentement,
-                         title.has_accents
-                       ) 
+                       price,
+                       points,
+                       #points.category,  # cannot use it along with points
+                       country,
+                       # province, #breaks bootstrap
+                       color,
+                       #variety,  #breaks bootstrap
+                       winery,
+                       taster.gender, 
+                       taster.avg_points,
+                       #variety_and_color,  #breaks bootstrap
+                       title.n_words,
+                       title.n_chars,
+                       title.sentement,
+                       title.has_accents
                      ) 
+  ) 
   # store bootstraped model
   boot_mods[[i]] <- boot_tree
   # generate predictions for that bootstrap model
@@ -100,7 +100,7 @@ for(i in 1:B){
   
   # merge predictions to wine_train dataset
   wine_train_preds <- left_join(x = wine_train_preds, y = preds_boot,
-                                 by = "rowname")
+                                by = "rowname")
 }
 
 names(wine_train_preds)
@@ -115,6 +115,8 @@ plot(boot_mods[[7]])
 plot(boot_mods[[8]])
 plot(boot_mods[[9]])
 plot(boot_mods[[10]])
+plot(boot_mods[[20]])
+plot(boot_mods[[30]])
 
 # must convert factor into numeric, note that class "0" = 1, 
 # and class "1" = 2, so we need to subtract 1 from every column
@@ -123,13 +125,15 @@ wine_train_preds %<>% mutate_if(is.factor, as.numeric) %>%
 
 # calculate mean over all the bootstrap predictions
 wine_train_preds %<>% mutate(preds_bag = 
-                                select(., preds_boot1:preds_boot30) %>% 
-                                rowMeans(na.rm = TRUE))
+                               select(., preds_boot1:preds_boot30) %>% 
+                               rowMeans(na.rm = TRUE))
 
 # congratulations! You have bagged your first model!
 
 # plot bagged model -------------------------------------------------------
-ggplot(wine_train_preds, aes(x = preds_bag)) + geom_histogram()
+ggplot(wine_train_preds, aes(x = exp(preds_bag))) + geom_histogram()
+#ggplot(wine_train_preds, aes(x = preds_bag)) + geom_histogram()
+summary(wine_train_preds)
 
 #residuals(wine_train_preds, which = c("model", "bootstrap"))
 
@@ -212,7 +216,7 @@ preds_trainset<- data.frame (
 summary (preds_trainset$residuals)
 
 # Plot these residuals maybe? ---------------------------------------------
-#plot(preds_testset)
+plot(preds_testset)
 
 ## test set
 preds_testset<- data.frame (
@@ -222,7 +226,7 @@ preds_testset<- data.frame (
 ) 
 summary (preds_testset$residuals)
 # Plot these residuals maybe? ---------------------------------------------
-#plot(preds_testset)
+plot(preds_testset)
 
 #---------------------------------------------------------------+
 # Tuning Random Forests - this may take a while ----
@@ -236,7 +240,7 @@ for(mtry in 1:9){
                          data = wine_train,
                          mtry = mtry,
                          ntree = 500
-                         )
+  )
   oob_err[mtry] <- rf_fit$err.rate[500]
   
   cat(mtry," ")
@@ -245,4 +249,3 @@ for(mtry in 1:9){
 results_DF <- data.frame(mtry = 1:9,oob_err)
 
 ggplot(results_DF, aes(x = mtry, y = oob_err)) + geom_point()
-
