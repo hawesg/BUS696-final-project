@@ -1,3 +1,4 @@
+
 # new logit
 
 
@@ -61,56 +62,56 @@ min_points_model_value
 min_price_model_value = 2.5
 min_price_model_value
 
-# the following formula takes into consideration dimishing returns i.e. marginal increase in points is accompanied by a higher and higher increase in price
+# the following formula takes into consideration diminishing returns i.e. marginal increase in points is accompanied by a higher and higher increase in price
 # also a lowest price for acceptable wine is set at $2.5 
 median_price_to_points_ratio = 
   (median(wine_train$points)-min_points_model_value)/(median(log(ifelse(min_price_model_value > wine_train$price,min_price_model_value + 0.1,wine_train$price))) - log(min_price_model_value))
 median_price_to_points_ratio
 
 
-# Compute well_priced for train ----
-wine_train <- wine_train %>% 
+# Compute well_priced for train ---- same formula as for median_price_to_points_ratio, except for an individual price point combination
+wine_train_logit <- wine_train %>% 
   dplyr::mutate ( well_priced = factor(ifelse(
     (points-min_points_model_value)/(log(ifelse(min_price_model_value > price,min_price_model_value + 0.1,price))-log(min_price_model_value))  > median_price_to_points_ratio,"Yes","No")
   )
   ) 
 
 
-#view(wine_train) regular scale ----
-ggplot(wine_train , aes(x = price, y = points, color = well_priced)) +
+#view(wine_train_logit) regular scale ----
+ggplot(wine_train_logit , aes(x = price, y = points, color = well_priced)) +
   geom_jitter() + ggtitle("Price and Points Colored by Well Priced") + 
   theme(legend.position = "top") + labs(fill = "Well Priced") 
 
-#view(wine_train) log scale ----
-ggplot(wine_train , aes(y = price, x = points, color = well_priced)) +
+#view(wine_train_logit) log scale ----
+ggplot(wine_train_logit , aes(y = price, x = points, color = well_priced)) +
   geom_jitter() + ggtitle("Price and Points Colored by Well Priced") + 
   theme(legend.position = "top") + labs(fill = "Well Priced") + scale_y_log10()
 
 # Compute well_priced for test ----
-wine_test <- wine_test %>% 
+wine_test_logit <- wine_test %>% 
   dplyr::mutate ( well_priced = factor(ifelse(
     (points-min_points_model_value)/(log(ifelse(min_price_model_value > price,min_price_model_value + 0.1,price))-log(min_price_model_value))  > median_price_to_points_ratio,"Yes","No")
   )
   )
 
 # good wine already has price and points, so we don't want to model as part of it ----
-wine_train <- wine_train %>% select (-price,-points)
-wine_test <- wine_test  %>% select (-price,-points)
+wine_train_logit <- wine_train_logit %>% select (-price,-points)
+wine_test_logit <- wine_test_logit  %>% select (-price,-points)
 
 
 # remove n/a values ----
-# wine_train <- wine_train[apply(is.na(wine_train),1,sum)==0,]
-# wine_test <- wine_test[apply(is.na(wine_test),1,sum)==0,]
+# wine_train_logit <- wine_train_logit[apply(is.na(wine_train_logit),1,sum)==0,]
+# wine_test_logit <- wine_test_logit[apply(is.na(wine_test_logit),1,sum)==0,]
 
-names(wine_train)
+names(wine_train_logit)
 
 # let's create the model ----
 logit_mod <- glm( well_priced ~ .,
-                  data = wine_train %>%   
-                  select (
-                    -taster.twitter_handle,
-                    -variety_and_color
-                  ) 
+                  data = wine_train_logit %>%   
+                    select (
+                      -taster.twitter_handle,
+                      -variety_and_color
+                    ) 
                   ,
                   family = binomial) #our varaible can be 0 or 1, a binomial
 # summary of model ----
@@ -119,14 +120,14 @@ summary(logit_mod)
 
 ### predictions -----
 preds_trainset<- data.frame (
-  scores_logit1 = predict(logit_mod,newdata=wine_train,type="response"),
-  wine_train
+  scores_logit1 = predict(logit_mod,newdata=wine_train_logit,type="response"),
+  wine_train_logit
 ) 
 
 ## test set
 preds_testset<- data.frame (
-  scores_logit1 = predict(logit_mod,newdata=wine_test,type="response"),
-  wine_test
+  scores_logit1 = predict(logit_mod,newdata=wine_test_logit,type="response"),
+  wine_test_logit
 ) 
 summary (preds_testset)
 
@@ -169,3 +170,4 @@ AUC_results <- data.frame (
   TestAUC =calc_auc(TestROC)
 )
 AUC_results
+
