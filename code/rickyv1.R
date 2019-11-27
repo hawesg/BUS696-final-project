@@ -57,8 +57,8 @@ mod10_df <- data.frame(pred = preds_no_log,
 
 ##Plots of Preds Vs Resids
 
-ggplot(mod10_df, aes(x = preds, y = resids)) + geom_point(color = "purple", alpha = 1 /
-                                                            100) + ggtitle("OLS_NO_LOG RESIDS VS PREDS")
+ggplot(mod10_df, aes(x = pred, y = resids)) + geom_point(color = "purple", alpha = 1 /
+                                                            100) + ggtitle("OLS_NO_LOG RESIDS VS PREDS") + geom_smooth()
 
 
 #RMSE
@@ -123,7 +123,7 @@ mod1_df <- data.frame(pred = preds_fwd_fit,
 ##Plots of Preds Vs Resids
 
 ggplot(mod1_df, aes(x = preds, y = resids)) + geom_point(color = "purple", alpha = 1 /
-                                                           100) + ggtitle("FWD_FIT MODEL RESIDS VS PREDS")
+                                                           100) + ggtitle("FWD_FIT MODEL RESIDS VS PREDS") + geom_smooth()
 
 
 ##RMSE
@@ -190,7 +190,7 @@ mod3_df <- data.frame(pred = preds_bkwd_fit,
 ##Plot of Preds Vs Resids
 
 ggplot(mod3_df, aes(x = pred, y = resids)) +
-  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT MODEL RESIDS VS PREDS")
+  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT MODEL RESIDS VS PREDS") + geom_smooth()
 
 
 ##RMSE
@@ -260,7 +260,7 @@ mod5_df <- data.frame(pred = preds_fwd_fit_tukey,
 ##Plot of Resids vs Preds
 
 ggplot(mod5_df, aes(x = pred, y = resids)) +
-  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("FWD FIT TUKEY RESIDS VS PREDS")
+  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("FWD FIT TUKEY RESIDS VS PREDS") + geom_smooth()
 
 
 RMSE(mod5_df$pred, wine_train$price)
@@ -320,7 +320,8 @@ mod6_df <- data.frame(pred = preds_bkwd_tukey,
 ##Plot of Resids vs Preds
 
 ggplot(mod6_df, aes(x = pred, y = resids)) +
-  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT TUKEY RESIDS VS PREDS")
+  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT TUKEY RESIDS VS PREDS") + geom_smooth()
 
+##RMSE
 
 RMSE(mod6_df$pred, wine_train$price)
