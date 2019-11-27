@@ -13,6 +13,58 @@ library('rcompanion')
 load(here::here("data", "output", "limited_factors", "wine_train.RData"))
 load(here::here("data", "output", "limited_factors", "wine_test.RData"))
 
+
+#OlS Model (No Log Price) ----
+
+ols_no_log <-
+  lm(price ~
+       country +
+       variety +
+       points +
+       province +
+       winery +
+       color +
+       designation +
+       title.n_words +
+       title.sentement +
+       title.has_accents +
+       taster.twitter_handle +
+       taster.gender,
+     data = wine_train,
+  )
+
+summary(ols_no_log)
+plot(ols_no_log)
+
+#Predictions-No Log Model ----
+
+preds_no_log <- predict(ols_no_log)
+preds_no_log
+
+mod10_df <- data.frame(pred = preds_no_log,
+                       actual = wine_train$price)
+
+##Plot of Actual Vs Preds
+
+ggplot(mod10_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
+  geom_abline(color = "red", linetype = "dashed")
+
+mod10_df <- data.frame(pred = preds_no_log,
+                       actual = wine_train$price,
+                       resids = ols_from_fwd_fit$residuals)
+
+
+##Plots of Preds Vs Resids
+
+ggplot(mod10_df, aes(x = preds, y = resids)) + geom_point(color = "purple", alpha = 1 /
+                                                            100) + ggtitle("OLS_NO_LOG RESIDS VS PREDS")
+
+
+#RMSE
+
+RMSE(mod10_df$pred, wine_train$price)
+
+
 #Forward Fit Model (log price) ----
 
 fwd_fit <-
@@ -40,13 +92,14 @@ summary(fwd_fit)
 plot(fit_fwd, scale = "adjr2", main = "Forward Fit Model")
 coef(fit_fwd, 10)
 
-##OLS Model Based on Fwd
+##OLS Model Based on Fwd Fit
 
 ols_from_fwd_fit <-
   lm(log(price) ~ province + color + points + taster.twitter_handle + taster.gender,
      data = wine_train)
 
 summary(ols_from_fwd_fit)
+plot(ols_from_fwd_fit)
 
 #Predictions-Forward Fit Model ----
 
@@ -69,7 +122,7 @@ mod1_df <- data.frame(pred = preds_fwd_fit,
 ##Plots of Preds Vs Resids
 
 ggplot(mod1_df, aes(x = preds, y = resids)) + geom_point(color = "purple", alpha = 1 /
-                                                           100)
+                                                           100) + ggtitle("FWD_FIT MODEL RESIDS VS PREDS")
 
 
 ##RMSE
@@ -136,7 +189,8 @@ mod3_df <- data.frame(pred = preds_bkwd_fit,
 ##Plot of Preds Vs Resids
 
 ggplot(mod3_df, aes(x = pred, y = resids)) +
-  geom_point(color = "purple", alpha = 1 / 100)
+  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT MODEL RESIDS VS PREDS")
+
 
 ##RMSE
 
@@ -205,7 +259,7 @@ mod5_df <- data.frame(pred = preds_fwd_fit_tukey,
 ##Plot of Resids vs Preds
 
 ggplot(mod5_df, aes(x = pred, y = resids)) +
-  geom_point(color = "purple", alpha = 1 / 100)
+  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("FWD FIT TUKEY RESIDS VS PREDS")
 
 
 RMSE(mod5_df$pred, wine_train$price)
@@ -265,7 +319,7 @@ mod6_df <- data.frame(pred = preds_bkwd_tukey,
 ##Plot of Resids vs Preds
 
 ggplot(mod6_df, aes(x = pred, y = resids)) +
-  geom_point(color = "purple", alpha = 1 / 100)
+  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT TUKEY RESIDS VS PREDS")
 
 
 RMSE(mod6_df$pred, wine_train$price)
