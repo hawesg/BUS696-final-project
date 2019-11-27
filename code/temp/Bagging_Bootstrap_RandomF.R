@@ -55,6 +55,10 @@ wine_train_preds <- wine_train %>% rownames_to_column() %>%
   mutate(rowname = as.numeric(rowname))
 
 # bagging - bootstrapp aggregation
+# Bootstrap model
+# Created 30 samples with 1000 data points each (run into performance issues otherwise)
+# Carefully selected variables, to allows bootstrapping
+
 B <- 30      # number of bootstrap samples
 num_b <- 1000  # sample size of each bootstrap
 boot_mods <- list() # store our bagging models
@@ -232,20 +236,20 @@ plot(preds_testset)
 # Tuning Random Forests - this may take a while ----
 #---------------------------------------------------------------+
 
-rf_mods <- list()
-oob_err <- NULL
-test_err <- NULL
-for(mtry in 1:9){
-  rf_fit <- randomForest(price ~ ., 
-                         data = wine_train,
-                         mtry = mtry,
-                         ntree = 500
-  )
-  oob_err[mtry] <- rf_fit$err.rate[500]
-  
-  cat(mtry," ")
-}
-
-results_DF <- data.frame(mtry = 1:9,oob_err)
-
-ggplot(results_DF, aes(x = mtry, y = oob_err)) + geom_point()
+# rf_mods <- list()
+# oob_err <- NULL
+# test_err <- NULL
+# for(mtry in 1:9){
+#   rf_fit <- randomForest(price ~ ., 
+#                          data = wine_train,
+#                          mtry = mtry,
+#                          ntree = 500
+#   )
+#   oob_err[mtry] <- rf_fit$err.rate[500]
+#   
+#   cat(mtry," ")
+# }
+# 
+# results_DF <- data.frame(mtry = 1:9,oob_err)
+# 
+# ggplot(results_DF, aes(x = mtry, y = oob_err)) + geom_point()
