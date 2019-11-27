@@ -17,20 +17,21 @@ load(here::here("data", "output", "limited_factors", "wine_test.RData"))
 #OlS Model (No Log Price) ----
 
 ols_no_log <-
-  lm(price ~
-       country +
-       variety +
-       points +
-       province +
-       winery +
-       color +
-       designation +
-       title.n_words +
-       title.sentement +
-       title.has_accents +
-       taster.twitter_handle +
-       taster.gender,
-     data = wine_train,
+  lm(
+    price ~
+      country +
+      variety +
+      points +
+      province +
+      winery +
+      color +
+      designation +
+      title.n_words +
+      title.sentement +
+      title.has_accents +
+      taster.twitter_handle +
+      taster.gender,
+    data = wine_train,
   )
 
 summary(ols_no_log)
@@ -89,8 +90,8 @@ fwd_fit <-
 
 summary(fwd_fit)
 
-plot(fit_fwd, scale = "adjr2", main = "Forward Fit Model")
-coef(fit_fwd, 10)
+plot(fwd_fit, scale = "adjr2", main = "Forward Fit Model")
+coef(fwd_fit, 10)
 
 ##OLS Model Based on Fwd Fit
 
@@ -153,8 +154,8 @@ bkwd_fit <-
 
 summary(bkwd_fit)
 
-plot(bkwd_fwd, scale = "adjr2", main = "Backward Fit Model")
-coef(bkwd_fwd, 10)
+plot(bkwd_fit, scale = "adjr2", main = "Backward Fit Model")
+coef(bkwd_fit, 10)
 
 ##OLS Model Based on Bkwd
 
