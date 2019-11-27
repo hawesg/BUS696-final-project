@@ -1,13 +1,10 @@
 
 # new logit
+# Purpose: To determine whether we can tell whether a particular bottle of wine is a good value or now
 
 
 # Load most commonly used libraries
 
-
-# need to add the following libraries:
-#  library('plotROC')
-#
 
 list.of.packages <- c("tidyverse", "plotly", "here", "ggthemes", "stringr", "plyr", "stringi", "readxl",".")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -64,6 +61,18 @@ min_price_model_value
 
 # the following formula takes into consideration diminishing returns i.e. marginal increase in points is accompanied by a higher and higher increase in price
 # also a lowest price for acceptable wine is set at $2.5 
+# _
+# Determining Good Value (i.e. well_priced)
+### Need to consider diminishing returns, as the rate of marginal increase in points rating decreases with respect to the increase in the price of a bottle of wine, hence using log(price of wine):
+##### Well_priced == whether we think wine is well priced
+##### Well_priced will be determined according to a median price to points ratio computed as follows using observable from the training data set:
+####### median_price_to_points_ratio= Dataset ratio numerator  / Dataset ratio denominator
+########## Dataset ratio numerator    = Median (points awarded)  - Min (points awarded)
+########## Dataset ratio denominator  = Median ( log ( price of wine))  - Min (log (expected(min price of drinkable wine))
+############# Where expected(min price of drinkable wine) = $2.5 (i.e. educated guess)
+############# Where price of wine > expected (min price of drinkable wine)
+############# The following chart describes that relationship:
+                                                                        
 median_price_to_points_ratio = 
   (median(wine_train$points)-min_points_model_value)/(median(log(ifelse(min_price_model_value > wine_train$price,min_price_model_value + 0.1,wine_train$price))) - log(min_price_model_value))
 median_price_to_points_ratio
@@ -106,6 +115,9 @@ wine_test_logit <- wine_test_logit  %>% select (-price,-points)
 names(wine_train_logit)
 
 # let's create the model ----
+## Since well_priced is a function of price and points, price and points are removed from the dataset (train and test) before model is created
+## Otherwise same variables are used for the model so that it can be compared against other models
+
 logit_mod <- glm( well_priced ~ .,
                   data = wine_train_logit %>%   
                     select (
