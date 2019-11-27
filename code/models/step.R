@@ -50,20 +50,32 @@ names(wine_train)
 fwd_fit <-
   regsubsets(
     log2(price) ~ .,
-    data = wine_train %>% select(
-      -ID,
-      -country,
-      -taster_avg_points_per,
-      -taster_n_tweets_per,
-      -taster_review_count_per,
-      -title_word_count_per,
-      -taster_twitter_lump,
-      -variety
-    ),
+    data = wine_train %>% select(price,
+                                 points,
+                                 #points.category,
+                                 country,
+                                 province,
+                                 winery,
+                                 color,
+                                 variety,
+                                 #variety_and_color,
+                                 designation,
+                                 title.n_words,
+                                 title.sentement,
+                                 #title.n_chars,
+                                 title.has_accents,
+                                 taster.name,
+                                 #taster.twitter_handle,
+                                 taster.gender,
+                                 taster.avg_points,
+                                 #taster.n_reviews,
+                                 #taster.n_tweets,
+                                 #taster.n_followers)
+          ),
     method = "forward"
   )
 
-names(wine_train)
+dput(names(wine_train))
 
 ############################# Backward Step Model ##############################
 
@@ -71,16 +83,29 @@ bkwd_fit <-
   regsubsets(
     log(price) ~ .,
     data = wine_train %>% select(
-      -ID,
-      -country,
-      -taster_avg_points_per,
-      -taster_n_tweets_per,
-      -taster_review_count_per,
-      -title_word_count_per,
-      -taster_twitter_lump,
-      -variety
+      price,
+      points,
+      #points.category,
+      country,
+      province,
+      winery,
+      color,
+      variety,
+      #variety_and_color,
+      designation,
+      title.n_words,
+      title.sentement,
+      #title.n_chars,
+      title.has_accents,
+      taster.name,
+      #taster.twitter_handle,
+      taster.gender,
+      taster.avg_points,
+      #taster.n_reviews,
+      #taster.n_tweets,
+      #taster.n_followers)
     ),
-    nvmax = 18,
+    nvmax = 10,
     method = "backward"
   )
 
