@@ -106,21 +106,11 @@ names(wine_train)
 
 # let's create the model ----
 logit_mod <- glm( well_priced ~ .,
-                  data = wine_train
-                  # %>%   select (
-                  #   well_priced,
-                  #   points.category,   
-                  #   variety,  
-                  #   country,
-                  #   province,   
-                  #   taster.name,
-                  #   taster.gender,
-                  #   taster.avg_points,
-                  #   designation,
-                  #   color,
-                  #   title.n_words,
-                  #   title.sentement
-                  #) 
+                  data = wine_train %>%   
+                  select (
+                    -taster.twitter_handle,
+                    -variety_and_color
+                  ) 
                   ,
                   family = binomial) #our varaible can be 0 or 1, a binomial
 # summary of model ----
