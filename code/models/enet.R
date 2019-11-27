@@ -57,7 +57,7 @@ names(wine_train)
 
 #get the model
 enet_fit <- cva.glmnet(
-  log(price) ~ .,
+  -1 * price ^ (-.3) ~ .,
   data = wine_train %>% select(
    -variety_and_color
   ),
@@ -124,7 +124,7 @@ plot(enet_fit$modlist[[min_cv]])
 # plot(enet_fit$modlist[[101]]) ## alphas zero, lasso  model
 
 # coefficient matrix for the optimal elasticnet model using lambda.1se
-coef(enet_fit, alpha = enet_fit['alpha'][min_cv],
+coef(enet_fit, alpha = alpha_list[min_cv],
      s = enet_fit$modlist[[min_cv]]$lambda.1se) %>% round(3)
 
 # ######################### Different method using carat #########################
@@ -168,8 +168,41 @@ df <- data.frame(
 
 preds_train_DF <- data.frame(
   actual = log(wine_train$price),
-  pred = predict(enet_fit, alpha = .47, lambda = lambda.min, wine_train) %>% round(3)
+  pred = predict(enet_fit, alpha = 0.26, lambda = lambda.min, wine_train) %>% round(3)
 ) %>% rename(actual = 1, pred = 2) %>% remove_rownames()
 postResample(preds_train_DF$pred, preds_train_DF$actual)
 
-preds_train_DF %>% ggplot(aes(x = exp(actual), y = exp(pred))) + geom_point()
+preds_train_DF <- data.frame(
+  actual=  -1 * (wine_train$price ^ (-.3)),
+  pred = predict(enet_fit, alpha = 0.26, lambda = lambda.min, wine_train) %>% round(3)
+) %>% rename(actual = 1, pred = 2) %>% remove_rownames() 
+postResample(preds_train_DF$pred, preds_train_DF$actual)
+
+preds_train_DF %>% ggplot(aes(x = actual, y = pred)) + geom_point()
+
+
+##Plot of Actual Vs Preds
+
+ggplot(mod1_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
+  geom_abline(color = "red", linetype = "dashed")
+
+mod1_df <- data.frame(pred  = preds_train_DF$pred,
+                      actual = preds_train_DF$actual,
+                      resids = preds_train_DF$actual-preds_train_DF$pred )
+
+mod1_df
+
+
+##Plots of Preds Vs Resids
+
+ggplot(mod1_df,aes(x = pred, y = resids)) + 
+  geom_point() + 
+  geom_smooth() + 
+  xlab("Fitted values")+ylab("Residuals")+
+   geom_hline(yintercept=0, col="red", linetype="dashed")+ggtitle("Residual vs Fitted Plot")+theme_bw()
+
+
+p1<-ggplot(enet_fit, aes(.fitted, .resid))+geom_point()
+p1<-p1+()+geom_hline(yintercept=0, col="red", linetype="dashed")
+p1<-p1
+p1<-p1+
