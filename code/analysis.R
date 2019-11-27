@@ -50,7 +50,7 @@ wine_test <- wine_data_clean %>% slice(-train_idx)
 
 save(wine_train, file = here::here("data","output","wine_train.RData"))
 save(wine_test, file = here::here("data","output","wine_test.RData"))
-
+names(wine_test)
 
 #################################### Models ####################################
 
