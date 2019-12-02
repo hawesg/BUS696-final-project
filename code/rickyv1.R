@@ -13,6 +13,77 @@ library('rcompanion')
 load(here::here("data", "output", "limited_factors", "wine_train.RData"))
 load(here::here("data", "output", "limited_factors", "wine_test.RData"))
 
+wine_train <- data.train 
+wine_test <- data.test 
+
+#Standardize----
+wine_data_to_be_standardized <-
+  wine_train %>% select(
+    points,
+    title.n_words,
+    title.sentement,
+    title.n_chars,
+    taster.avg_points,
+    taster.n_reviews,
+    taster.n_tweets,
+    taster.n_followers
+  )
+wine_data_not_to_be_standardized <-
+  wine_train %>% select(
+    price,
+    points.category,
+    country,
+    province,
+    winery,
+    color,
+    variety,
+    variety_and_color,
+    designation,
+    title.has_accents,
+    taster.name,
+    taster.gender
+  )
+
+# wine_data_standardized <-
+#   wine_data_clean %>% select(
+#     price,
+#     title.has_accents,``
+#     points.category,
+#     country,
+#     province,
+#     winery,
+#     color,
+#     variety,
+#     variety_and_color,
+#     designation,
+#     title.has_accents,
+#     taster.name,
+#     taster.gender,
+#     points,
+#     title.n_words,
+#     title.sentement,
+#     title.n_chars,
+#     taster.avg_points,
+#     taster.n_reviews,
+#     taster.n_tweets,
+#     taster.n_followers
+#   )
+
+summary(wine_data_to_be_standardized[, 1:8])
+preprocessParams <-
+  preProcess(wine_data_to_be_standardized[, 1:8], method = c("center", "scale"))
+print(preprocessParams)
+transformed <-
+  predict(preprocessParams, wine_data_to_be_standardized[, 1:8])
+summary(transformed)
+head(transformed)
+wine_data_standardized <- bind_cols(wine_data_not_to_be_standardized, transformed)
+str(wine_data_standardized)
+library("skimr")
+skim(wine_data_standardized)
+
+wine_train <- wine_data_standardized
+
 
 #OlS Model (No Log Price) ----
 
@@ -29,13 +100,12 @@ ols_no_log <-
       title.n_words +
       title.sentement +
       title.has_accents +
-      taster.twitter_handle +
+      taster.name +
       taster.gender,
     data = wine_train,
   )
 
 summary(ols_no_log)
-plot(ols_no_log)
 
 #Predictions-No Log Model ----
 
@@ -58,7 +128,7 @@ mod10_df <- data.frame(pred = preds_no_log,
 ##Plots of Preds Vs Resids
 
 ggplot(mod10_df, aes(x = pred, y = resids)) + geom_point(color = "purple", alpha = 1 /
-                                                            100) + ggtitle("OLS_NO_LOG RESIDS VS PREDS") + geom_smooth()
+                                                            100) + ggtitle("OLS_NO_LOG RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 
 #RMSE
@@ -81,7 +151,7 @@ fwd_fit <-
       title.n_words +
       title.sentement +
       title.has_accents +
-      taster.twitter_handle +
+      taster.name +
       taster.gender,
     data = wine_train,
     method = "forward",
@@ -96,11 +166,10 @@ coef(fwd_fit, 10)
 ##OLS Model Based on Fwd Fit
 
 ols_from_fwd_fit <-
-  lm(log(price) ~ province + color + points + taster.twitter_handle + taster.gender,
+  lm(log(price) ~ province + color + points + taster.name + taster.gender + designation,
      data = wine_train)
 
 summary(ols_from_fwd_fit)
-plot(ols_from_fwd_fit)
 
 #Predictions-Forward Fit Model ----
 
@@ -123,7 +192,7 @@ mod1_df <- data.frame(pred = preds_fwd_fit,
 ##Plots of Preds Vs Resids
 
 ggplot(mod1_df, aes(x = preds, y = resids)) + geom_point(color = "purple", alpha = 1 /
-                                                           100) + ggtitle("FWD_FIT MODEL RESIDS VS PREDS") + geom_smooth()
+                                                           100) + ggtitle("FWD_FIT MODEL RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 
 ##RMSE
@@ -145,7 +214,7 @@ bkwd_fit <-
       title.n_words +
       title.sentement +
       title.has_accents +
-      taster.twitter_handle +
+      taster.name +
       taster.gender,
     data = wine_train,
     method = "backward",
@@ -161,7 +230,7 @@ coef(bkwd_fit, 10)
 
 ols_from_bkwd_fit <-
   lm(
-    log(price) ~ variety + province + points + taster.twitter_handle + designation + taster.gender,
+    log(price) ~ variety + province + points + taster.name + designation + taster.gender,
     data = wine_train
   )
 
@@ -190,7 +259,7 @@ mod3_df <- data.frame(pred = preds_bkwd_fit,
 ##Plot of Preds Vs Resids
 
 ggplot(mod3_df, aes(x = pred, y = resids)) +
-  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT MODEL RESIDS VS PREDS") + geom_smooth()
+  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT MODEL RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 
 ##RMSE
@@ -218,7 +287,7 @@ fwd_fit_tukey <-
       title.n_words +
       title.sentement +
       title.has_accents +
-      taster.twitter_handle +
+      taster.name +
       taster.gender,
     data = wine_train,
     method = "forward",
@@ -232,7 +301,7 @@ coef(fwd_fit_tukey, 10)
 
 ols_from_fwd_fit_tukey <-
   lm(
-    -1 * price ^ (-.325) ~ country + color + points + province + taster.gender + taster.twitter_handle + designation + color,
+    -1 * price ^ (-.325) ~ country + color + points + province + taster.gender + taster.name + designation,
     data = wine_train
   )
 
@@ -260,7 +329,7 @@ mod5_df <- data.frame(pred = preds_fwd_fit_tukey,
 ##Plot of Resids vs Preds
 
 ggplot(mod5_df, aes(x = pred, y = resids)) +
-  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("FWD FIT TUKEY RESIDS VS PREDS") + geom_smooth()
+  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("FWD FIT TUKEY RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 
 RMSE(mod5_df$pred, wine_train$price)
@@ -280,7 +349,7 @@ bkwd_fit_tukey <-
       title.n_words +
       title.sentement +
       title.has_accents +
-      taster.twitter_handle +
+      taster.name +
       taster.gender,
     data = wine_train,
     method = "backward",
@@ -320,7 +389,7 @@ mod6_df <- data.frame(pred = preds_bkwd_tukey,
 ##Plot of Resids vs Preds
 
 ggplot(mod6_df, aes(x = pred, y = resids)) +
-  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT TUKEY RESIDS VS PREDS") + geom_smooth()
+  geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT TUKEY RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 ##RMSE
 
