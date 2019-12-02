@@ -68,6 +68,7 @@ enet_fit <- cva.glmnet(
 
 print(enet_fit)
 
+summary(enet_fit)
 ############## Helper function, minlossplot with additional info ###############
 
 .mlossp <- function (x, ..., cv.type = c("1se", "min"))
@@ -114,6 +115,12 @@ min_cv <- which.min(cvm)
 # .47 is element 48
 
 plot(enet_fit$modlist[[min_cv]])
+
+e <- enet_fit$modlist[[min_cv]]
+
+summary(e)
+library("ggfortify")
+# autoplot(, colour = 'blue', which = 1:6)
 
 # # other candidates
 # plot(enet_fit$modlist[[1]])  ## alphas zero, ridge model
@@ -172,6 +179,7 @@ preds_train_DF <- data.frame(
 ) %>% rename(actual = 1, pred = 2) %>% remove_rownames()
 postResample(preds_train_DF$pred, preds_train_DF$actual)
 
+library("caret")
 preds_train_DF <- data.frame(
   actual=  -1 * (wine_train$price ^ (-.3)),
   pred = predict(enet_fit, alpha = 0.26, lambda = lambda.min, wine_train) %>% round(3)
@@ -201,8 +209,6 @@ ggplot(mod1_df,aes(x = pred, y = resids)) +
   xlab("Fitted values")+ylab("Residuals")+
    geom_hline(yintercept=0, col="red", linetype="dashed")+ggtitle("Residual vs Fitted Plot")+theme_bw()
 
-
-p1<-ggplot(enet_fit, aes(.fitted, .resid))+geom_point()
-p1<-p1+()+geom_hline(yintercept=0, col="red", linetype="dashed")
-p1<-p1
-p1<-p1+
+library('plotROC')
+roc_plot_train <- ggplot(preds_train_DF, aes(m = pred, d = actual)) + geom_roc() + ggtitle("Training Data ROC curve") + style_roc()
+roc_plot_train

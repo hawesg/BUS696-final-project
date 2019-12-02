@@ -28,6 +28,10 @@ ratio.denominator <- log(ratio.denominator)
 ratio.denominator <-  median(ratio.denominator)
 ratio.denominator <- ratio.denominator - log(price.min)
 median_price_to_points_ratio <- ratio.numerator/ratio.denominator
+rm(ratio.numerator,ratio.denominator)
+
+
+
 
 .is_well_priced <- function(df){
   test.LHS.numerator <- df$points-wine_train.pt.min
@@ -40,21 +44,22 @@ median_price_to_points_ratio <- ratio.numerator/ratio.denominator
   return(well_priced)
 }
 
-head(wine_train)
+
+# head(wine_train)
 # Compute well_priced for train ---- same formula as for median_price_to_points_ratio, except for an individual price point combination
 wine_train_logit <- wine_train %>% 
   dplyr::mutate ( well_priced = .is_well_priced(.) ) %>%
-  dplyr::select(-price,-points)
+  dplyr::select(-price,-points, -country.map)
 
 #view(wine_train_logit) regular scale ----
-ggplot(wine_train_logit , aes(x = price, y = points, color = well_priced)) +
+ggplot(wine_train_logit , aes(x = wine_train$price, y = wine_train$points, color = well_priced)) +
   geom_jitter() +
   theme(legend.position = "top") + 
   labs(title="Price and Points Colored by Well Priced", 
        color = "Well Priced") 
 
 #view(wine_train_logit) log scale ----
-ggplot(wine_train_logit , aes(y = price, x = points, color = well_priced)) +
+ggplot(wine_train_logit , aes(y = wine_train$price, x = wine_train$points, color = well_priced)) +
   geom_jitter() + 
   theme(legend.position = "top") + 
   labs(title="Price and Points Colored by Well Priced", 
@@ -65,19 +70,17 @@ ggplot(wine_train_logit , aes(y = price, x = points, color = well_priced)) +
 # Compute well_priced for test ----
 wine_test_logit <- wine_test %>% 
   dplyr::mutate ( well_priced = .is_well_priced(.) )  %>% 
-  select (-price,-points)
+  select (-price, -points, -country.map)
 
 # let's create the model ----
 ## Since well_priced is a function of price and points, price and points are removed from the dataset (train and test) before model is created
 ## Otherwise same variables are used for the model so that it can be compared against other models
 
-logit_mod <- glm( well_priced ~ .,
-                  data = wine_train_logit %>%   
-                    select (
-                      -taster.twitter_handle,
-                      -variety_and_color, 
-                    ),
+logit_mod <- glm( well_priced ~ . - taster.twitter_handle - variety_and_color,
+                  data = wine_train_logit,
                   family = binomial) #our varaible can be 0 or 1, a binomial
+
+# as.formula(data.train %>% select)
 # summary of model ----
 summary(logit_mod)
 
@@ -89,6 +92,12 @@ preds.train<- data.frame (
   #actual = wine_train_logit$well_priced
 ) 
 head(preds.train)
+
+preds.train.test <- data.frame (
+  pred = predict(logit_mod, type="response"),
+  actual = wine_train_logit$well_priced
+) 
+head(preds.train.test)
 
 
 # TODO FIX WARNING In predict.lm(object, newdata, se.fit, scale = 1, type = if (type ==  : prediction from a rank-deficient fit may be misleading 
@@ -102,7 +111,7 @@ preds.test<- data.frame (
   #actual = wine_test_logit$well_priced
 ) 
 head(preds.test)
-
+glimpse(wine_test_logit)
 
 #### ROC Curve ----
 #head(preds.test)
@@ -111,7 +120,7 @@ TrainDF <- data.frame(default = c(preds.train$well_priced),
                       scores = c(preds.train$pred),
                       models = c(rep("Train Data Set",length(preds.train$pred))))
 
-summary(TrainDF)
+# summary(TrainDF)
 
 TestDF <- data.frame(default = c(preds.test$well_priced),
                      scores = c(preds.test$pred),

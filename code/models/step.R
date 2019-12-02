@@ -49,69 +49,52 @@ names(wine_train)
 # dput(names(wine_train))
 fwd_fit <-
   regsubsets(
-    log2(price) ~ .,
-    data = wine_train %>% select(price,
-                                 points,
-                                 #points.category,
-                                 country,
-                                 province,
-                                 winery,
-                                 color,
-                                 variety,
-                                 #variety_and_color,
-                                 designation,
-                                 title.n_words,
-                                 title.sentement,
-                                 #title.n_chars,
-                                 title.has_accents,
-                                 taster.name,
-                                 #taster.twitter_handle,
-                                 taster.gender,
-                                 taster.avg_points,
-                                 #taster.n_reviews,
-                                 #taster.n_tweets,
-                                 #taster.n_followers)
-          ),
+    log(price) ~ country + 
+      winery + 
+      color + 
+      variety + 
+      designation + 
+      title.has_accents + 
+      taster.name + 
+      points.category + 
+      points + 
+      title.n_words + 
+      title.sentement + 
+      taster.avg_points,
+    data = data.train,
     method = "forward"
   )
+# + variety_and_color  title.n_chars  taster.n_reviews taster.n_tweets taster.n_followers province taster.gender
+# as.formula(data.train)
 
-dput(names(wine_train))
+# dput(names(wine_train))
 
 ############################# Backward Step Model ##############################
 
 bkwd_fit <-
   regsubsets(
-    log(price) ~ .,
-    data = wine_train %>% select(
-      price,
-      points,
-      #points.category,
-      country,
-      province,
-      winery,
-      color,
-      variety,
-      #variety_and_color,
-      designation,
-      title.n_words,
-      title.sentement,
-      #title.n_chars,
-      title.has_accents,
-      taster.name,
-      #taster.twitter_handle,
-      taster.gender,
+    log(price) ~ country + 
+      winery + 
+      color + 
+      variety + 
+      designation + 
+      title.has_accents + 
+      taster.name + 
+      points.category + 
+      points + 
+      title.n_words + 
+      title.sentement + 
       taster.avg_points,
-      #taster.n_reviews,
-      #taster.n_tweets,
-      #taster.n_followers)
-    ),
+    data = data.train,
     nvmax = 10,
     method = "backward"
   )
-
+# findLinearCombos(data.train)
 # Find linear dependencies
 
 # names(wine_train)
+
+names(fwd_fit)
 
 reg.summary.fw <- summary(fwd_fit)
 
@@ -270,3 +253,16 @@ coef(fwd_fit , 24)
 # color_lumpWhite     country_lumpItaly        country_lumpUS province_lumpBurgundy
 # -0.2566484             0.1613557             0.1885719             0.6451918
 plot(bkwd_fit, scale = "Cp")
+
+
+
+
+
+
+
+
+#EXPEREMINT ----
+names(data.train)
+library(MASS)
+fit <- lm(-1 * price ^ (-.3) ~ ., data=data.train)
+step <- stepAIC(fit, direction="both")

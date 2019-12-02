@@ -67,70 +67,7 @@ before wine_data_clean <- wine_data_clean
 dput(names(wine_data_clean))
 
 ### TODO DEAL WITH VARIETY AND ALSO COUNTRY_MAP
-
-# "ID", 
-# "price", 
-# "country", 
-# "points", 
-# "point_cat", 
-# "variety",
-# "title_length", 
-# "title_has_accents", 
-# "variety_lump", 
-# "designation_lump", 
-# "taster_name_lump", 
-# "taster_twitter_lump", 
-# "taster_gender", 
-# "taster_avg_points", 
-# "taster_review_count", 
-# "taster_n_tweets", 
-# "taster_n_followers", 
-# "color_lump", "country_lump", 
-# "province_lump", 
-# "winery_lump", 
-# "title_word_count", 
-# "title_sentement", 
-# "taster_n_tweets_per", 
-# "title_word_count_per", 
-# "taster_review_count_per", 
-# "taster_avg_points_per", 
-# "variety_color"
-
-# wine_data_clean <- wine_data_clean %>% select(price,
-#                                              points,
-#                                              point_cat,
-#                                              country_lump,
-#                                              province_lump,
-#                                              winery_lump,
-#                                              color_lump,
-#                                              variety_lump,
-#                                              variety_color,
-#                                              designation_lump,
-#                                              title_word_count, ###
-#                                              title_word_count_per, ####
-#                                              title_sentement,
-#                                              title_length,
-#                                              title_has_accents,
-#                                              taster_name_lump,
-#                                              taster_twitter_lump,
-#                                              taster_gender,
-#                                              taster_avg_points, ###
-#                                              taster_avg_points_per, ###
-#                                              taster_review_count, ###
-#                                              taster_review_count_per, ####
-#                                              taster_n_tweets, ###
-#                                              taster_n_tweets_per, ###
-#                                              taster_n_followers)
-
-# glimpse(wine_data_bart)
-# 
-# 
-# dput(names(wine_data_bart))
-
-# will clear all objects includes hidden objects other than wine_data_clean as well 
-# as save a fresh copy
-# # 
-# dput(names(wine_data_clean))
+skim(wine_data_clean)
 
 save(wine_data_clean, file = here::here("data","output","clean_wine.RData"))
 rm(list=setdiff(ls(), "wine_data_clean"))

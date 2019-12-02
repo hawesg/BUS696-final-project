@@ -57,27 +57,17 @@ wine_data <- wd_a_tl
 # Title has Accent(s) -----------------------------------------------------
 # Has accents presuming the american market might pay more ... or less for wines that sound exotic.
 
-# title_tibble <-
-#   tibble(wine_data$title,
-#          stringi::stri_trans_general(wine_data$title, "Latin-ASCII"))
-# names(title_tibble) <- c("t1", "t2")
-# names(title_tibble)
-# title_tibble <- title_tibble %>% mutate(title_has_accent = (t1 != t2))
 
 # TODO MAYBE AS NUMERIC also combine the logic for the next two
 
 wine_data <-
   wine_data %>%
-  dplyr::mutate(title_has_accents = as.numeric(title != stringi::stri_trans_general(title, "Latin-ASCII")))
+  dplyr::mutate(title_no_accents = stringi::stri_trans_general(title, "Latin-ASCII")) %>% 
+  dplyr::mutate(title_has_accents = as.numeric(title != title_no_accents))
 
 # Title Sentiment Analysis and Word Count ---------------------------------
 
-wine_data <-
-  wine_data %>% dplyr::mutate(title_no_accents = stringi::stri_trans_general(title, "Latin-ASCII"))
-
 s <- sentiment_by(wine_data$title_no_accents)
-
-# TODO
 
 #qplot(s$ave_sentiment, geom="histogram",binwidth=0.2,main="Wine Title Sentiment Histogram")
 
