@@ -230,5 +230,13 @@ ggplot(mod1_test_df,aes(x = pred, y = resids)) +
   xlab("Fitted values")+ylab("Residuals")+
   geom_hline(yintercept=0, col="red", linetype="dashed")+ggtitle("Residual vs Fitted Plot Test Set")+theme_bw()
 
+glimpse(step)
+
+ggplot(step,aes(x = fitted.values, y = residuals)) + 
+  geom_point() + 
+  geom_smooth() + 
+  xlab("Fitted values")+ylab("Residuals")+
+  geom_hline(yintercept=0, col="red", linetype="dashed")+ggtitle("Residual vs Fitted Plot Stepwise")+theme_bw()
 
 
+test1 <- lm()

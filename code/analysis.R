@@ -48,21 +48,29 @@ train_idx <-
 wine_train <- wine_data_clean %>% slice(train_idx)
 wine_test <- wine_data_clean %>% slice(-train_idx)
 
-save(wine_train, file = here::here("data","output","wine_train.RData"))
-save(wine_test, file = here::here("data","output","wine_test.RData"))
+save(wine_train, file = here::here("data","output","wine_train.bart.RData"))
+save(wine_test, file = here::here("data","output","wine_test.bart.RData"))
 names(wine_test)
 
 #################################### Models ####################################
 
 # ---- Step ----
-# Step One: Load Data:
+# Step One: Step Selection:
 source("code/models/step.R")
 
 # ---- OLS ----
-# Step One: Load Data:
+# Step Two: OLS Regression:
 source("code/models/ols.R")
 
 # ---- E Net ----
-# Step One: Load Data:
+# Step Three: Elastic Net:
 source("code/models/enet.R")
 
+# ---- Logistic Regression ----
+# Step Five: Load Data:
+source("code/models/enet.R")
+
+
+# ---- Logistic Regression ----
+# Step Four: Logistic Regression:
+source("code/models/logit_model_well_priced.R")
