@@ -1,8 +1,3 @@
-##Install Packages
-# install.packages("tm")  # for text mining
-# install.packages("SnowballC") # for text stemming
-# install.packages("wordcloud") # word-cloud generator
-# install.packages("RColorBrewer") # color palettes
 
 
 ##Load Require Library
@@ -17,13 +12,18 @@ library(stringi)
 library(stringr)
 
 
-wine_designations_word_cloud <-
-  wine_designations_word_cloud %>% dplyr::mutate(designation = str_replace_all(designation, "([Rr].serv.)", "Reserve"))
+# wine_designations_word_cloud <- wine_designations_word_cloud$designation
+wine_designations_word_cloud <- str_replace_all(wine_designations_word_cloud, "([Rr].serv.)", "Reserve")
+
+
+# wine_designations_word_cloud <-
+#   wine_designations_word_cloud %>% dplyr::mutate(designation = str_replace_all(designation, "([Rr].serv.)", "Reserve"))
 
 ## Calculate Corpus
 
 wineDesignation.Corpus <-
-  Corpus(VectorSource(wine_designations_word_cloud$designation))
+  Corpus(VectorSource(wine_designations_word_cloud))
+  # Corpus(VectorSource(wine_designations_word_cloud$designation))
 
 ##Data Cleaning and Wrangling
 

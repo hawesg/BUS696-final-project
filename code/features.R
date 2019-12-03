@@ -92,7 +92,7 @@ wdx <- wine_data
 wine_data <- wine_data %>%
   dplyr::mutate(designation = .clean_text(designation))
 
-wine_designations_word_cloud <- wine_data
+wine_designations_word_cloud <- wine_data$designation
 
 ###### USE WORDCLOUD.R TO NARROW DOWN POTENTIAL FACTORS
 
@@ -439,19 +439,19 @@ wine_data <- wine_data %>% droplevels()
 # summary(wine_data)
 #
 
-# TODO does this help?
-# Bart Mutate -------------------------------------------------------------
-.bart <- function(x) {
-  return((x - median(x)) / diff(range(x)))
-}
-wine_data <-
-  wine_data %>% dplyr::mutate(
-    taster_n_tweets_per = .bart(taster_n_tweets),
-    title_word_count_per = .bart(title_word_count),
-    taster_review_count_per = .bart(taster_review_count),
-    taster_avg_points_per = .bart(taster_avg_points),
-    taster_n_followers_per  = .bart(taster_n_followers)
-  )
+# # TODO does this help?
+# # Bart Mutate -------------------------------------------------------------
+# .bart <- function(x) {
+#   return((x - median(x)) / diff(range(x)))
+# }
+# wine_data <-
+#   wine_data %>% dplyr::mutate(
+#     taster_n_tweets_per = .bart(taster_n_tweets),
+#     title_word_count_per = .bart(title_word_count),
+#     taster_review_count_per = .bart(taster_review_count),
+#     taster_avg_points_per = .bart(taster_avg_points),
+#     taster_n_followers_per  = .bart(taster_n_followers)
+#   )
 
 wine_data <-
   wine_data %>% dplyr::mutate(variety = as_factor(variety))
@@ -477,9 +477,6 @@ wine_data_clean <-
     variety_color,
     designation_lump,
     title_word_count,
-    ###
-    title_word_count_per,
-    ####
     title_sentement,
     title_length,
     title_has_accents,
@@ -487,20 +484,9 @@ wine_data_clean <-
     taster_twitter_lump,
     taster_gender,
     taster_avg_points,
-    ###
-    taster_avg_points_per,
-    ###
     taster_review_count,
-    ###
-    taster_review_count_per,
-    ####
     taster_n_tweets,
-    ###
-    taster_n_tweets_per,
-    ###
     taster_n_followers,
-    ##
-    taster_n_followers_per##
   ) %>% droplevels()
 
 setdiff(names(wine_data), names(wine_data_clean))
@@ -524,7 +510,6 @@ colnames(wd_temp) <-
     "variety_and_color",
     "designation",
     "title.n_words",
-    "title.n_words_per",
     "title.sentement",
     "title.n_chars",
     "title.has_accents",
@@ -532,15 +517,12 @@ colnames(wd_temp) <-
     "taster.twitter_handle",
     "taster.gender",
     "taster.avg_points",
-    "taster.avg_points_per",
     "taster.n_reviews",
-    "taster.n_reviews_per",
     "taster.n_tweets",
-    "taster.n_tweets_per",
-    "taster.n_followers",
-    "taster.n_followers_per"
+    "taster.n_followers"
   )
 wine_data_clean <- wd_temp
+
 
 # dput(names(wine_data_clean))
 
@@ -555,3 +537,4 @@ wine_data_clean <- wd_temp
 # summary(wine_data_clean)
 #
 # head(wine_data)
+

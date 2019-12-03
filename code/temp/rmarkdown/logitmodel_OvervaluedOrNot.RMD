@@ -17,7 +17,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library("plyr")
 library("conflicted")
-
 library("tidyverse")
 library("here")
 library("ggthemes")
@@ -28,12 +27,10 @@ library("ggExtra")
 library("PerformanceAnalytics")
 library("plotROC")
 library('sentimentr')
-
 ```
 
 ### Resolving library conflicts
 ```{r}
-
 conflict_prefer("mutate", "dplyr")
 conflict_prefer("margin","ggplot2")
 ```
@@ -61,14 +58,12 @@ names(wine_test)
 ```{r}
 wine_train.pt.min <- min(wine_train$points) 
 price.min <- 2.5
-
 ratio.numerator <-  median(wine_train$points)-wine_train.pt.min
 ratio.denominator <-  ifelse(wine_train$price<price.min, price.min + 0.1, wine_train$price)
 ratio.denominator <- log(ratio.denominator)
 ratio.denominator <-  median(ratio.denominator)
 ratio.denominator <- ratio.denominator - log(price.min)
 median_price_to_points_ratio <- ratio.numerator/ratio.denominator
-
 .is_well_priced <- function(df){
   test.LHS.numerator <- df$points-wine_train.pt.min
   test.LHS.denominator <- ifelse(df$price<price.min, price.min + 0.1,df$price)
@@ -79,8 +74,6 @@ median_price_to_points_ratio <- ratio.numerator/ratio.denominator
   well_priced <- factor(test.LHS > test.RHS, labels=c("No", "Yes"))
   return(well_priced)
 }
-
-
 # Compute well_priced for train ---- same formula as for median_price_to_points_ratio, except for an individual price point combination
 wine_train_logit <- wine_train %>% 
   dplyr::mutate ( well_priced = .is_well_priced(.) )
@@ -93,19 +86,16 @@ ggplot(wine_train_logit , aes(x = price, y = points, color = well_priced)) +
   theme(legend.position = "top") + 
   labs(title="Price and Points Colored by Well Priced", 
        color = "Well Priced") 
-
 head(wine_train)
 ```
 ### "Good Value" is about price, so we don't want it to be part of the model + removing points_category as using points
 ```{r}
 wine_train_logit <- wine_train_logit %>% 
   dplyr::select(-price,-points.category)
-
 # Compute well_priced for test dataset and remove price and points
 wine_test_logit <- wine_test %>% 
   dplyr::mutate ( well_priced = .is_well_priced(.) )  %>% 
   select (-price,-points.category)
-
 ```
 
 # Let's create the model ----
@@ -145,7 +135,6 @@ preds.test<- data.frame (
   #actual = wine_test_logit$well_priced
 ) 
 #head(preds.test)
-
 ```
 
 ## ROC Curve
@@ -153,13 +142,10 @@ preds.test<- data.frame (
 TrainDF <- data.frame(default = c(preds.train$well_priced),
                       scores = c(preds.train$pred),
                       models = c(rep("Train Data Set",length(preds.train$pred))))
-
 #summary(TrainDF)
-
 TestDF <- data.frame(default = c(preds.test$well_priced),
                      scores = c(preds.test$pred),
                      models = c(rep("Test Data Set",length(preds.test$pred))))
-
 ```
 ### ROC Curve train
 ```{r}
@@ -199,4 +185,4 @@ AUC_results
 ## This means that determining whether wine is a "good value" is better than chance
 ## AUC values are high, above 80% or about 70% higher than chance
 ## AUC for train and test are nearly identical  (0.868 vs 0.867) hence model neither over- or underfit
-## Points, Specific Province, Specific Variety, Specific Winery, followed by Specific Taster explain the model best whereas Title information not so much
+## Points, Specific Province, Specific Variety, Specific Winery, followed by Specific Taster explain the model best whereas Title informat

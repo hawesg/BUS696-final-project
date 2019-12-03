@@ -36,7 +36,7 @@ source("code/libraries.R")
 
 FCT_LUMPS <-
   list(
-    by_count = 0,
+    by_count = 25,
     taster_name = 10,
     taster_twitter = 10,
     designation = 15,
@@ -62,15 +62,16 @@ source("code/clean.R")
 source("code/features.R")
 
 ################################### Clean up ###################################
-before wine_data_clean <- wine_data_clean
 
-dput(names(wine_data_clean))
+# dput(ls())
 
-### TODO DEAL WITH VARIETY AND ALSO COUNTRY_MAP
-skim(wine_data_clean)
+rm("colors", "designation_rp", "other", "patterns", 
+   "red", "replacements", "temp", "twitter_stats", "wd_a_tl", 
+   "wd_temp", "wdx", "white", "wine_data", "wine_data_bind", 
+   "wine_data_end_of_clean", "wine_data_original", "wine_data_with_twitter_data")
 
 save(wine_data_clean, file = here::here("data","output","clean_wine.RData"))
-rm(list=setdiff(ls(), "wine_data_clean"))
+#rm(list=setdiff(ls(), "wine_data_clean"))
 # load(here::here("data","output","clean_wine.RData"))
 
 # ---- analysis ----

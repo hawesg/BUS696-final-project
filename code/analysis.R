@@ -22,55 +22,111 @@
 ###############################################################################-
 
 library("leaps")
+library("caret")
 
-# load(here::here("data", "output", "clean_wine.RData"))
+names(wine_data_clean)
 
-load(here::here("data","output","clean_wine.RData"))
+wine_data_to_be_standardized <-
+  wine_data_clean %>% 
+  select(
+    points,
+    title.n_words,
+    title.sentement,
+    title.n_chars,
+    taster.avg_points,
+    taster.n_reviews,
+    taster.n_tweets,
+    taster.n_followers
+  )
+wine_data_not_to_be_standardized <-
+  wine_data_clean %>% 
+  select(
+    price,
+    points.category,
+    country,
+    province,
+    winery,
+    color,
+    variety,
+    variety_and_color,
+    designation,
+    title.has_accents,
+    taster.name,
+    taster.gender
+  )
 
-############################### Test/Train Setup ###############################
+preprocessParams <-
+  preProcess(wine_data_to_be_standardized[, 1:8], method = c("center", "scale"))
+print(preprocessParams)
 
-wine_data_non_bart <-
-  subset(wine_data_clean, select=-c(title.n_words_per,
-                        taster.avg_points_per,
-                        taster.n_reviews_per,
-                        taster.n_tweets_per,
-                        taster.n_followers_per))
-wine_data_bart <- wine_data_non_bart %>% mutate(title.n_words = wine_data_clean$title.n_words_per,
-                                                 taster.avg_points = wine_data_clean$taster.avg_points_per,
-                                                 taster.n_reviews = wine_data_clean$taster.n_reviews_per,
-                                                 taster.n_tweets = wine_data_clean$taster.n_tweets_per,
-                                                 taster.n_followers = wine_data_clean$taster.n_followers_per)
-wine_data_clean <- wine_data_bart
+transformed <-
+  predict(preprocessParams, wine_data_to_be_standardized[, 1:8])
+summary(transformed)
+head(transformed)
+wine_data_standardized <- bind_cols(wine_data_not_to_be_standardized, transformed)
+# str(wine_data_standardized)
+# library("skimr")
+# skim(wine_data_standardized)
+
+
+# Setup Test and Train set with CARET so they are proportianal
 set.seed(1861)
 options(scipen = 50)
-train_idx <-
-  sample(1:nrow(wine_data_clean), size = floor(nrow(wine_data_clean) * .75))
-wine_train <- wine_data_clean %>% slice(train_idx)
-wine_test <- wine_data_clean %>% slice(-train_idx)
+TRAIN.PERCENT <- 0.75 
+inTrainSetIndex <- createDataPartition(y = wine_data_standardized$price, p=TRAIN.PERCENT, list=FALSE, groups=5)
+data.train   <- wine_data_standardized[ inTrainSetIndex, ]
+data.test <- wine_data_standardized[-inTrainSetIndex, ]
 
-save(wine_train, file = here::here("data","output","wine_train.bart.RData"))
-save(wine_test, file = here::here("data","output","wine_test.bart.RData"))
-names(wine_test)
+# Save Test & Train
+
+str(data.train)
+
+saveRDS(data.train, file = here::here("data","output","wine_train_limited_factors.rds"))
+saveRDS(data.test, file = here::here("data","output","wine_train_limited_factors.rds"))
+
+#################################### HELPER FUNCTIONS ####################################
+
+.tuky <- function(p){
+  p <- p ^ (-.3)
+  return(-p)
+}
+ 
+
+.model_summary <- function(p, a, m){
+  
+  summary_df <- data.frame(pred = p,
+                        actual = a,
+                        resid = a-p)
+  
+  ggplot(summary_df, aes(x = actual, y = pred)) + 
+    geom_point(color = "purple") +
+    geom_abline(color = "red", linetype = "dashed") +
+    ggtitle(paste(m,"Predicted vs Actuals")) 
+  
+  ggplot(summary_df, aes(x = pred, y = resid)) + 
+    geom_point(color = "purple", alpha = 1 / 100) + 
+    ggtitle(paste(m,"Residuals vs Predicted")) + 
+    geom_smooth()
+}
+
+# .model_summary(preds, actuals, model_name)
 
 #################################### Models ####################################
 
-# ---- Step ----
-# Step One: Step Selection:
-source("code/models/step.R")
+# # ---- OLS Regression ----
+# source("code/models/1.ols.R")
 
-# ---- OLS ----
-# Step Two: OLS Regression:
-source("code/models/ols.R")
+# # ---- Step Slection ----
+# source("code/models/2.step.R")
 
-# ---- E Net ----
-# Step Three: Elastic Net:
-source("code/models/enet.R")
+# ---- Elastic Net ----
+source("code/models/3.enet.R")
 
-# ---- Logistic Regression ----
-# Step Five: Load Data:
-source("code/models/enet.R")
+# ---- Bagging and Bootstrapping ----
+source("code/models/4.bootstraping.R")
 
+# ---- Bagging and Bootstrapping ----
+source("code/models/4.rforest.R")
 
 # ---- Logistic Regression ----
-# Step Four: Logistic Regression:
-source("code/models/logit_model_well_priced.R")
+source("code/models/4.logit.R")
