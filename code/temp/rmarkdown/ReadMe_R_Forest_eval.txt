@@ -42,5 +42,22 @@ Slide 4: Summary of R Forest
 ====================================================================
 
 Slide 4: R Forest Explainer
---> Bart says: in process of generating results.. may have to reference some older results found in Forest_explained 11-24-2019 10p.html
 
+{left part of slide}
+	# Interaction Title N Chars vs Points
+	{R}
+		plot_predict_interaction(rf_fit, wine_train, "title.n_chars", "points")
+	{/R}
+{/left part of slide}
+{middle part of slide}
+	# Interaction Title N Words vs Points
+	{R}
+		plot_predict_interaction(rf_fit, wine_train, "title.n_words", "points")
+	{/R}
+{/middle part of slide}
+{right part of slide}
+	# Interaction Taster Avg Pts vs Points
+	{R}
+		plot_predict_interaction(rf_fit, wine_train, "taster.avg_points", "points")
+	{/R}
+{/right part of slide}
