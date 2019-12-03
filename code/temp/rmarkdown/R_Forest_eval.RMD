@@ -1,0 +1,109 @@
+---
+title: "LogitModel.RMD"
+author: "Bart Ciastkowski"
+date: "12/2/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+  
+# The Code
+### Adding libraries
+```{r}
+library("plyr")
+library("conflicted")
+
+library("tidyverse")
+library("here")
+library("ggthemes")
+library("stringr")
+library("stringi")
+library("readxl")
+library("ggExtra")
+library("PerformanceAnalytics")
+library('sentimentr')
+
+library('partykit')
+library('magrittr')
+library('analogue')
+
+library('randomForest')
+library('randomForestExplainer')
+```
+
+### Resolving library conflicts
+```{r}
+
+conflict_prefer("mutate", "dplyr")
+conflict_prefer("margin","ggplot2")
+```
+### Clear all objects including hidden objects.
+```{r}
+rm(list = ls(all.names = TRUE))
+```
+### Load Model and Train Data
+```{r}
+load(here::here("data","output","limited_factors","wine_train.RData")) 
+load(here::here("data","output","limited_factors","wine_test.RData"))
+names(wine_train)
+names(wine_test)
+
+wine_train <- wine_train[apply(is.na(wine_train),1,sum)==0,]  %>% sample_n(8000)
+wine_test <- wine_test[apply(is.na(wine_test),1,sum)==0,]  %>% sample_n(8000)
+```
+# Modelling log(price) using Random Forest that generates a set of bootstrapp trees (i.e. forests) 
+# Random forest combines results via average regresion ....
+### using random forest package to model log(price) -- no horsepower to model using all variables
+```{r}
+rf_fit <- randomForest(log(price) ~ . ,
+                       #-1 * price ^ (-.3) ~ .,
+                       data = wine_train 
+                       %>% select (
+                         price,
+                         points,
+                         #points.category,  # cannot use it along with points
+                         country,
+                         province, #
+                         color,
+                         variety,  #
+                         winery,
+                         taster.gender,
+                         taster.avg_points,
+                         #variety_and_color,  #already included
+                         title.n_words,
+                         title.n_chars,
+                         title.sentement,
+                         title.has_accents
+                       )
+                       ,
+                       importance = TRUE,
+                       localImp = TRUE)
+```
+# RForest model review ---
+## RF Fit
+```{r}
+rf_fit
+```
+## Gini Coefficient
+#### Plot variable vs IncNodePurity ----
+### %IncMSE - the higher the more important (increase in MSE of predictions if variable permuted)
+### IncNodePurity - Total decrease in node impurities from splitting on the variable, averaged over all trees. Impurity is measured by residual sum of squares. Impurity is calculated only at node at which that variable is used for that split. Impurity before that node, and impurity after the split has occurred.
+```{r}
+# Gini Coefficient --------------------------------------------------------
+rf_fit$importance
+
+# here points and then title.n_chars matter most
+varImpPlot(rf_fit,type=1)
+varImpPlot(rf_fit,type=2)
+```
+# R Forest Explainer
+```{r}
+library(randomForestExplainer)
+randomForestExplainer::plot_predict_interaction(rf_fit, wine_train, "rm", "lstat")
+# RForest Explanation file render ---- 
+#explain_forest(rf_fit, interactions = TRUE, data = wine_train)
+
+```
+
