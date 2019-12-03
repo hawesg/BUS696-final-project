@@ -84,6 +84,9 @@ str(data.train)
 saveRDS(data.train, file = here::here("data","output","wine_train_100.rds"))
 saveRDS(data.test, file = here::here("data","output","wine_test_100.rds"))
 
+data.train <- loadRDS(here::here("data","output","wine_train_100.rds"))
+saveRDS(data.test, file = here::here("data","output","wine_test_100.rds"))
+
 #################################### HELPER FUNCTIONS ####################################
 
 .tuky <- function(p){
@@ -104,7 +107,7 @@ saveRDS(data.test, file = here::here("data","output","wine_test_100.rds"))
     ggtitle(paste(m,"Predicted vs Actuals")) 
   
   ggplot(summary_df, aes(x = pred, y = resid)) + 
-    geom_point(color = "purple", alpha = 1 / 100) + 
+    geom_point(color = "purple") + 
     ggtitle(paste(m,"Residuals vs Predicted")) + 
     geom_smooth()
 }

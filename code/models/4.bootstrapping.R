@@ -23,13 +23,13 @@ model.bootstrap.preds <- data.train %>%
   ) 
 
 glimpse(model.bootstrap.preds)
-glimpse(data.train.pred2)
+
 # bagging - bootstrapp aggregation
 # Bootstrap model
 # Created 30 samples with 1000 data points each (run into performance issues otherwise)
 # Carefully selected variables, to allows bootstrapping
 B <- 100      # number of bootstrap samples
-num_b <- 1000  # sample size of each bootstrap
+num_b <- 250  # sample size of each bootstrap
 boot_mods <- list() # store our bagging models
 for(i in 1:B){
   boot_idx <- sample(1:nrow(data.train), 

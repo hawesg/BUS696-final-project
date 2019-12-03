@@ -81,35 +81,33 @@ data.test_logit <- data.test %>%
 ## Since well_priced is a function of price and points, price and points are removed from the dataset (train and test) before model is created
 ## Otherwise same variables are used for the model so that it can be compared against other models
 
-logit_mod <- glm( well_priced ~ . - variety_and_color,
+model.logit <- glm( well_priced ~ . - variety_and_color,
                   data = data.train_logit,
                   family = binomial) #our varaible can be 0 or 1, a binomial
 
 # as.formula(data.train %>% select)
 # summary of model ----
-summary(logit_mod)
+summary(model.logit)
 
 names(data.test)
 ### predictions -----
 preds.train<- data.frame (
-  pred = predict(logit_mod, type="response"),
+  pred = predict(model.logit, type="response"),
   data.train_logit
   #actual = data.train_logit$well_priced
 ) 
 head(preds.train)
 
 preds.train.test <- data.frame (
-  pred = predict(logit_mod, type="response"),
+  pred = predict(model.logit, type="response"),
   actual = data.train_logit$well_priced
 ) 
 head(preds.train.test)
 
-
-# TODO FIX WARNING In predict.lm(object, newdata, se.fit, scale = 1, type = if (type ==  : prediction from a rank-deficient fit may be misleading 
-
+]
 ## test set
 preds.test<- data.frame (
-  pred = predict(logit_mod, 
+  pred = predict(model.logit, 
                  newdata=data.test_logit, 
                  type="response"),
   data.test_logit

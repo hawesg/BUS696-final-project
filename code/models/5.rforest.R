@@ -57,7 +57,7 @@ library(randomForestExplainer)
 # plot_importance_ggpairs(rf_fit)
 
 # RForest Explanation file render ---- 
-explain_forest(rf_fit, interactions = TRUE, data = data.train)
+# explain_forest(rf_fit, interactions = TRUE, data = data.train)
 
 
 # prediction
@@ -65,9 +65,12 @@ explain_forest(rf_fit, interactions = TRUE, data = data.train)
 # summary(pred)
 
 ### RForest predictions and residuals -----
-.model_summary(predict(rf_fit,newdata=data.train),.tuky(model.train$price),"Random Forest Train")
+.model_summary(predict(rf_fit,newdata=data.train),.tuky(data.train$price),"Random Forest Train")
 
-.model_summary(predict(rf_fit,newdata=data.test),.tuky(model.train$price),"Random Forest Test")
+.model_summary(predict(rf_fit,newdata=data.test),.tuky(data.test$price),"Random Forest Test")
+
+
+
 
 # preds_trainset<- data.frame (
 #   scores_rf = ,
