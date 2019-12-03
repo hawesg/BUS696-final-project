@@ -23,11 +23,6 @@
 
 # rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
 
-if(!(exists("wine_train")&&exists("wine_train"))) {
-  load(here::here("data","output","wine_train.RData"))
-  load(here::here("data","output","wine_test.RData")) 
-}
-
 ###############################################################################-
 
 ################################## Libraries ###################################
@@ -38,9 +33,7 @@ if(!(exists("wine_train")&&exists("wine_train"))) {
 #
 source("code/libraries.R")
 
-# names(wine_train)
-
-# new_DF <- wine_test[rowSums(is.na(wine_test)) > 0,] %>% View()
+# names(data.train)
 
 ################################# Class method #################################
 
@@ -53,12 +46,12 @@ alpha_list
 library(glmnet)
 library(glmnetUtils)
 
-names(wine_train)
+names(data.train)
 
 #get the model
 enet_fit <- cva.glmnet(
   -1 * price ^ (-.3) ~ .,
-  data = wine_train %>% select(
+  data = data.train %>% select(
    -variety_and_color
   ),
   trace.it=1
@@ -135,55 +128,18 @@ library("ggfortify")
 coef(enet_fit, alpha = alpha_list[min_cv],
      s = enet_fit$modlist[[min_cv]]$lambda.1se) %>% round(3)
 
-# ######################### Different method using carat #########################
-
-library(caret)
-
-model <- train(
-  log(price) ~., data = wine_train %>% select(
-    -variety_and_color
-  ), method = "glmnet",
-  trControl = trainControl("cv", number = 50),
-  tuneLength = 60
-)
-
-model$bestTune
-
-
-coef(model$finalModel, model$bestTune$lambda)
-
-# Make predictions on the test data
-x.train <- model.matrix(log(price) ~., wine_train%>%select(
-  -ID,
-  -country,
-  -taster_avg_points,
-  -taster_n_tweets,
-  -taster_review_count,
-  -title_word_count,
-  -taster_twitter_lump,
-  -variety
-))[,-1]
-predictions <- model %>% predict(wine_train)
-# Model performance metrics
-df <- data.frame(
-  RMSE = RMSE(predictions, log(wine_train$price)),
-  Rsquare = R2(predictions, log(wine_train$price))
-)
-#   RMSE   Rsquare
-# 1 0.438321 0.5622834
-
 ########################### Framework to check preds ###########################
 
 preds_train_DF <- data.frame(
-  actual = log(wine_train$price),
-  pred = predict(enet_fit, alpha = 0.26, lambda = lambda.min, wine_train) %>% round(3)
+  actual = log(data.train$price),
+  pred = predict(enet_fit, alpha = 0.26, lambda = lambda.min, data.train) %>% round(3)
 ) %>% rename(actual = 1, pred = 2) %>% remove_rownames()
 postResample(preds_train_DF$pred, preds_train_DF$actual)
 
 library("caret")
 preds_train_DF <- data.frame(
-  actual=  -1 * (wine_train$price ^ (-.3)),
-  pred = predict(enet_fit, alpha = 0.26, lambda = lambda.min, wine_train) %>% round(3)
+  actual=  -1 * (data.train$price ^ (-.3)),
+  pred = predict(enet_fit, alpha = 0.26, lambda = lambda.min, data.train) %>% round(3)
 ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() 
 postResample(preds_train_DF$pred, preds_train_DF$actual)
 

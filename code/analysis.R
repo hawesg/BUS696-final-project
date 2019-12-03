@@ -81,8 +81,8 @@ data.test <- wine_data_standardized[-inTrainSetIndex, ]
 
 str(data.train)
 
-saveRDS(data.train, file = here::here("data","output","wine_train_limited_factors.rds"))
-saveRDS(data.test, file = here::here("data","output","wine_train_limited_factors.rds"))
+saveRDS(data.train, file = here::here("data","output","wine_train_100.rds"))
+saveRDS(data.test, file = here::here("data","output","wine_test_100.rds"))
 
 #################################### HELPER FUNCTIONS ####################################
 
@@ -126,7 +126,7 @@ source("code/models/3.enet.R")
 source("code/models/4.bootstraping.R")
 
 # ---- Bagging and Bootstrapping ----
-source("code/models/4.rforest.R")
+source("code/models/5.rforest.R")
 
 # ---- Logistic Regression ----
-source("code/models/4.logit.R")
+source("code/models/6.logit.R")
