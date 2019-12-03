@@ -35,12 +35,6 @@ Slide 3: Gini Coefficient
 
 ====================================================================
 
-Slide 4: Summary of R Forest 
-* R2 above 0.6
-* points by far most important in explainng price
-
-====================================================================
-
 Slide 4: R Forest Explainer
 
 {left part of slide}
