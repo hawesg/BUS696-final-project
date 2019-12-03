@@ -90,18 +90,18 @@ for(i in 1:B){
                                 by = "rowname")
 }
 
-names(wine_train_preds)
+#names(wine_train_preds)
 ## Examine individual models, will need to spend more time here ----
-plot(boot_mods[[1]])
-plot(boot_mods[[2]])
-plot(boot_mods[[3]])
+#plot(boot_mods[[1]])
+#plot(boot_mods[[2]])
+#plot(boot_mods[[3]])
 plot(boot_mods[[5]])
-plot(boot_mods[[10]])
-plot(boot_mods[[20]])
-plot(boot_mods[[40]])
-plot(boot_mods[[60]])
-plot(boot_mods[[80]])
-plot(boot_mods[[100]])
+#plot(boot_mods[[10]])
+#plot(boot_mods[[20]])
+#plot(boot_mods[[40]])
+#plot(boot_mods[[60]])
+#plot(boot_mods[[80]])
+#plot(boot_mods[[100]])
 
 # must convert factor into numeric, note that class "0" = 1, 
 # and class "1" = 2, so we need to subtract 1 from every column
@@ -131,4 +131,4 @@ ggplot(wine_train_preds, aes(x = preds_bag)) + xlim(0, 10) + geom_histogram(binw
 # Bootstrap Model Summary
 ## the variations of the bootstrap predictions appear to sort of match the training dataset
 ## nonetheless the bootstrap has a bias, a tendency to undervalue wine
-## from the review of a number of the decision trees we see that most root and decision nodes use points for decision to split, then variety & color and provice are used 
+## from the review of a number of the decision trees we see that most root and decision nodes use points for decision to split, then taster.avg_points and variety are used 

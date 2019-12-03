@@ -86,7 +86,7 @@ wine_train_logit <- wine_train %>%
   dplyr::mutate ( well_priced = .is_well_priced(.) )
 ```
 
-###### The following chart describes that relationship:
+## The following chart describes that relationship:
 ```{r}
 ggplot(wine_train_logit , aes(x = price, y = points, color = well_priced)) +
   geom_jitter() +
