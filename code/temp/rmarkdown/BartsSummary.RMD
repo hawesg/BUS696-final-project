@@ -5,6 +5,20 @@ date: "12/3/2019"
 output: html_document
 ---
 
+# Bootstrap Model
+
+# Slide 1 Modelling log(price) 
+
+* Method: using decision-tree via Bootstrap technique
+* set number of Bootstrap samples to 100 
+* set size of each bootstrap to 500 to ensure adequate data
+
+# Slide 2: Example 5 decision tree
+
+```{r}
+  plot(boot_mods[[5]])
+```
+
 # Slide 3: Actual Price vs  Predicted Price
 
 ```{r}
