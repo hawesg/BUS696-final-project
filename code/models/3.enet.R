@@ -90,11 +90,9 @@ summary(model.enet)
   invisible(x)
 }
 
-
 ### minlossplot
 minlossplot(model.enet)
 .mlossp(model.enet)
-plot(model.enet)
 cvm <- sapply(model.enet$modlist, function(mod) {
   mod$cvm[mod$lambda == mod[['lambda.1se']]]
 })
@@ -113,7 +111,7 @@ plot(model.enet$modlist[[min_cv]])
 model.enet.best <- model.enet$modlist[[min_cv]]
 
 summary(model.enet.best)
-library("ggfortify")
+# library("ggfortify")
 # autoplot(, colour = 'blue', which = 1:6)
 
 # # other candidates
@@ -133,36 +131,58 @@ coef(model.enet, alpha = alpha_list[min_cv],
 
 
 library("caret")
-preds_train_DF <- data.frame(
+
+model.logit.test.preds.df <- data.frame(
   actual=  -1 * (data.train$price ^ (-.3)),
   pred = predict(model.enet, alpha = alpha_list[min_cv], lambda = lambda.min, data.train) %>% round(3)
 ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() 
-postResample(preds_train_DF$pred, preds_train_DF$actual)
 
-preds_train_DF %>% ggplot(aes(x = actual, y = pred)) + geom_point()
 
-.model_summary(preds_train_DF$pred, preds_train_DF$actual, "Enet Fit")
+.model_summary(model.logit.test.preds.df$pred, model.logit.test.preds.df$actual, "Enet Fit")
+
+.save_model_metrics("enet",
+                    "Train", 
+                    "-1 * price ^ (-.3)", 
+                    ". -variety_and_color",
+                    paste("Alpha:",alpha_list[min_cv],"Lambda: 1se"), 
+                    model.logit.test.preds.df$pred, 
+                    model.logit.test.preds.df$actual) 
+metric.test
+
 
 # ##Plot of Actual Vs Preds
 # 
 # ggplot(mod1_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
 #   geom_abline(color = "red", linetype = "dashed")
 # 
-# mod1_df <- data.frame(pred  = preds_train_DF$pred,
-#                       actual = preds_train_DF$actual,
-#                       resids = preds_train_DF$actual-preds_train_DF$pred )
+# mod1_df <- data.frame(pred  = model.logit.test.preds.df$pred,
+#                       actual = model.logit.test.preds.df$actual,
+#                       resids = model.logit.test.preds.df$actual-model.logit.test.preds.df$pred )
 # 
 # mod1_df
 # 
 # 
 # ##Plots of Preds Vs Resids
-# 
-# ggplot(mod1_df,aes(x = pred, y = resids)) + 
-#   geom_point() + 
-#   geom_smooth() + 
-#   xlab("Fitted values")+ylab("Residuals")+
-#    geom_hline(yintercept=0, col="red", linetype="dashed")+ggtitle("Residual vs Fitted Plot")+theme_bw()
+model.enet.results <- data.frame(actual = .tukey(data.train$price),
+                                 pred = predict(model.enet, alpha = alpha_list[min_cv], lambda = lambda.min, data.train)) %>% 
+  rename(actual = 1, pred = 2) %>% 
+  remove_rownames() %>%
+  mutate( resid = actual - pred)
+
+head(model.enet.results)
+postResample(pred = model.enet.results$pred, obs = model.enet.results$actual)
+
+ggplot(model.enet.results,aes(x = pred, y = resid)) +
+  geom_point() +
+  geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs") ) +
+  labs(x="Fitted values", 
+       y="Residuals", 
+       title="Residuals vs Fitted Plot", 
+       caption = "Lamda: 1se, Alpha: 0.38", 
+       subtitle = "R2:0.597 | RMSE: 0.045 | MAE: 0.036")+
+  geom_hline(yintercept=0, col="red", linetype="dashed")+
+  theme_bw()
 
 # library('plotROC')
-# roc_plot_train <- ggplot(preds_train_DF, aes(m = pred, d = actual)) + geom_roc() + ggtitle("Training Data ROC curve") + style_roc()
+# roc_plot_train <- ggplot(model.logit.test.preds.df, aes(m = pred, d = actual)) + geom_roc() + ggtitle("Training Data ROC curve") + style_roc()
 # roc_plot_train

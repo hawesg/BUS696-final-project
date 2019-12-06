@@ -19,13 +19,13 @@
 #   title.sentement,
 #   title.has_accents
 # ) )
-rf_fit <- randomForest(.tuky(price) ~ points + country + color + winery + taster.gender + taster.avg_points + 
+rf_fit <- randomForest(.tukey(price) ~ points + country + color + winery + taster.gender + taster.avg_points + 
                          title.n_words + title.n_chars + title.sentement + title.has_accents,
                        data = data.train,
                        importance = TRUE,
                        localImp = TRUE)
 
-.tuky(data.train$price)
+.tukey(data.train$price)
 
 # RForest model review ------
 rf_fit
@@ -65,9 +65,9 @@ library(randomForestExplainer)
 # summary(pred)
 
 ### RForest predictions and residuals -----
-.model_summary(predict(rf_fit,newdata=data.train),.tuky(data.train$price),"Random Forest Train")
+.model_summary(predict(rf_fit,newdata=data.train),.tukey(data.train$price),"Random Forest Train")
 
-.model_summary(predict(rf_fit,newdata=data.test),.tuky(data.test$price),"Random Forest Test")
+.model_summary(predict(rf_fit,newdata=data.test),.tukey(data.test$price),"Random Forest Test")
 
 
 

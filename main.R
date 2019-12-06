@@ -36,7 +36,7 @@ source("code/libraries.R")
 
 FCT_LUMPS <-
   list(
-    by_count = 100,
+    by_count = 0,
     taster_name = 10,
     taster_twitter = 10,
     designation = 15,

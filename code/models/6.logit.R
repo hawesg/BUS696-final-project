@@ -27,7 +27,9 @@ price.min <- 2.5
 
 ratio.numerator <-  median(data.train$points)-data.train.pt.min
 
-ratio.denominator <-  ifelse(data.train$price<price.min, price.min + 0.1, data.train$price)
+
+
+ratio.denominator <- ifelse(data.train$price<price.min, price.min + 0.1, data.train$price)
 ratio.denominator <- log(ratio.denominator)
 ratio.denominator <-  median(ratio.denominator)
 ratio.denominator <- ratio.denominator - log(price.min)
@@ -75,7 +77,7 @@ ggplot(data.train_logit , aes(y = data.train$price, x = data.train$points, color
 # Compute well_priced for test ----
 data.test_logit <- data.test %>% 
   dplyr::mutate ( well_priced = .is_well_priced(.) )  %>% 
-  select (-price, -points, -country.map)
+  select (-price, -points)
 
 # let's create the model ----
 ## Since well_priced is a function of price and points, price and points are removed from the dataset (train and test) before model is created
@@ -104,7 +106,7 @@ preds.train.test <- data.frame (
 ) 
 head(preds.train.test)
 
-]
+
 ## test set
 preds.test<- data.frame (
   pred = predict(model.logit, 

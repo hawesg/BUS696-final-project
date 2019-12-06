@@ -81,40 +81,12 @@ data.test <- wine_data_standardized[-inTrainSetIndex, ]
 
 str(data.train)
 
-saveRDS(data.train, file = here::here("data","output","wine_train_100.rds"))
-saveRDS(data.test, file = here::here("data","output","wine_test_100.rds"))
+# saveRDS(data.train, file = here::here("data","output","wine_train_100.rds"))
+# saveRDS(data.test, file = here::here("data","output","wine_test_100.rds"))
+# 
+# data.train <- loadRDS(here::here("data","output","wine_train_100.rds"))
+# saveRDS(data.test, file = here::here("data","output","wine_test_100.rds"))
 
-data.train <- loadRDS(here::here("data","output","wine_train_100.rds"))
-saveRDS(data.test, file = here::here("data","output","wine_test_100.rds"))
-
-#################################### HELPER FUNCTIONS ####################################
-
-.tuky <- function(p){
-  p <- p ^ (-.3)
-  return(-p)
-}
- 
-
-.model_summary <- function(p, a, m){
-  
-  summary_df <- data.frame(pred = p,
-                        actual = a,
-                        resid = a-p)
-  
-  ggplot(summary_df, aes(x = actual, y = pred)) + 
-    geom_point(color = "purple") +
-    geom_abline(color = "red", linetype = "dashed") +
-    ggtitle(paste(m,"Predicted vs Actuals")) 
-  
-  ggplot(summary_df, aes(x = pred, y = resid)) + 
-    geom_point(color = "purple") + 
-    ggtitle(paste(m,"Residuals vs Predicted")) + 
-    geom_smooth()
-}
-
-# .model_summary(preds, actuals, model_name)
-
-#################################### Models ####################################
 
 # # ---- OLS Regression ----
 # source("code/models/1.ols.R")

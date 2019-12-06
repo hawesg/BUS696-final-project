@@ -29,7 +29,7 @@ glimpse(model.bootstrap.preds)
 # Created 30 samples with 1000 data points each (run into performance issues otherwise)
 # Carefully selected variables, to allows bootstrapping
 B <- 100      # number of bootstrap samples
-num_b <- 250  # sample size of each bootstrap
+num_b <- 500  # sample size of each bootstrap
 boot_mods <- list() # store our bagging models
 for(i in 1:B){
   boot_idx <- sample(1:nrow(data.train), 
@@ -39,7 +39,7 @@ for(i in 1:B){
   data_slice = data.train %>% slice(boot_idx)
   
   # Log(price) bootstrap model ----
-  boot_tree <- ctree(.tuky(price) ~ ., 
+  boot_tree <- ctree(log(price)~ ., 
                      data = data_slice) 
   # store bootstraped model
   boot_mods[[i]] <- boot_tree
@@ -86,7 +86,7 @@ model.bootstrap.preds <- model.bootstrap.preds %>%
                                rowMeans(na.rm = TRUE))
 
 
-
+head(model.bootstrap.preds)
 
 # plot bagged model -------------------------------------------------------
 # ggplot(model.bootstrap.preds, aes(x = exp(preds_bag))) + geom_histogram()
