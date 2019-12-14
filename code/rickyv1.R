@@ -236,36 +236,29 @@ coef(bkwd_fit, 10)
 
 ##OLS Model Based on Bkwd
 
-ols_from_bkwd_fit <-
+model.ols.log_1 <-
   lm(log(price) ~ variety + province + points + taster.name + designation + taster.gender,
      data = wine_train)
 
-summary(ols_from_bkwd_fit)
-summary(ols_from_bkwd_fit)$r.squared
+summary(model.ols.log_1)
+summary(model.ols.log_1)$r.squared
+plot(model.ols.log_1)
 
 #Predictions-Backwards Fit Model----
 
-preds_bkwd_fit <- predict(ols_from_bkwd_fit)
-preds_bkwd_fit
-
-mod3_df <- data.frame(pred = preds_bkwd_fit,
-                      actual = wine_train$price)
-
-##Plot of Actual Vs Preds
-
-ggplot(mod3_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
-  geom_abline(color = "red", linetype = "dashed")
+model.ols.log_1.preds <- predict(model.ols.log_1)
+model.ols.log_1.preds
 
 ##New Dataframe W/Resids Not Changed
 
-mod3_df <- data.frame(pred = preds_bkwd_fit,
+model.ols.log_1.preds_df <- data.frame(pred = model.ols.log_1.preds,
                       actual = wine_train$price,
-                      resids = ols_from_bkwd_fit$residuals)
+                      resids = model.ols.log_1$residuals)
 
 
 ##Plot of Preds Vs Resids
 
-ggplot(mod3_df, aes(x = pred, y = resids)) +
+ggplot(model.ols.log_1.preds_df, aes(x = pred, y = resids)) +
   geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT MODEL RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 
@@ -379,41 +372,37 @@ summary(bkwd_fit_tukey)
 plot(bkwd_fit_tukey, scale = "adjr2", main = "Backward Fit Model")
 coef(bkwd_fit_tukey, 10)
 
-ols_from_bkwd_fit_tukey <-
+model.ols.price <-
   lm(
     -1 * price ^ (-.3) ~ country + variety + points + province + taster.gender + designation + color,
     data = wine_train
   )
 
-summary(ols_from_bkwd_fit_tukey)
-summary(ols_from_bkwd_fit_tukey)$r.squared
+summary(model.ols.price)
+summary(model.ols.price)$r.squared
+as.formula(model.ols.price)
+coef(model.ols.price) %>% round(2)
+cplot(model.ols.price)
 
 #Predictions Backwards Fit Tukey----
 
 preds_bkwd_tukey <- -predict(ols_from_bkwd_fit_tukey)
 preds_bkwd_tukey
 
-mod6_df <- data.frame(pred = preds_bkwd_tukey,
-                      actual = wine_train$price)
-##Plot of Preds Vs Actual
-
-ggplot(mod6_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
-  geom_abline(color = "red", linetype = "dashed")
-
-mod6_df <- data.frame(pred = preds_bkwd_tukey,
+preds_bkwd_tukey_df <- data.frame(pred = preds_bkwd_tukey,
                       actual = wine_train$price,
                       resids = ols_from_bkwd_fit_tukey$residuals)
 
 
 ##Plot of Resids vs Preds
 
-ggplot(mod6_df, aes(x = pred, y = resids)) +
+ggplot(preds_bkwd_tukey_df, aes(x = pred, y = resids)) +
   geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT TUKEY RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 ##RMSE
 
-RMSE(mod6_df$pred, wine_train$price)
+RMSE(preds_bkwd_tukey_df$pred, wine_train$price)
 
 ##MAE
 
-MAE(mod6_df$pred, wine_train$price)
+MAE(preds_bkwd_tukey_df$pred, wine_train$price)
