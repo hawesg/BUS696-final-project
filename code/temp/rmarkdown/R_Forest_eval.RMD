@@ -98,6 +98,46 @@ rf_fit$importance
 varImpPlot(rf_fit,type=1)
 varImpPlot(rf_fit,type=2)
 ```
+# Predicted vs Modeled
+```{r}
+# predictions predict(object, newdata
+conflict_prefer("rename","dplyr")
+
+model.rf.preds.train <- data.frame(
+  actual=  log(wine_train$price),
+  pred = predict(rf_fit, data=wine_train) %>% round(3)
+) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate( resid = actual - pred)
+model.rf.preds.test <- data.frame(
+  actual=  log(wine_test$price),
+  pred = predict(rf_fit, data=wine_test) %>% round(3)
+) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate( resid = actual - pred)
+#library("caret")
+#postResample(pred = model.rf.preds.train$pred, obs = model.rf.preds.trains$actual)
+
+ggplot(model.rf.preds.train,aes(x = pred, y = resid)) +
+  geom_point() +
+  geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs") ) +
+  labs(x="Fitted values", 
+       y="Residuals", 
+       title="RForest: Price in $ -- Residuals vs Fitted Plot - Train", 
+       caption = "", 
+       subtitle = "R2:0.612 | MSE: -0.1757")+
+  geom_hline(yintercept=0, col="red", linetype="dashed")+
+  theme_bw()
+
+ggplot(model.rf.preds.test,aes(x = pred, y = resid)) +
+  geom_point() +
+  geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs") ) +
+  labs(x="Fitted values", 
+       y="Residuals", 
+       title="RForest: Price in $ -- Residuals vs Fitted Plot - Test", 
+       caption = "", 
+       subtitle = "")+
+  geom_hline(yintercept=0, col="red", linetype="dashed")+
+  theme_bw()
+
+```
+
 # R Forest Explainer
 ```{r}
 library(randomForestExplainer)
@@ -105,6 +145,7 @@ library(randomForestExplainer)
 # RForest Explanation file render ---- 
 #explain_forest(rf_fit, interactions = TRUE, data = wine_train)
 
+plot_predict_interaction(rf_fit, wine_train, "price", "points")
 plot_predict_interaction(rf_fit, wine_train, "title.n_chars", "points")
 plot_predict_interaction(rf_fit, wine_train, "title.n_words", "points")
 plot_predict_interaction(rf_fit, wine_train, "taster.avg_points", "points")
