@@ -1,0 +1,2829 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Garrett Hawes, Bart Ciastkowski, Ricky Lobel" />
+
+<meta name="date" content="2019-11-18" />
+
+<title>Deliverable 2</title>
+
+<script src="deliverable2_files_t/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="deliverable2_files_t/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="deliverable2_files_t/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="deliverable2_files_t/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="deliverable2_files_t/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="deliverable2_files_t/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="deliverable2_files_t/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="deliverable2_files_t/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="deliverable2_files_t/navigation-1.1/tabsets.js"></script>
+<script src="deliverable2_files_t/navigation-1.1/codefolding.js"></script>
+<!-- Add icon library -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://cdn.jsdelivr.net/jquery.magnific-popup/1.0.0/magnific-popup.css">
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-116798045-2"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'UA-116798045-2');
+        </script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { background-color: #f8f8f8; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="includes/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+<a href="https://github.com/hawesg/BUS696-final-project" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#70B7FD; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+<div class="navbar navbar-default navbar-static-top">
+    <div class="container-fluid">
+      <a class="navbar-brand">BUS696</a>
+      <div class="nav navbar-nav pull-right">
+        <li id="theme-button" class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Change Theme <b class="caret"></b></a>
+          <ul class="dropdown-menu ">
+            <li><a href="#" name="current">Cerulean</a></li>
+            <li class="divider"></li>
+            <li><a href="#" name="cerulean">Cerulean</a></li>
+            <li><a href="#" name="cosmo">Cosmo</a></li>
+            <li><a href="#" name="cyborg">Cyborg</a></li>
+            <li><a href="#" name="darkly">Darkly</a></li>
+            <li><a href="#" name="flatly">Flatly</a></li>
+            <li><a href="#" name="journal">Journal</a></li>
+            <li><a href="#" name="lumen">Lumen</a></li>
+            <li><a href="#" name="paper">Paper</a></li>
+            <li><a href="#" name="readable">Readable</a></li>
+            <li><a href="#" name="sandstone">Sandstone</a></li>
+            <li><a href="#" name="simplex">Simplex</a></li>
+            <li><a href="#" name="slate">Slate</a></li>
+            <li><a href="#" name="solar">Solar</a></li>
+            <li><a href="#" name="spacelab">Spacelab</a></li>
+            <li><a href="#" name="superhero">Superhero</a></li>
+            <li><a href="#" name="united">United</a></li>
+            <li><a href="#" name="yeti">Yeti</a></li>
+          </ul>
+        </li>
+      </div>
+    </div>
+  </div>
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Deliverable 2</h1>
+<h4 class="author">Garrett Hawes, Bart Ciastkowski, Ricky Lobel</h4>
+<h4 class="date">2019-11-18</h4>
+
+</div>
+
+
+<div id="load-data" class="section level1">
+<h1><span class="header-section-number">1</span> Load Data</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">wine_data &lt;-</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="st">  </span><span class="kw">read.csv</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;input&quot;</span>, <span class="st">&quot;winemag-data-130k-v2.csv&quot;</span>))</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">colors &lt;-<span class="st"> </span><span class="kw">read.csv</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;input&quot;</span>, <span class="st">&quot;wine-colors.csv&quot;</span>))</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">twitter_stats &lt;-<span class="st"> </span><span class="kw">read.csv</span>(here<span class="op">::</span><span class="kw">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;input&quot;</span>, <span class="st">&quot;twitter-data.csv&quot;</span>))</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="co"># Add color</span></a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="co"># wine_data_with_color &lt;- left_join(wine_data, colors, by = &quot;variety&quot;)</span></a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">wine_data &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">left_join</span>(wine_data, colors, <span class="dt">by =</span> <span class="st">&quot;variety&quot;</span>)</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="co"># Add in twitter stats </span></a>
+<a class="sourceLine" id="cb1-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">wine_data &lt;-<span class="st"> </span>dplyr<span class="op">::</span><span class="kw">left_join</span>(wine_data, twitter_stats, <span class="dt">by =</span> <span class="st">&quot;taster_twitter_handle&quot;</span>)</a></code></pre></div>
+</div>
+<div id="clean" class="section level1">
+<h1><span class="header-section-number">2</span> Clean</h1>
+<div id="functions" class="section level2">
+<h2><span class="header-section-number">2.1</span> Functions</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">.clean_text &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">  x &lt;-<span class="st"> </span>stringi<span class="op">::</span><span class="kw">stri_trans_general</span>(x, <span class="st">&quot;Latin-ASCII&quot;</span>)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">  x &lt;-<span class="st"> </span><span class="kw">str_replace_all</span>(x, <span class="st">&quot;[^A-Za-z]&quot;</span>, <span class="st">&quot; &quot;</span>)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">  x &lt;-<span class="st"> </span><span class="kw">tolower</span>(x)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">  x &lt;-<span class="st"> </span><span class="kw">str_squish</span>(x)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">  <span class="kw">return</span>(x)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">}</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">.clean_fct_text &lt;-<span class="st"> </span><span class="cf">function</span>(x) {</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">  x &lt;-<span class="st"> </span><span class="kw">as.character</span>(x)</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11">  <span class="kw">.clean_text</span>(x)</a>
+<a class="sourceLine" id="cb2-12" data-line-number="12">  <span class="kw">return</span>(x)</a>
+<a class="sourceLine" id="cb2-13" data-line-number="13">}</a></code></pre></div>
+</div>
+<div id="color-revalue" class="section level2">
+<h2><span class="header-section-number">2.2</span> Color Revalue</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">wine_data &lt;-</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">  </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">color =</span> <span class="kw">revalue</span>(</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">    wine_data<span class="op">$</span>color,</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">    <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">      <span class="st">&quot;O&quot;</span> =<span class="st"> &quot;Other&quot;</span>,</a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">      <span class="st">&quot;R&quot;</span> =<span class="st"> &quot;Red&quot;</span>,</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">      <span class="st">&quot;W&quot;</span> =<span class="st"> &quot;White&quot;</span>,</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">      <span class="st">&quot;SW&quot;</span> =<span class="st"> &quot;Sparkling White&quot;</span></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">    )</a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">  ))</a></code></pre></div>
+</div>
+<div id="apply-cleaning" class="section level2">
+<h2><span class="header-section-number">2.3</span> Apply Cleaning</h2>
+<p>Apply the cleaning strategies from above</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">wine_data &lt;-</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">  </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">    <span class="dt">country =</span> <span class="kw">as.character</span>(country),</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">    <span class="dt">variety =</span> <span class="kw">as.character</span>(variety),</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">    <span class="dt">taster_name =</span> <span class="kw">as.character</span>(taster_name),</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">    <span class="dt">title =</span> <span class="kw">as.character</span>(title),</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">    <span class="dt">color_lump =</span> <span class="kw">fct_lump</span>(color, <span class="dt">n =</span> <span class="dv">2</span>), </a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">    <span class="dt">province_lump =</span> <span class="kw">fct_lump</span>(wine_data<span class="op">$</span>province, <span class="dt">n =</span> <span class="dv">10</span>),</a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">    <span class="dt">country_lump =</span> <span class="kw">fct_lump</span>(wine_data<span class="op">$</span>country, <span class="dt">n =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">  ) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span> (country <span class="op">!=</span><span class="st"> &quot;&quot;</span> <span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="st">            </span>variety <span class="op">!=</span><span class="st"> &quot;&quot;</span> <span class="op">&amp;</span><span class="st"> </span>taster_name <span class="op">!=</span><span class="st"> &quot;&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">drop_na</span>(price) </a></code></pre></div>
+</div>
+</div>
+<div id="feature-generation" class="section level1">
+<h1><span class="header-section-number">3</span> Feature Generation</h1>
+<div id="points-categories" class="section level2">
+<h2><span class="header-section-number">3.1</span> Points Categories</h2>
+<p>Turn score into categories per <a href="https://www.winespectator.com/articles/scoring-scale" class="uri">https://www.winespectator.com/articles/scoring-scale</a></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">wine_data &lt;-</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="st">  </span>wine_data  <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">point_cat =</span> <span class="kw">cut</span>(</a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">    wine_data<span class="op">$</span>points,</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">    <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">74</span>, <span class="dv">79</span>, <span class="dv">84</span>, <span class="dv">89</span>, <span class="dv">94</span>, <span class="dv">100</span>),</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">    <span class="dt">labels =</span> <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">      <span class="st">&quot;Not Recomended&quot;</span>,</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">      <span class="st">&quot;Mediocre&quot;</span>,</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">      <span class="st">&quot;Good&quot;</span>,</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">      <span class="st">&quot;Very good&quot;</span>,</a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">      <span class="st">&quot;Outstanding&quot;</span>,</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11">      <span class="st">&quot;Classic&quot;</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12">    )</a>
+<a class="sourceLine" id="cb5-13" data-line-number="13">  ))</a></code></pre></div>
+</div>
+<div id="price-categories" class="section level2">
+<h2><span class="header-section-number">3.2</span> Price Categories</h2>
+<p>Turn score into categories per <a href="https://www.winespectator.com/articles/scoring-scale" class="uri">https://www.winespectator.com/articles/scoring-scale</a></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1">wine_data &lt;-</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="st">  </span>wine_data  <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">price_cat =</span> <span class="kw">cut</span>(</a>
+<a class="sourceLine" id="cb6-4" data-line-number="4">                            price,</a>
+<a class="sourceLine" id="cb6-5" data-line-number="5">                            <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">4</span>, <span class="dv">12</span>, <span class="dv">50</span>, <span class="dv">200</span>, <span class="dv">750</span>, <span class="dv">3000</span>),</a>
+<a class="sourceLine" id="cb6-6" data-line-number="6">                            <span class="dt">labels =</span> <span class="kw">c</span>( <span class="st">&quot;Budget ($0-4)&quot;</span>, </a>
+<a class="sourceLine" id="cb6-7" data-line-number="7">                                        <span class="st">&quot;Every Day ($5-12)&quot;</span>, </a>
+<a class="sourceLine" id="cb6-8" data-line-number="8">                                        <span class="st">&quot;Premium ($13-50)&quot;</span>, </a>
+<a class="sourceLine" id="cb6-9" data-line-number="9">                                        <span class="st">&quot;Ultra Premium ($51-200)&quot;</span>, </a>
+<a class="sourceLine" id="cb6-10" data-line-number="10">                                        <span class="st">&quot;Luxury ($201-750)&quot;</span>, </a>
+<a class="sourceLine" id="cb6-11" data-line-number="11">                                        <span class="st">&quot;What the fuck is wrong with you? ($751+)&quot;</span> )))</a></code></pre></div>
+</div>
+<div id="title-features" class="section level2 tabset tabset-fade tabset-pills">
+<h2><span class="header-section-number">3.3</span> Title Features</h2>
+<div id="legth" class="section level3">
+<h3><span class="header-section-number">3.3.1</span> Legth</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">wine_data &lt;-</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2"><span class="st">  </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">title_length =</span>  <span class="kw">nchar</span>(<span class="kw">as.character</span>(wine_data<span class="op">$</span>title)))</a></code></pre></div>
+</div>
+<div id="has-accents" class="section level3">
+<h3><span class="header-section-number">3.3.2</span> Has Accent(s)</h3>
+<p>Has accents presuming the american market might pay more … or less for wines that sound exotic.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">wine_data &lt;-</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="st">  </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">title_has_accents =</span> </a>
+<a class="sourceLine" id="cb8-3" data-line-number="3">                                (title <span class="op">!=</span><span class="st"> </span>stringi<span class="op">::</span><span class="kw">stri_trans_general</span>(title,</a>
+<a class="sourceLine" id="cb8-4" data-line-number="4">                                                                      <span class="st">&quot;Latin-ASCII&quot;</span>)))</a></code></pre></div>
+</div>
+<div id="title-sentiment-analysis-and-word-count" class="section level3">
+<h3><span class="header-section-number">3.3.3</span> Title Sentiment Analysis and Word Count</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"> wine_data &lt;-<span class="st"> </span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="st">   </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">title_no_accents =</span> stringi<span class="op">::</span><span class="kw">stri_trans_general</span>(title, </a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">                                                                              <span class="st">&quot;Latin-ASCII&quot;</span>))</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5">s &lt;-<span class="st"> </span><span class="kw">sentiment_by</span>(wine_data<span class="op">$</span>title_no_accents)</a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="kw">qplot</span>(s<span class="op">$</span>ave_sentiment, </a>
+<a class="sourceLine" id="cb9-8" data-line-number="8">      <span class="dt">geom=</span><span class="st">&quot;histogram&quot;</span>, </a>
+<a class="sourceLine" id="cb9-9" data-line-number="9">      <span class="dt">binwidth=</span><span class="fl">0.2</span>, </a>
+<a class="sourceLine" id="cb9-10" data-line-number="10">      <span class="dt">main=</span><span class="st">&quot;Wine Title Sentiment Histogram&quot;</span>)</a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/title-sentiment-1.png" alt="Click to enlarge" width="672" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">wine_data &lt;-<span class="st"> </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">title_sentement =</span> s<span class="op">$</span>ave_sentiment, </a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">                                         <span class="dt">title_word_count =</span> s<span class="op">$</span>word_count)</a></code></pre></div>
+</div>
+</div>
+<div id="designation-column" class="section level2 tabset tabset-fade tabset-pills">
+<h2><span class="header-section-number">3.4</span> Designation column</h2>
+<div id="clean-text" class="section level3">
+<h3><span class="header-section-number">3.4.1</span> Clean text</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">wine_data &lt;-<span class="st"> </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">designation =</span> <span class="kw">.clean_text</span>(designation))</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">wine_designations_word_cloud &lt;-<span class="st"> </span>wine_data</a></code></pre></div>
+</div>
+<div id="identify-possible-groups" class="section level3">
+<h3><span class="header-section-number">3.4.2</span> Identify Possible Groups</h3>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">wine_designations_word_cloud &lt;-</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="st">  </span>wine_designations_word_cloud <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">designation =</span> <span class="kw">str_replace_all</span>(designation, <span class="st">&quot;([Rr].serv.)&quot;</span>, <span class="st">&quot;Reserve&quot;</span>))</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">## Calculate Corpus</span></a>
+<a class="sourceLine" id="cb12-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb12-7" data-line-number="7">wineDesignation.Corpus &lt;-</a>
+<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="kw">Corpus</span>(<span class="kw">VectorSource</span>(wine_designations_word_cloud<span class="op">$</span>designation))</a>
+<a class="sourceLine" id="cb12-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co">#Data Cleaning and Wrangling</span></a>
+<a class="sourceLine" id="cb12-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb12-12" data-line-number="12">wineDesignation.clean &lt;-<span class="st"> </span><span class="kw">tm_map</span>(wineDesignation.Corpus,</a>
+<a class="sourceLine" id="cb12-13" data-line-number="13">                                 PlainTextDocument)</a>
+<a class="sourceLine" id="cb12-14" data-line-number="14">wineDesignation.clean &lt;-</a>
+<a class="sourceLine" id="cb12-15" data-line-number="15"><span class="st">  </span><span class="kw">tm_map</span>(wineDesignation.Corpus, tolower)</a>
+<a class="sourceLine" id="cb12-16" data-line-number="16">wineDesignation.clean &lt;-</a>
+<a class="sourceLine" id="cb12-17" data-line-number="17"><span class="st">  </span><span class="kw">tm_map</span>(wineDesignation.Corpus, removeNumbers)</a>
+<a class="sourceLine" id="cb12-18" data-line-number="18">wineDesignation.clean &lt;-</a>
+<a class="sourceLine" id="cb12-19" data-line-number="19"><span class="st">  </span><span class="kw">tm_map</span>(wineDesignation.Corpus, removeWords, <span class="kw">stopwords</span>(<span class="st">&quot;english&quot;</span>))</a>
+<a class="sourceLine" id="cb12-20" data-line-number="20">wineDesignation.clean &lt;-</a>
+<a class="sourceLine" id="cb12-21" data-line-number="21"><span class="st">  </span><span class="kw">tm_map</span>(wineDesignation.Corpus, removePunctuation)</a>
+<a class="sourceLine" id="cb12-22" data-line-number="22">wineDesignation.clean &lt;-</a>
+<a class="sourceLine" id="cb12-23" data-line-number="23"><span class="st">  </span><span class="kw">tm_map</span>(wineDesignation.Corpus, stripWhitespace)</a>
+<a class="sourceLine" id="cb12-24" data-line-number="24"></a>
+<a class="sourceLine" id="cb12-25" data-line-number="25"><span class="kw">wordcloud</span>(<span class="dt">words =</span> wineDesignation.clean, <span class="dt">min.freq =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb12-26" data-line-number="26">          <span class="dt">max.words=</span><span class="dv">200</span>, <span class="dt">random.order=</span><span class="ot">FALSE</span>, <span class="dt">rot.per=</span><span class="fl">0.35</span>,</a>
+<a class="sourceLine" id="cb12-27" data-line-number="27">          <span class="dt">colors=</span><span class="kw">brewer.pal</span>(<span class="dv">8</span>, <span class="st">&quot;Dark2&quot;</span>))</a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/unnamed-chunk-3-1.png" alt="Click to enlarge" width="672" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="group" class="section level3">
+<h3><span class="header-section-number">3.4.3</span> Group</h3>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co"># List of regular expressions to match</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3">patterns &lt;-</a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"><span class="st">  </span><span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">    <span class="st">&quot;.*([Rr].serv).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-6" data-line-number="6">    <span class="st">&quot;.*extra dry.*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-7" data-line-number="7">    <span class="st">&quot;.*(dry|trocken).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-8" data-line-number="8">    <span class="st">&quot;.*brut.*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-9" data-line-number="9">    <span class="st">&quot;.*(estate|grand|casa).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-10" data-line-number="10">    <span class="st">&quot;.*single.*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-11" data-line-number="11">    <span class="st">&quot;.*(klassik|classic|tradition|vintage).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-12" data-line-number="12">    <span class="st">&quot;.*rose.*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-13" data-line-number="13">    <span class="st">&quot;.*barrel s.*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-14" data-line-number="14">    <span class="st">&quot;.*(old v|vieilles).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-15" data-line-number="15">    <span class="st">&quot;.*(vineyard|ranch|alpha|branco|broquel).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-16" data-line-number="16">    <span class="st">&quot;.*(barrel|crianza|cuve).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-17" data-line-number="17">    <span class="st">&quot;.*unoaked.*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-18" data-line-number="18">    <span class="st">&quot;.*cuve prestige.*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-19" data-line-number="19">    <span class="st">&quot;.*(blanc|white|bianco).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-20" data-line-number="20">    <span class="st">&quot;.*(red|tinto|bussia).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-21" data-line-number="21">    <span class="st">&quot;.*(nouveau|proprietary|signature|selec|premier).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-22" data-line-number="22">    <span class="st">&quot;.*lot.*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-23" data-line-number="23">    <span class="st">&quot;.*late.*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-24" data-line-number="24">    <span class="st">&quot;.*(oak|roble).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-25" data-line-number="25">    <span class="st">&quot;.*(organic|cannubi).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-26" data-line-number="26">    <span class="st">&quot;.*(port|colheita).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-27" data-line-number="27">    <span class="st">&quot;.*(collection|premium|prestige|limited).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-28" data-line-number="28">    <span class="st">&quot;.*clone.*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-29" data-line-number="29">    <span class="st">&quot;.*(block|bin).*&quot;</span>,</a>
+<a class="sourceLine" id="cb13-30" data-line-number="30">    <span class="st">&quot;^$&quot;</span></a>
+<a class="sourceLine" id="cb13-31" data-line-number="31">  )</a>
+<a class="sourceLine" id="cb13-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb13-33" data-line-number="33"><span class="co"># Values to replace above patterns with</span></a>
+<a class="sourceLine" id="cb13-34" data-line-number="34"></a>
+<a class="sourceLine" id="cb13-35" data-line-number="35">replacements &lt;-</a>
+<a class="sourceLine" id="cb13-36" data-line-number="36"><span class="st">  </span><span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb13-37" data-line-number="37">    <span class="st">&quot;Reserve&quot;</span>,</a>
+<a class="sourceLine" id="cb13-38" data-line-number="38">    <span class="st">&quot;Extra Dry&quot;</span>,</a>
+<a class="sourceLine" id="cb13-39" data-line-number="39">    <span class="st">&quot;Dry&quot;</span>,</a>
+<a class="sourceLine" id="cb13-40" data-line-number="40">    <span class="st">&quot;Brut&quot;</span>,</a>
+<a class="sourceLine" id="cb13-41" data-line-number="41">    <span class="st">&quot;Estate&quot;</span>,</a>
+<a class="sourceLine" id="cb13-42" data-line-number="42">    <span class="st">&quot;Single Vineyard&quot;</span>,</a>
+<a class="sourceLine" id="cb13-43" data-line-number="43">    <span class="st">&quot;Classic Vintage&quot;</span>,</a>
+<a class="sourceLine" id="cb13-44" data-line-number="44">    <span class="st">&quot;Rose&quot;</span>,</a>
+<a class="sourceLine" id="cb13-45" data-line-number="45">    <span class="st">&quot;Barrel Sample&quot;</span>,</a>
+<a class="sourceLine" id="cb13-46" data-line-number="46">    <span class="st">&quot;Old Vine&quot;</span>,</a>
+<a class="sourceLine" id="cb13-47" data-line-number="47">    <span class="st">&quot;Some Vineyard&quot;</span>,</a>
+<a class="sourceLine" id="cb13-48" data-line-number="48">    <span class="st">&quot;Barrel&quot;</span>,</a>
+<a class="sourceLine" id="cb13-49" data-line-number="49">    <span class="st">&quot;UnOaked&quot;</span>,</a>
+<a class="sourceLine" id="cb13-50" data-line-number="50">    <span class="st">&quot;Finest Champagne&quot;</span>,</a>
+<a class="sourceLine" id="cb13-51" data-line-number="51">    <span class="st">&quot;White&quot;</span>,</a>
+<a class="sourceLine" id="cb13-52" data-line-number="52">    <span class="st">&quot;Red&quot;</span>,</a>
+<a class="sourceLine" id="cb13-53" data-line-number="53">    <span class="st">&quot;Signature&quot;</span>,</a>
+<a class="sourceLine" id="cb13-54" data-line-number="54">    <span class="st">&quot;Lot&quot;</span>,</a>
+<a class="sourceLine" id="cb13-55" data-line-number="55">    <span class="st">&quot;Late Harvest&quot;</span>,</a>
+<a class="sourceLine" id="cb13-56" data-line-number="56">    <span class="st">&quot;Oak&quot;</span>,</a>
+<a class="sourceLine" id="cb13-57" data-line-number="57">    <span class="st">&quot;Organic&quot;</span>,</a>
+<a class="sourceLine" id="cb13-58" data-line-number="58">    <span class="st">&quot;Port&quot;</span>,</a>
+<a class="sourceLine" id="cb13-59" data-line-number="59">    <span class="st">&quot;Premium&quot;</span>,</a>
+<a class="sourceLine" id="cb13-60" data-line-number="60">    <span class="st">&quot;Clone&quot;</span>,</a>
+<a class="sourceLine" id="cb13-61" data-line-number="61">    <span class="st">&quot;Block&quot;</span>,</a>
+<a class="sourceLine" id="cb13-62" data-line-number="62">    <span class="st">&quot;No Designation&quot;</span></a>
+<a class="sourceLine" id="cb13-63" data-line-number="63">  )</a>
+<a class="sourceLine" id="cb13-64" data-line-number="64"></a>
+<a class="sourceLine" id="cb13-65" data-line-number="65"><span class="co"># This is so that we can use the replacements object in str_replace_all </span></a>
+<a class="sourceLine" id="cb13-66" data-line-number="66"><span class="co"># rather than a single pattern/replacement</span></a>
+<a class="sourceLine" id="cb13-67" data-line-number="67"></a>
+<a class="sourceLine" id="cb13-68" data-line-number="68"><span class="kw">names</span>(replacements) &lt;-<span class="st"> </span>patterns</a>
+<a class="sourceLine" id="cb13-69" data-line-number="69"></a>
+<a class="sourceLine" id="cb13-70" data-line-number="70">wine_data &lt;-</a>
+<a class="sourceLine" id="cb13-71" data-line-number="71"><span class="st">  </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-72" data-line-number="72"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">designation =</span> <span class="kw">str_replace_all</span>(designation, replacements)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-73" data-line-number="73"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">designation =</span> <span class="kw">as.factor</span>(designation))</a></code></pre></div>
+</div>
+</div>
+<div id="lump-varieties" class="section level2">
+<h2><span class="header-section-number">3.5</span> Lump Varieties</h2>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">.append_color_to_factor &lt;-<span class="st"> </span><span class="cf">function</span>(variety, color) {</a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">  variety =<span class="st"> </span><span class="kw">as.character</span>(variety)</a>
+<a class="sourceLine" id="cb14-3" data-line-number="3">  variety =<span class="st"> </span><span class="kw">paste</span>(variety, color)</a>
+<a class="sourceLine" id="cb14-4" data-line-number="4">  <span class="kw">return</span>(variety)</a>
+<a class="sourceLine" id="cb14-5" data-line-number="5">}</a>
+<a class="sourceLine" id="cb14-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb14-7" data-line-number="7">red &lt;-</a>
+<a class="sourceLine" id="cb14-8" data-line-number="8"><span class="st">  </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(color_lump <span class="op">==</span><span class="st"> &quot;Red&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-9" data-line-number="9"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">variety_lump =</span> <span class="kw">fct_lump</span>(variety, <span class="dt">n =</span> <span class="dv">5</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-10" data-line-number="10"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">variety_lump =</span> <span class="kw">.append_color_to_factor</span>(variety_lump, <span class="st">&quot;(R)&quot;</span>))</a>
+<a class="sourceLine" id="cb14-11" data-line-number="11">white &lt;-</a>
+<a class="sourceLine" id="cb14-12" data-line-number="12"><span class="st">  </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(color_lump <span class="op">==</span><span class="st"> &quot;White&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-13" data-line-number="13"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">variety_lump =</span> <span class="kw">fct_lump</span>(variety, <span class="dt">n =</span> <span class="dv">5</span>)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-14" data-line-number="14"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">variety_lump =</span> <span class="kw">.append_color_to_factor</span>(variety_lump, <span class="st">&quot;(W)&quot;</span>))</a>
+<a class="sourceLine" id="cb14-15" data-line-number="15">other &lt;-</a>
+<a class="sourceLine" id="cb14-16" data-line-number="16"><span class="st">  </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(color_lump <span class="op">==</span><span class="st"> &quot;Other&quot;</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb14-17" data-line-number="17"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">variety_lump =</span> <span class="st">&quot;Other&quot;</span>)</a>
+<a class="sourceLine" id="cb14-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb14-19" data-line-number="19">wine_data_bind &lt;-<span class="st"> </span><span class="kw">do.call</span>(<span class="st">&quot;rbind&quot;</span>, <span class="kw">list</span>(red, white, other))</a>
+<a class="sourceLine" id="cb14-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb14-21" data-line-number="21">wine_data &lt;-</a>
+<a class="sourceLine" id="cb14-22" data-line-number="22"><span class="st">  </span>wine_data_bind <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">variety_lump =</span> <span class="kw">factor</span>(variety_lump))</a></code></pre></div>
+</div>
+<div id="lump-other-factors" class="section level2">
+<h2><span class="header-section-number">3.6</span> Lump Other Factors</h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">wine_data &lt;-</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="st">  </span>wine_data <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">filter</span>(<span class="kw">as.character</span>(taster_twitter_handle) <span class="op">!=</span><span class="st"> &quot;&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(</a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">    <span class="dt">taster_name_lump =</span> <span class="kw">fct_lump</span>(taster_name, <span class="dt">n =</span> <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb15-5" data-line-number="5">    <span class="dt">taster_twitter_lump =</span> <span class="kw">fct_lump</span>(taster_twitter_handle, <span class="dt">n =</span> <span class="dv">5</span>),</a>
+<a class="sourceLine" id="cb15-6" data-line-number="6">    <span class="dt">designation_lump =</span> <span class="kw">fct_lump</span>(designation, <span class="dt">n =</span> <span class="dv">10</span>),</a>
+<a class="sourceLine" id="cb15-7" data-line-number="7">    <span class="dt">country_lump =</span> <span class="kw">fct_lump</span>(country, <span class="dt">n =</span> <span class="dv">10</span>),</a>
+<a class="sourceLine" id="cb15-8" data-line-number="8">    <span class="dt">variety_lump =</span> <span class="kw">fct_lump</span>(variety, <span class="dt">n =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb15-9" data-line-number="9">  )</a></code></pre></div>
+</div>
+<div id="add-reviewer-stats" class="section level2">
+<h2><span class="header-section-number">3.7</span> Add reviewer stats</h2>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">wine_data &lt;-<span class="st"> </span>wine_data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-2" data-line-number="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">group_by</span>(taster_name) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb16-3" data-line-number="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">taster_avg_points =</span> <span class="kw">mean</span>(points),</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">                   <span class="dt">taster_review_count =</span> <span class="kw">n</span>()) <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">ungroup</span>()</a></code></pre></div>
+</div>
+<div id="ad-id-column" class="section level2">
+<h2><span class="header-section-number">3.8</span> Ad ID column</h2>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">wine_data &lt;-<span class="st"> </span>tibble<span class="op">::</span><span class="kw">rowid_to_column</span>(wine_data, <span class="st">&quot;ID&quot;</span>)</a></code></pre></div>
+</div>
+<div id="drop-unused-point-category-factors" class="section level2">
+<h2><span class="header-section-number">3.9</span> Drop unused point category factors</h2>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">setdiff</span>(<span class="kw">levels</span>(wine_data<span class="op">$</span>point_cat), wine_data<span class="op">$</span>point_cat)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw">fct_drop</span>(wine_data<span class="op">$</span>point_cat)</a></code></pre></div>
+</div>
+<div id="drop-unneeded-columns" class="section level2">
+<h2><span class="header-section-number">3.10</span> Drop unneeded columns</h2>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">wine_data_clean &lt;-</a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="st">  </span>wine_data <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(</a>
+<a class="sourceLine" id="cb19-4" data-line-number="4">    ID,</a>
+<a class="sourceLine" id="cb19-5" data-line-number="5">    price,</a>
+<a class="sourceLine" id="cb19-6" data-line-number="6">    country,</a>
+<a class="sourceLine" id="cb19-7" data-line-number="7">    variety,</a>
+<a class="sourceLine" id="cb19-8" data-line-number="8">    points,</a>
+<a class="sourceLine" id="cb19-9" data-line-number="9">    point_cat,</a>
+<a class="sourceLine" id="cb19-10" data-line-number="10">    title_length,</a>
+<a class="sourceLine" id="cb19-11" data-line-number="11">    title_has_accents,</a>
+<a class="sourceLine" id="cb19-12" data-line-number="12">    variety_lump,</a>
+<a class="sourceLine" id="cb19-13" data-line-number="13">    designation_lump,</a>
+<a class="sourceLine" id="cb19-14" data-line-number="14">    taster_name_lump,</a>
+<a class="sourceLine" id="cb19-15" data-line-number="15">    taster_twitter_lump,</a>
+<a class="sourceLine" id="cb19-16" data-line-number="16">    taster_gender,</a>
+<a class="sourceLine" id="cb19-17" data-line-number="17">    taster_avg_points,</a>
+<a class="sourceLine" id="cb19-18" data-line-number="18">    taster_review_count,</a>
+<a class="sourceLine" id="cb19-19" data-line-number="19">    taster_n_tweets,</a>
+<a class="sourceLine" id="cb19-20" data-line-number="20">    color_lump,</a>
+<a class="sourceLine" id="cb19-21" data-line-number="21">    country_lump,</a>
+<a class="sourceLine" id="cb19-22" data-line-number="22">    province_lump,</a>
+<a class="sourceLine" id="cb19-23" data-line-number="23">    price_cat,</a>
+<a class="sourceLine" id="cb19-24" data-line-number="24">    title_word_count,</a>
+<a class="sourceLine" id="cb19-25" data-line-number="25">    title_sentement</a>
+<a class="sourceLine" id="cb19-26" data-line-number="26">  ) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">droplevels</span>()</a></code></pre></div>
+</div>
+<div id="unused-columns" class="section level2">
+<h2><span class="header-section-number">3.11</span> Unused columns</h2>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="kw">setdiff</span>(<span class="kw">names</span>(wine_data), <span class="kw">names</span>(wine_data_clean))</a></code></pre></div>
+<pre><code>##  [1] &quot;X&quot;                     &quot;description&quot;           &quot;designation&quot;          
+##  [4] &quot;province&quot;              &quot;region_1&quot;              &quot;region_2&quot;             
+##  [7] &quot;taster_name&quot;           &quot;taster_twitter_handle&quot; &quot;title&quot;                
+## [10] &quot;winery&quot;                &quot;color&quot;                 &quot;taster_n_followers&quot;   
+## [13] &quot;title_no_accents&quot;</code></pre>
+</div>
+</div>
+<div id="summary-statistics" class="section level1 tabset tabset-fade tabset-pills">
+<h1><span class="header-section-number">4</span> Summary Statistics</h1>
+<div id="numeric-columns" class="section level2">
+<h2><span class="header-section-number">4.1</span> Numeric Columns</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">table_numeric &lt;-</a>
+<a class="sourceLine" id="cb22-2" data-line-number="2"><span class="st">  </span><span class="kw">tableby</span>(<span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> wine_data_clean <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-3" data-line-number="3"><span class="st">            </span><span class="kw">select_if</span>(is.numeric))</a>
+<a class="sourceLine" id="cb22-4" data-line-number="4"><span class="kw">summary</span>(table_numeric, <span class="dt">title =</span> <span class="st">&quot;Wine Data by Price - Numeric Columns&quot;</span>)</a></code></pre></div>
+<table>
+<caption>Wine Data by Price - Numeric Columns</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">Overall (N=91500)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>ID</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">   Mean (SD)</td>
+<td align="center">45750.500 (26413.919)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Range</td>
+<td align="center">1.000 - 91500.000</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>price</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Mean (SD)</td>
+<td align="center">35.287 (43.291)</td>
+</tr>
+<tr class="even">
+<td align="left">   Range</td>
+<td align="center">4.000 - 3300.000</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>points</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">   Mean (SD)</td>
+<td align="center">88.610 (2.967)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Range</td>
+<td align="center">80.000 - 100.000</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>title_length</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Mean (SD)</td>
+<td align="center">52.749 (13.742)</td>
+</tr>
+<tr class="even">
+<td align="left">   Range</td>
+<td align="center">12.000 - 136.000</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>taster_avg_points</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">   Mean (SD)</td>
+<td align="center">88.610 (0.950)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Range</td>
+<td align="center">86.610 - 90.613</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>taster_review_count</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Mean (SD)</td>
+<td align="center">11256.584 (5946.771)</td>
+</tr>
+<tr class="even">
+<td align="left">   Range</td>
+<td align="center">6.000 - 20172.000</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>taster_n_tweets</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">   Mean (SD)</td>
+<td align="center">2660.376 (4126.567)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Range</td>
+<td align="center">257.000 - 19200.000</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>title_word_count</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Mean (SD)</td>
+<td align="center">6.631 (2.087)</td>
+</tr>
+<tr class="even">
+<td align="left">   Range</td>
+<td align="center">2.000 - 23.000</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>title_sentement</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">   Mean (SD)</td>
+<td align="center">0.033 (0.113)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Range</td>
+<td align="center">-0.875 - 1.071</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="factor-columns" class="section level2">
+<h2><span class="header-section-number">4.2</span> Factor Columns</h2>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">table_factor &lt;-</a>
+<a class="sourceLine" id="cb23-2" data-line-number="2"><span class="st">  </span><span class="kw">tableby</span>(<span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> wine_data_clean <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb23-3" data-line-number="3"><span class="st">            </span><span class="kw">select_if</span>(is.factor))</a>
+<a class="sourceLine" id="cb23-4" data-line-number="4"><span class="kw">summary</span>(table_factor, <span class="dt">title =</span> <span class="st">&quot;Wine Data by Price - Factor Columns&quot;</span>)</a></code></pre></div>
+<table>
+<caption>Wine Data by Price - Factor Columns</caption>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">Overall (N=91500)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>point_cat</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">   Good</td>
+<td align="center">7465 (8.2%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Very good</td>
+<td align="center">47803 (52.2%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Outstanding</td>
+<td align="center">34576 (37.8%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Classic</td>
+<td align="center">1656 (1.8%)</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>variety_lump</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Bordeaux-style Red Blend</td>
+<td align="center">4700 (5.1%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Cabernet Sauvignon</td>
+<td align="center">6090 (6.7%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Chardonnay</td>
+<td align="center">7935 (8.7%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Malbec</td>
+<td align="center">2509 (2.7%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Pinot Noir</td>
+<td align="center">9622 (10.5%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Red Blend</td>
+<td align="center">6737 (7.4%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Riesling</td>
+<td align="center">2583 (2.8%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Rosé</td>
+<td align="center">2868 (3.1%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Sauvignon Blanc</td>
+<td align="center">3755 (4.1%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Syrah</td>
+<td align="center">3075 (3.4%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Other</td>
+<td align="center">41626 (45.5%)</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>designation_lump</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Barrel</td>
+<td align="center">1983 (2.2%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Brut</td>
+<td align="center">2390 (2.6%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Classic Vintage</td>
+<td align="center">932 (1.0%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Estate</td>
+<td align="center">4790 (5.2%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   No Designation</td>
+<td align="center">25584 (28.0%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Old Vine</td>
+<td align="center">922 (1.0%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Red</td>
+<td align="center">1014 (1.1%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Reserve</td>
+<td align="center">8815 (9.6%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Signature</td>
+<td align="center">1953 (2.1%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Some Vineyard</td>
+<td align="center">8199 (9.0%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Other</td>
+<td align="center">34918 (38.2%)</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>taster_name_lump</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Kerin O’Keefe</td>
+<td align="center">9874 (10.8%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Michael Schachner</td>
+<td align="center">14944 (16.3%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Paul Gregutt</td>
+<td align="center">9497 (10.4%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Roger Voss</td>
+<td align="center">20172 (22.0%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Virginie Boone</td>
+<td align="center">9507 (10.4%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Other</td>
+<td align="center">27506 (30.1%)</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>taster_twitter_lump</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">   <span class="citation">@kerinokeefe</span></td>
+<td align="center">9874 (10.8%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   <span class="citation">@paulgwine</span></td>
+<td align="center">9497 (10.4%)</td>
+</tr>
+<tr class="even">
+<td align="left">   <span class="citation">@vboone</span></td>
+<td align="center">9507 (10.4%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   <span class="citation">@vossroger</span></td>
+<td align="center">20172 (22.0%)</td>
+</tr>
+<tr class="even">
+<td align="left">   <span class="citation">@wineschach</span></td>
+<td align="center">14944 (16.3%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Other</td>
+<td align="center">27506 (30.1%)</td>
+</tr>
+<tr class="even">
+<td align="left"><strong>taster_gender</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">   F</td>
+<td align="center">25583 (28.0%)</td>
+</tr>
+<tr class="even">
+<td align="left">   M</td>
+<td align="center">65917 (72.0%)</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>color_lump</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">   Red</td>
+<td align="center">57244 (62.6%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   White</td>
+<td align="center">28103 (30.7%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Other</td>
+<td align="center">6153 (6.7%)</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>country_lump</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">   Argentina</td>
+<td align="center">3753 (4.1%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Australia</td>
+<td align="center">2007 (2.2%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Austria</td>
+<td align="center">2791 (3.1%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Chile</td>
+<td align="center">4305 (4.7%)</td>
+</tr>
+<tr class="even">
+<td align="left">   France</td>
+<td align="center">17525 (19.2%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Italy</td>
+<td align="center">10121 (11.1%)</td>
+</tr>
+<tr class="even">
+<td align="left">   New Zealand</td>
+<td align="center">1270 (1.4%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Portugal</td>
+<td align="center">4870 (5.3%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Spain</td>
+<td align="center">6509 (7.1%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   US</td>
+<td align="center">34535 (37.7%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Other</td>
+<td align="center">3814 (4.2%)</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>province_lump</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">   Bordeaux</td>
+<td align="center">3990 (4.4%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Burgundy</td>
+<td align="center">3090 (3.4%)</td>
+</tr>
+<tr class="even">
+<td align="left">   California</td>
+<td align="center">20042 (21.9%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Mendoza Province</td>
+<td align="center">3223 (3.5%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Northern Spain</td>
+<td align="center">3769 (4.1%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Oregon</td>
+<td align="center">5323 (5.8%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Piedmont</td>
+<td align="center">2111 (2.3%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Tuscany</td>
+<td align="center">3276 (3.6%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Veneto</td>
+<td align="center">1036 (1.1%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Washington</td>
+<td align="center">8575 (9.4%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Other</td>
+<td align="center">37065 (40.5%)</td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>price_cat</strong></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">   N-Miss</td>
+<td align="center">1</td>
+</tr>
+<tr class="odd">
+<td align="left">   Budget ($0-4)</td>
+<td align="center">7 (0.0%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Every Day ($5-12)</td>
+<td align="center">9887 (10.8%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Premium ($13-50)</td>
+<td align="center">66712 (72.9%)</td>
+</tr>
+<tr class="even">
+<td align="left">   Ultra Premium ($51-200)</td>
+<td align="center">14337 (15.7%)</td>
+</tr>
+<tr class="odd">
+<td align="left">   Luxury ($201-750)</td>
+<td align="center">521 (0.6%)</td>
+</tr>
+<tr class="even">
+<td align="left">   What the fuck is wrong with you? ($751+)</td>
+<td align="center">35 (0.0%)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="complete" class="section level2">
+<h2><span class="header-section-number">4.3</span> Complete</h2>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1">table_complete &lt;-</a>
+<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="st">  </span><span class="kw">tableby</span>(price_cat <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> wine_data_clean <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb24-3" data-line-number="3"><span class="st">    </span><span class="kw">select</span>(</a>
+<a class="sourceLine" id="cb24-4" data-line-number="4">      <span class="op">-</span><span class="kw">c</span>(ID, country, variety)</a>
+<a class="sourceLine" id="cb24-5" data-line-number="5">    ))</a>
+<a class="sourceLine" id="cb24-6" data-line-number="6"><span class="kw">summary</span>(table_complete, <span class="dt">title =</span> <span class="st">&quot;Wine Data by Price Group&quot;</span>)</a></code></pre></div>
+<table>
+<caption>Wine Data by Price Group</caption>
+<colgroup>
+<col width="16%" />
+<col width="8%" />
+<col width="10%" />
+<col width="10%" />
+<col width="13%" />
+<col width="10%" />
+<col width="18%" />
+<col width="8%" />
+<col width="3%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="center">Budget ($0-4) (N=7)</th>
+<th align="center">Every Day ($5-12) (N=9887)</th>
+<th align="center">Premium ($13-50) (N=66712)</th>
+<th align="center">Ultra Premium ($51-200) (N=14337)</th>
+<th align="center">Luxury ($201-750) (N=521)</th>
+<th align="center">What the fuck is wrong with you? ($751+) (N=35)</th>
+<th align="center">Total (N=91499)</th>
+<th align="right">p value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><strong>price</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td align="left">   Mean (SD)</td>
+<td align="center">4.000 (0.000)</td>
+<td align="center">10.406 (1.489)</td>
+<td align="center">26.752 (10.615)</td>
+<td align="center">78.552 (28.051)</td>
+<td align="center">328.814 (113.631)</td>
+<td align="center">1153.171 (509.730)</td>
+<td align="center">35.252 (41.924)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Range</td>
+<td align="center">4.000 - 4.000</td>
+<td align="center">5.000 - 12.000</td>
+<td align="center">13.000 - 50.000</td>
+<td align="center">51.000 - 200.000</td>
+<td align="center">202.000 - 750.000</td>
+<td align="center">757.000 - 2500.000</td>
+<td align="center">4.000 - 2500.000</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>points</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">   Mean (SD)</td>
+<td align="center">83.857 (1.069)</td>
+<td align="center">85.473 (1.989)</td>
+<td align="center">88.447 (2.601)</td>
+<td align="center">91.313 (2.501)</td>
+<td align="center">94.180 (2.486)</td>
+<td align="center">95.686 (3.104)</td>
+<td align="center">88.610 (2.967)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Range</td>
+<td align="center">82.000 - 85.000</td>
+<td align="center">80.000 - 93.000</td>
+<td align="center">80.000 - 98.000</td>
+<td align="center">81.000 - 100.000</td>
+<td align="center">83.000 - 100.000</td>
+<td align="center">87.000 - 100.000</td>
+<td align="center">80.000 - 100.000</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>point_cat</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td align="left">   Good</td>
+<td align="center">5 (71.4%)</td>
+<td align="center">2895 (29.3%)</td>
+<td align="center">4437 (6.7%)</td>
+<td align="center">127 (0.9%)</td>
+<td align="center">1 (0.2%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">7465 (8.2%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Very good</td>
+<td align="center">2 (28.6%)</td>
+<td align="center">6771 (68.5%)</td>
+<td align="center">38117 (57.1%)</td>
+<td align="center">2880 (20.1%)</td>
+<td align="center">30 (5.8%)</td>
+<td align="center">2 (5.7%)</td>
+<td align="center">47802 (52.2%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Outstanding</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">221 (2.2%)</td>
+<td align="center">23850 (35.8%)</td>
+<td align="center">10261 (71.6%)</td>
+<td align="center">236 (45.3%)</td>
+<td align="center">8 (22.9%)</td>
+<td align="center">34576 (37.8%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Classic</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">308 (0.5%)</td>
+<td align="center">1069 (7.5%)</td>
+<td align="center">254 (48.8%)</td>
+<td align="center">25 (71.4%)</td>
+<td align="center">1656 (1.8%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>title_length</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">   Mean (SD)</td>
+<td align="center">49.429 (11.886)</td>
+<td align="center">50.731 (13.552)</td>
+<td align="center">52.440 (13.489)</td>
+<td align="center">55.721 (14.521)</td>
+<td align="center">49.631 (14.919)</td>
+<td align="center">42.400 (9.781)</td>
+<td align="center">52.749 (13.742)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Range</td>
+<td align="center">38.000 - 66.000</td>
+<td align="center">12.000 - 124.000</td>
+<td align="center">16.000 - 136.000</td>
+<td align="center">16.000 - 136.000</td>
+<td align="center">21.000 - 113.000</td>
+<td align="center">28.000 - 69.000</td>
+<td align="center">12.000 - 136.000</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>title_has_accents</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td align="left">   FALSE</td>
+<td align="center">7 (100.0%)</td>
+<td align="center">6505 (65.8%)</td>
+<td align="center">47217 (70.8%)</td>
+<td align="center">11265 (78.6%)</td>
+<td align="center">314 (60.3%)</td>
+<td align="center">14 (40.0%)</td>
+<td align="center">65322 (71.4%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   TRUE</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">3382 (34.2%)</td>
+<td align="center">19495 (29.2%)</td>
+<td align="center">3072 (21.4%)</td>
+<td align="center">207 (39.7%)</td>
+<td align="center">21 (60.0%)</td>
+<td align="center">26177 (28.6%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>variety_lump</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">   Bordeaux-style Red Blend</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">281 (2.8%)</td>
+<td align="center">3454 (5.2%)</td>
+<td align="center">898 (6.3%)</td>
+<td align="center">57 (10.9%)</td>
+<td align="center">9 (25.7%)</td>
+<td align="center">4699 (5.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Cabernet Sauvignon</td>
+<td align="center">1 (14.3%)</td>
+<td align="center">722 (7.3%)</td>
+<td align="center">3639 (5.5%)</td>
+<td align="center">1684 (11.7%)</td>
+<td align="center">44 (8.4%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">6090 (6.7%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Chardonnay</td>
+<td align="center">1 (14.3%)</td>
+<td align="center">858 (8.7%)</td>
+<td align="center">5784 (8.7%)</td>
+<td align="center">1227 (8.6%)</td>
+<td align="center">61 (11.7%)</td>
+<td align="center">4 (11.4%)</td>
+<td align="center">7935 (8.7%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Malbec</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">399 (4.0%)</td>
+<td align="center">1842 (2.8%)</td>
+<td align="center">260 (1.8%)</td>
+<td align="center">8 (1.5%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">2509 (2.7%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Pinot Noir</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">241 (2.4%)</td>
+<td align="center">6141 (9.2%)</td>
+<td align="center">3117 (21.7%)</td>
+<td align="center">119 (22.8%)</td>
+<td align="center">4 (11.4%)</td>
+<td align="center">9622 (10.5%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Red Blend</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">419 (4.2%)</td>
+<td align="center">5215 (7.8%)</td>
+<td align="center">1070 (7.5%)</td>
+<td align="center">33 (6.3%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">6737 (7.4%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Riesling</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">235 (2.4%)</td>
+<td align="center">2077 (3.1%)</td>
+<td align="center">251 (1.8%)</td>
+<td align="center">20 (3.8%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">2583 (2.8%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Rosé</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">651 (6.6%)</td>
+<td align="center">2183 (3.3%)</td>
+<td align="center">33 (0.2%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">2868 (3.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Sauvignon Blanc</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">729 (7.4%)</td>
+<td align="center">2952 (4.4%)</td>
+<td align="center">74 (0.5%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">3755 (4.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Syrah</td>
+<td align="center">1 (14.3%)</td>
+<td align="center">124 (1.3%)</td>
+<td align="center">2362 (3.5%)</td>
+<td align="center">577 (4.0%)</td>
+<td align="center">11 (2.1%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">3075 (3.4%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Other</td>
+<td align="center">4 (57.1%)</td>
+<td align="center">5228 (52.9%)</td>
+<td align="center">31063 (46.6%)</td>
+<td align="center">5146 (35.9%)</td>
+<td align="center">168 (32.2%)</td>
+<td align="center">17 (48.6%)</td>
+<td align="center">41626 (45.5%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>designation_lump</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">   Barrel</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">128 (1.3%)</td>
+<td align="center">1679 (2.5%)</td>
+<td align="center">167 (1.2%)</td>
+<td align="center">9 (1.7%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1983 (2.2%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Brut</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">108 (1.1%)</td>
+<td align="center">1441 (2.2%)</td>
+<td align="center">795 (5.5%)</td>
+<td align="center">45 (8.6%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">2390 (2.6%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Classic Vintage</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">89 (0.9%)</td>
+<td align="center">691 (1.0%)</td>
+<td align="center">148 (1.0%)</td>
+<td align="center">4 (0.8%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">932 (1.0%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Estate</td>
+<td align="center">1 (14.3%)</td>
+<td align="center">378 (3.8%)</td>
+<td align="center">3454 (5.2%)</td>
+<td align="center">945 (6.6%)</td>
+<td align="center">12 (2.3%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">4790 (5.2%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   No Designation</td>
+<td align="center">2 (28.6%)</td>
+<td align="center">3498 (35.4%)</td>
+<td align="center">19768 (29.6%)</td>
+<td align="center">2112 (14.7%)</td>
+<td align="center">182 (34.9%)</td>
+<td align="center">21 (60.0%)</td>
+<td align="center">25583 (28.0%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Old Vine</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">78 (0.8%)</td>
+<td align="center">737 (1.1%)</td>
+<td align="center">106 (0.7%)</td>
+<td align="center">1 (0.2%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">922 (1.0%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Red</td>
+<td align="center">1 (14.3%)</td>
+<td align="center">191 (1.9%)</td>
+<td align="center">684 (1.0%)</td>
+<td align="center">133 (0.9%)</td>
+<td align="center">5 (1.0%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1014 (1.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Reserve</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1078 (10.9%)</td>
+<td align="center">6321 (9.5%)</td>
+<td align="center">1390 (9.7%)</td>
+<td align="center">25 (4.8%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">8815 (9.6%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Signature</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">216 (2.2%)</td>
+<td align="center">1058 (1.6%)</td>
+<td align="center">661 (4.6%)</td>
+<td align="center">18 (3.5%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1953 (2.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Some Vineyard</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">247 (2.5%)</td>
+<td align="center">5760 (8.6%)</td>
+<td align="center">2179 (15.2%)</td>
+<td align="center">13 (2.5%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">8199 (9.0%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Other</td>
+<td align="center">3 (42.9%)</td>
+<td align="center">3876 (39.2%)</td>
+<td align="center">25119 (37.7%)</td>
+<td align="center">5701 (39.8%)</td>
+<td align="center">207 (39.7%)</td>
+<td align="center">12 (34.3%)</td>
+<td align="center">34918 (38.2%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>taster_name_lump</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">   Kerin O’Keefe</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">311 (3.1%)</td>
+<td align="center">7130 (10.7%)</td>
+<td align="center">2355 (16.4%)</td>
+<td align="center">77 (14.8%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">9874 (10.8%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Michael Schachner</td>
+<td align="center">5 (71.4%)</td>
+<td align="center">3922 (39.7%)</td>
+<td align="center">9829 (14.7%)</td>
+<td align="center">1134 (7.9%)</td>
+<td align="center">53 (10.2%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">14944 (16.3%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Paul Gregutt</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">453 (4.6%)</td>
+<td align="center">7726 (11.6%)</td>
+<td align="center">1316 (9.2%)</td>
+<td align="center">2 (0.4%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">9497 (10.4%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Roger Voss</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">2671 (27.0%)</td>
+<td align="center">13977 (21.0%)</td>
+<td align="center">3201 (22.3%)</td>
+<td align="center">295 (56.6%)</td>
+<td align="center">27 (77.1%)</td>
+<td align="center">20171 (22.0%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Virginie Boone</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">174 (1.8%)</td>
+<td align="center">6469 (9.7%)</td>
+<td align="center">2819 (19.7%)</td>
+<td align="center">45 (8.6%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">9507 (10.4%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Other</td>
+<td align="center">2 (28.6%)</td>
+<td align="center">2356 (23.8%)</td>
+<td align="center">21581 (32.3%)</td>
+<td align="center">3512 (24.5%)</td>
+<td align="center">49 (9.4%)</td>
+<td align="center">6 (17.1%)</td>
+<td align="center">27506 (30.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>taster_twitter_lump</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td align="left">   <span class="citation">@kerinokeefe</span></td>
+<td align="center">0 (0.0%)</td>
+<td align="center">311 (3.1%)</td>
+<td align="center">7130 (10.7%)</td>
+<td align="center">2355 (16.4%)</td>
+<td align="center">77 (14.8%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">9874 (10.8%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   <span class="citation">@paulgwine</span></td>
+<td align="center">0 (0.0%)</td>
+<td align="center">453 (4.6%)</td>
+<td align="center">7726 (11.6%)</td>
+<td align="center">1316 (9.2%)</td>
+<td align="center">2 (0.4%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">9497 (10.4%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   <span class="citation">@vboone</span></td>
+<td align="center">0 (0.0%)</td>
+<td align="center">174 (1.8%)</td>
+<td align="center">6469 (9.7%)</td>
+<td align="center">2819 (19.7%)</td>
+<td align="center">45 (8.6%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">9507 (10.4%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   <span class="citation">@vossroger</span></td>
+<td align="center">0 (0.0%)</td>
+<td align="center">2671 (27.0%)</td>
+<td align="center">13977 (21.0%)</td>
+<td align="center">3201 (22.3%)</td>
+<td align="center">295 (56.6%)</td>
+<td align="center">27 (77.1%)</td>
+<td align="center">20171 (22.0%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   <span class="citation">@wineschach</span></td>
+<td align="center">5 (71.4%)</td>
+<td align="center">3922 (39.7%)</td>
+<td align="center">9829 (14.7%)</td>
+<td align="center">1134 (7.9%)</td>
+<td align="center">53 (10.2%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">14944 (16.3%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Other</td>
+<td align="center">2 (28.6%)</td>
+<td align="center">2356 (23.8%)</td>
+<td align="center">21581 (32.3%)</td>
+<td align="center">3512 (24.5%)</td>
+<td align="center">49 (9.4%)</td>
+<td align="center">6 (17.1%)</td>
+<td align="center">27506 (30.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>taster_gender</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">   F</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1146 (11.6%)</td>
+<td align="center">18582 (27.9%)</td>
+<td align="center">5726 (39.9%)</td>
+<td align="center">127 (24.4%)</td>
+<td align="center">2 (5.7%)</td>
+<td align="center">25583 (28.0%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   M</td>
+<td align="center">7 (100.0%)</td>
+<td align="center">8741 (88.4%)</td>
+<td align="center">48130 (72.1%)</td>
+<td align="center">8611 (60.1%)</td>
+<td align="center">394 (75.6%)</td>
+<td align="center">33 (94.3%)</td>
+<td align="center">65916 (72.0%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>taster_avg_points</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td align="left">   Mean (SD)</td>
+<td align="center">87.399 (0.838)</td>
+<td align="center">87.922 (0.930)</td>
+<td align="center">88.661 (0.947)</td>
+<td align="center">88.848 (0.760)</td>
+<td align="center">88.521 (0.598)</td>
+<td align="center">88.657 (0.513)</td>
+<td align="center">88.610 (0.950)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Range</td>
+<td align="center">86.909 - 88.626</td>
+<td align="center">86.610 - 90.613</td>
+<td align="center">86.610 - 90.613</td>
+<td align="center">86.610 - 90.613</td>
+<td align="center">86.610 - 90.034</td>
+<td align="center">86.909 - 90.613</td>
+<td align="center">86.610 - 90.613</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>taster_review_count</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">   Mean (SD)</td>
+<td align="center">11866.000 (5256.686)</td>
+<td align="center">13140.757 (6192.002)</td>
+<td align="center">10940.497 (5936.448)</td>
+<td align="center">11251.639 (5506.096)</td>
+<td align="center">15691.409 (5626.161)</td>
+<td align="center">17117.943 (5946.637)</td>
+<td align="center">11256.487 (5946.730)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Range</td>
+<td align="center">4171.000 - 14944.000</td>
+<td align="center">469.000 - 20172.000</td>
+<td align="center">6.000 - 20172.000</td>
+<td align="center">27.000 - 20172.000</td>
+<td align="center">469.000 - 20172.000</td>
+<td align="center">3389.000 - 20172.000</td>
+<td align="center">6.000 - 20172.000</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>taster_n_tweets</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td align="left">   Mean (SD)</td>
+<td align="center">1152.000 (102.470)</td>
+<td align="center">1932.965 (3350.320)</td>
+<td align="center">2799.164 (4295.539)</td>
+<td align="center">2565.903 (3808.197)</td>
+<td align="center">1408.345 (1160.877)</td>
+<td align="center">1296.400 (1191.907)</td>
+<td align="center">2660.397 (4126.585)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Range</td>
+<td align="center">1002.000 - 1212.000</td>
+<td align="center">803.000 - 19200.000</td>
+<td align="center">257.000 - 19200.000</td>
+<td align="center">257.000 - 19200.000</td>
+<td align="center">803.000 - 19200.000</td>
+<td align="center">803.000 - 6748.000</td>
+<td align="center">257.000 - 19200.000</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>color_lump</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">   Red</td>
+<td align="center">4 (57.1%)</td>
+<td align="center">4902 (49.6%)</td>
+<td align="center">40544 (60.8%)</td>
+<td align="center">11386 (79.4%)</td>
+<td align="center">383 (73.5%)</td>
+<td align="center">24 (68.6%)</td>
+<td align="center">57243 (62.6%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   White</td>
+<td align="center">3 (42.9%)</td>
+<td align="center">4019 (40.6%)</td>
+<td align="center">21846 (32.7%)</td>
+<td align="center">2130 (14.9%)</td>
+<td align="center">95 (18.2%)</td>
+<td align="center">10 (28.6%)</td>
+<td align="center">28103 (30.7%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Other</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">966 (9.8%)</td>
+<td align="center">4322 (6.5%)</td>
+<td align="center">821 (5.7%)</td>
+<td align="center">43 (8.3%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">6153 (6.7%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>country_lump</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">   Argentina</td>
+<td align="center">1 (14.3%)</td>
+<td align="center">955 (9.7%)</td>
+<td align="center">2504 (3.8%)</td>
+<td align="center">287 (2.0%)</td>
+<td align="center">6 (1.2%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">3753 (4.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Australia</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">225 (2.3%)</td>
+<td align="center">1400 (2.1%)</td>
+<td align="center">362 (2.5%)</td>
+<td align="center">16 (3.1%)</td>
+<td align="center">4 (11.4%)</td>
+<td align="center">2007 (2.2%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Austria</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">100 (1.0%)</td>
+<td align="center">2360 (3.5%)</td>
+<td align="center">330 (2.3%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">2791 (3.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Chile</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1518 (15.4%)</td>
+<td align="center">2576 (3.9%)</td>
+<td align="center">201 (1.4%)</td>
+<td align="center">10 (1.9%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">4305 (4.7%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   France</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1519 (15.4%)</td>
+<td align="center">12637 (18.9%)</td>
+<td align="center">3068 (21.4%)</td>
+<td align="center">277 (53.2%)</td>
+<td align="center">23 (65.7%)</td>
+<td align="center">17524 (19.2%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Italy</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">367 (3.7%)</td>
+<td align="center">7286 (10.9%)</td>
+<td align="center">2390 (16.7%)</td>
+<td align="center">77 (14.8%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">10121 (11.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   New Zealand</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">50 (0.5%)</td>
+<td align="center">1111 (1.7%)</td>
+<td align="center">109 (0.8%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1270 (1.4%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Portugal</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1466 (14.8%)</td>
+<td align="center">2940 (4.4%)</td>
+<td align="center">437 (3.0%)</td>
+<td align="center">23 (4.4%)</td>
+<td align="center">4 (11.4%)</td>
+<td align="center">4870 (5.3%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Spain</td>
+<td align="center">4 (57.1%)</td>
+<td align="center">1418 (14.3%)</td>
+<td align="center">4441 (6.7%)</td>
+<td align="center">609 (4.2%)</td>
+<td align="center">36 (6.9%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">6509 (7.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   US</td>
+<td align="center">2 (28.6%)</td>
+<td align="center">1683 (17.0%)</td>
+<td align="center">26588 (39.9%)</td>
+<td align="center">6210 (43.3%)</td>
+<td align="center">51 (9.8%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">34535 (37.7%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Other</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">586 (5.9%)</td>
+<td align="center">2869 (4.3%)</td>
+<td align="center">334 (2.3%)</td>
+<td align="center">25 (4.8%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">3814 (4.2%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>province_lump</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">   Bordeaux</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">462 (4.7%)</td>
+<td align="center">3047 (4.6%)</td>
+<td align="center">414 (2.9%)</td>
+<td align="center">51 (9.8%)</td>
+<td align="center">15 (42.9%)</td>
+<td align="center">3989 (4.4%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Burgundy</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">18 (0.2%)</td>
+<td align="center">1782 (2.7%)</td>
+<td align="center">1115 (7.8%)</td>
+<td align="center">169 (32.4%)</td>
+<td align="center">6 (17.1%)</td>
+<td align="center">3090 (3.4%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   California</td>
+<td align="center">2 (28.6%)</td>
+<td align="center">832 (8.4%)</td>
+<td align="center">14884 (22.3%)</td>
+<td align="center">4275 (29.8%)</td>
+<td align="center">48 (9.2%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">20042 (21.9%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Mendoza Province</td>
+<td align="center">1 (14.3%)</td>
+<td align="center">812 (8.2%)</td>
+<td align="center">2148 (3.2%)</td>
+<td align="center">256 (1.8%)</td>
+<td align="center">6 (1.2%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">3223 (3.5%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Northern Spain</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">767 (7.8%)</td>
+<td align="center">2541 (3.8%)</td>
+<td align="center">432 (3.0%)</td>
+<td align="center">29 (5.6%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">3769 (4.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Oregon</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">87 (0.9%)</td>
+<td align="center">4275 (6.4%)</td>
+<td align="center">959 (6.7%)</td>
+<td align="center">2 (0.4%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">5323 (5.8%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Piedmont</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">10 (0.1%)</td>
+<td align="center">1112 (1.7%)</td>
+<td align="center">967 (6.7%)</td>
+<td align="center">22 (4.2%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">2111 (2.3%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Tuscany</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">80 (0.8%)</td>
+<td align="center">2270 (3.4%)</td>
+<td align="center">877 (6.1%)</td>
+<td align="center">48 (9.2%)</td>
+<td align="center">1 (2.9%)</td>
+<td align="center">3276 (3.6%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Veneto</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">56 (0.6%)</td>
+<td align="center">747 (1.1%)</td>
+<td align="center">228 (1.6%)</td>
+<td align="center">5 (1.0%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">1036 (1.1%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Washington</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">647 (6.5%)</td>
+<td align="center">6961 (10.4%)</td>
+<td align="center">966 (6.7%)</td>
+<td align="center">1 (0.2%)</td>
+<td align="center">0 (0.0%)</td>
+<td align="center">8575 (9.4%)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Other</td>
+<td align="center">4 (57.1%)</td>
+<td align="center">6116 (61.9%)</td>
+<td align="center">26945 (40.4%)</td>
+<td align="center">3848 (26.8%)</td>
+<td align="center">140 (26.9%)</td>
+<td align="center">12 (34.3%)</td>
+<td align="center">37065 (40.5%)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left"><strong>title_word_count</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td align="left">   Mean (SD)</td>
+<td align="center">6.714 (3.039)</td>
+<td align="center">6.420 (2.142)</td>
+<td align="center">6.569 (2.039)</td>
+<td align="center">7.091 (2.202)</td>
+<td align="center">6.046 (1.981)</td>
+<td align="center">5.371 (1.784)</td>
+<td align="center">6.631 (2.087)</td>
+<td align="right"></td>
+</tr>
+<tr class="even">
+<td align="left">   Range</td>
+<td align="center">4.000 - 11.000</td>
+<td align="center">2.000 - 22.000</td>
+<td align="center">2.000 - 23.000</td>
+<td align="center">2.000 - 18.000</td>
+<td align="center">2.000 - 13.000</td>
+<td align="center">3.000 - 10.000</td>
+<td align="center">2.000 - 23.000</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left"><strong>title_sentement</strong></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="right">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td align="left">   Mean (SD)</td>
+<td align="center">-0.049 (0.220)</td>
+<td align="center">0.031 (0.102)</td>
+<td align="center">0.032 (0.114)</td>
+<td align="center">0.041 (0.113)</td>
+<td align="center">0.027 (0.085)</td>
+<td align="center">0.046 (0.107)</td>
+<td align="center">0.033 (0.113)</td>
+<td align="right"></td>
+</tr>
+<tr class="odd">
+<td align="left">   Range</td>
+<td align="center">-0.510 - 0.200</td>
+<td align="center">-0.875 - 0.937</td>
+<td align="center">-0.850 - 1.071</td>
+<td align="center">-0.530 - 0.795</td>
+<td align="center">-0.408 - 0.583</td>
+<td align="center">0.000 - 0.378</td>
+<td align="center">-0.875 - 1.071</td>
+<td align="right"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="plots" class="section level1">
+<h1><span class="header-section-number">5</span> Plots</h1>
+<div id="maps" class="section level2 tabset tabset-fade tabset-pills">
+<h2><span class="header-section-number">5.1</span> Maps</h2>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1">world_map &lt;-<span class="st"> </span><span class="kw">map_data</span>(<span class="st">&quot;world&quot;</span>)</a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">world_map &lt;-</a>
+<a class="sourceLine" id="cb25-3" data-line-number="3"><span class="st">  </span>world_map <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">region =</span> <span class="kw">ifelse</span>(region <span class="op">==</span><span class="st"> &quot;USA&quot;</span>, <span class="st">&quot;US&quot;</span>, region))</a>
+<a class="sourceLine" id="cb25-4" data-line-number="4">world_map &lt;-<span class="st"> </span>world_map <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">country =</span> region)</a>
+<a class="sourceLine" id="cb25-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb25-6" data-line-number="6">wine_map_DF &lt;-</a>
+<a class="sourceLine" id="cb25-7" data-line-number="7"><span class="st">  </span>wine_data_clean  <span class="op">%&gt;%</span><span class="st"> </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="dt">country =</span> <span class="kw">as.character</span>(country)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb25-8" data-line-number="8"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span> (country <span class="op">!=</span><span class="st"> &quot;England&quot;</span> <span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb25-9" data-line-number="9"><span class="st">            </span>country <span class="op">!=</span><span class="st"> &quot;US-France&quot;</span> <span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb25-10" data-line-number="10"><span class="st">            </span>country <span class="op">!=</span><span class="st"> &quot;&quot;</span>)</a>
+<a class="sourceLine" id="cb25-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb25-12" data-line-number="12"><span class="co"># Generate Summary</span></a>
+<a class="sourceLine" id="cb25-13" data-line-number="13">wmap &lt;-</a>
+<a class="sourceLine" id="cb25-14" data-line-number="14"><span class="st">  </span>wine_data_clean <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb25-15" data-line-number="15"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">group_by</span>(country) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb25-16" data-line-number="16"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">summarize</span>(</a>
+<a class="sourceLine" id="cb25-17" data-line-number="17">    <span class="dt">point_min =</span> <span class="kw">min</span>(points, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb25-18" data-line-number="18">    <span class="dt">point_avg =</span> <span class="kw">mean</span>(points, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb25-19" data-line-number="19">    <span class="dt">point_max =</span> <span class="kw">max</span>(points, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb25-20" data-line-number="20">    <span class="dt">price_min =</span> <span class="kw">min</span>(price, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb25-21" data-line-number="21">    <span class="dt">price_avg =</span> <span class="kw">mean</span>(price, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb25-22" data-line-number="22">    <span class="dt">price_max =</span> <span class="kw">max</span>(price, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb25-23" data-line-number="23">  ) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb25-24" data-line-number="24"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">select</span>(</a>
+<a class="sourceLine" id="cb25-25" data-line-number="25">    <span class="kw">c</span>(</a>
+<a class="sourceLine" id="cb25-26" data-line-number="26">      <span class="st">&quot;country&quot;</span>,</a>
+<a class="sourceLine" id="cb25-27" data-line-number="27">      <span class="st">&quot;point_min&quot;</span>,</a>
+<a class="sourceLine" id="cb25-28" data-line-number="28">      <span class="st">&quot;point_avg&quot;</span>,</a>
+<a class="sourceLine" id="cb25-29" data-line-number="29">      <span class="st">&quot;point_max&quot;</span>,</a>
+<a class="sourceLine" id="cb25-30" data-line-number="30">      <span class="st">&quot;price_min&quot;</span>,</a>
+<a class="sourceLine" id="cb25-31" data-line-number="31">      <span class="st">&quot;price_avg&quot;</span>,</a>
+<a class="sourceLine" id="cb25-32" data-line-number="32">      <span class="st">&quot;price_max&quot;</span></a>
+<a class="sourceLine" id="cb25-33" data-line-number="33">    )</a>
+<a class="sourceLine" id="cb25-34" data-line-number="34">  )</a>
+<a class="sourceLine" id="cb25-35" data-line-number="35"><span class="co"># Create data frame with bounderies and values</span></a>
+<a class="sourceLine" id="cb25-36" data-line-number="36">wine_country_map &lt;-<span class="st"> </span><span class="kw">right_join</span>(wmap, world_map, <span class="dt">by =</span> <span class="st">&quot;country&quot;</span>)</a>
+<a class="sourceLine" id="cb25-37" data-line-number="37"></a>
+<a class="sourceLine" id="cb25-38" data-line-number="38"><span class="co">#scale_fill_viridis_c(option = &quot;C&quot;, limits = c(80, 100))</span></a>
+<a class="sourceLine" id="cb25-39" data-line-number="39"></a>
+<a class="sourceLine" id="cb25-40" data-line-number="40">.map_from_attribute &lt;-<span class="st"> </span><span class="cf">function</span>(att, title) {</a>
+<a class="sourceLine" id="cb25-41" data-line-number="41">  <span class="kw">return</span>(</a>
+<a class="sourceLine" id="cb25-42" data-line-number="42">    <span class="kw">ggplot</span>(wine_country_map, <span class="kw">aes_string</span>(<span class="dt">map_id =</span> <span class="st">&quot;country&quot;</span>, <span class="dt">fill =</span> att)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb25-43" data-line-number="43"><span class="st">      </span><span class="kw">geom_map</span>(<span class="dt">map =</span> wine_country_map,  <span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb25-44" data-line-number="44"><span class="st">      </span><span class="kw">expand_limits</span>(<span class="dt">x =</span> wine_country_map<span class="op">$</span>long, <span class="dt">y =</span> wine_country_map<span class="op">$</span>lat) <span class="op">+</span></a>
+<a class="sourceLine" id="cb25-45" data-line-number="45"><span class="st">      </span><span class="kw">scale_fill_viridis_c</span>(<span class="dt">option =</span> <span class="st">&quot;C&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">theme_map</span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(title) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb25-46" data-line-number="46"><span class="st">      </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>, <span class="dt">size=</span><span class="dv">20</span>)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb25-47" data-line-number="47"><span class="st">      </span><span class="kw">theme</span>(<span class="dt">legend.title =</span> <span class="kw">element_blank</span>()) </a>
+<a class="sourceLine" id="cb25-48" data-line-number="48">  )</a>
+<a class="sourceLine" id="cb25-49" data-line-number="49">}</a></code></pre></div>
+<div id="points---min" class="section level3">
+<h3><span class="header-section-number">5.1.1</span> Points - Min</h3>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" data-line-number="1"><span class="kw">.map_from_attribute</span>(<span class="st">&quot;point_min&quot;</span>, <span class="st">&quot;Minimum Points&quot;</span>)</a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/unnamed-chunk-12-1.png" alt="Click to enlarge" width="672" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="points---average" class="section level3">
+<h3><span class="header-section-number">5.1.2</span> Points - Average</h3>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw">.map_from_attribute</span>(<span class="st">&quot;point_avg&quot;</span>, <span class="st">&quot;Average Points&quot;</span>)</a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/unnamed-chunk-13-1.png" alt="Click to enlarge" width="672" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="points---max" class="section level3">
+<h3><span class="header-section-number">5.1.3</span> Points - Max</h3>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" data-line-number="1"><span class="kw">.map_from_attribute</span>(<span class="st">&quot;point_max&quot;</span>, <span class="st">&quot;Maximum Points&quot;</span>) </a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/unnamed-chunk-14-1.png" alt="Click to enlarge" width="672" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="price---min" class="section level3">
+<h3><span class="header-section-number">5.1.4</span> Price - Min</h3>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw">.map_from_attribute</span>(<span class="st">&quot;price_min&quot;</span>, <span class="st">&quot;Minimum Price&quot;</span>) </a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/unnamed-chunk-15-1.png" alt="Click to enlarge" width="672" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="price---average" class="section level3">
+<h3><span class="header-section-number">5.1.5</span> Price - Average</h3>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="kw">.map_from_attribute</span>(<span class="st">&quot;price_avg&quot;</span>, <span class="st">&quot;Average Price&quot;</span>) </a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/unnamed-chunk-16-1.png" alt="Click to enlarge" width="672" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="price---max" class="section level3">
+<h3><span class="header-section-number">5.1.6</span> Price - Max</h3>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1"><span class="kw">.map_from_attribute</span>(<span class="st">&quot;price_max&quot;</span>, <span class="st">&quot;Maximum Price&quot;</span>) </a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/unnamed-chunk-17-1.png" alt="Click to enlarge" width="672" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+</div>
+<div id="corelation" class="section level2">
+<h2><span class="header-section-number">5.2</span> Corelation</h2>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="kw">ggpairs</span>(wine_data_clean, <span class="dt">columns =</span> <span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">7</span>, <span class="dv">14</span>, <span class="dv">16</span>), </a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">        ggplot2<span class="op">::</span><span class="kw">aes</span>(<span class="dt">color=</span>color_lump))</a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/plot1-1.png" alt="Click to enlarge" width="960" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="price-v-points" class="section level2">
+<h2><span class="header-section-number">5.3</span> Price v Points</h2>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(wine_data_clean, <span class="kw">aes</span>(points, price, <span class="dt">color =</span> point_cat)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-2" data-line-number="2"><span class="st">      </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-3" data-line-number="3"><span class="st">      </span><span class="kw">theme_clean</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="st">      </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Rating Category&quot;</span>, <span class="dt">title =</span> <span class="st">&quot;Price vs Points&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb33-5" data-line-number="5"><span class="st">      </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>)) </a>
+<a class="sourceLine" id="cb33-6" data-line-number="6">p1 &lt;-<span class="st"> </span><span class="kw">ggMarginal</span>(p, <span class="dt">type=</span><span class="st">&quot;histogram&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;slateblue&quot;</span>) </a>
+<a class="sourceLine" id="cb33-7" data-line-number="7">p1 </a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/plot2-1.png" alt="Click to enlarge" width="672" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="price-v-points-y-log-10-scale" class="section level2">
+<h2><span class="header-section-number">5.4</span> Price v Points (y log 10 scale)</h2>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(wine_data_clean, </a>
+<a class="sourceLine" id="cb34-2" data-line-number="2">            <span class="kw">aes</span>(points, price, <span class="dt">color =</span> point_cat)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb34-3" data-line-number="3"><span class="st">      </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb34-4" data-line-number="4"><span class="st">      </span><span class="kw">theme_clean</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb34-5" data-line-number="5"><span class="st">      </span><span class="kw">scale_y_log10</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb34-6" data-line-number="6"><span class="st">      </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Rating Category&quot;</span>, </a>
+<a class="sourceLine" id="cb34-7" data-line-number="7">           <span class="dt">title =</span> <span class="st">&quot;Price vs Score&quot;</span>, </a>
+<a class="sourceLine" id="cb34-8" data-line-number="8">           <span class="dt">caption=</span><span class="st">&quot;Price is scaled to log 10&quot;</span>, </a>
+<a class="sourceLine" id="cb34-9" data-line-number="9">           <span class="dt">x =</span> <span class="st">&quot;Points&quot;</span>, </a>
+<a class="sourceLine" id="cb34-10" data-line-number="10">           <span class="dt">y=</span><span class="st">&quot;Price&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb34-11" data-line-number="11"><span class="st">      </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>)) </a>
+<a class="sourceLine" id="cb34-12" data-line-number="12">p1 &lt;-<span class="st"> </span><span class="kw">ggMarginal</span>(p, <span class="dt">type=</span><span class="st">&quot;histogram&quot;</span>, <span class="dt">fill=</span><span class="st">&quot;slateblue&quot;</span>) </a>
+<a class="sourceLine" id="cb34-13" data-line-number="13">p1 </a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/plot3-1.png" alt="Click to enlarge" width="672" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="box-plot" class="section level2">
+<h2><span class="header-section-number">5.5</span> Box Plot</h2>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1">wine_data_clean <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-2" data-line-number="2"><span class="st">  </span><span class="kw">ggplot</span>( <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">reorder</span>(color_lump, points), </a>
+<a class="sourceLine" id="cb35-3" data-line-number="3">              <span class="dt">y =</span> points, </a>
+<a class="sourceLine" id="cb35-4" data-line-number="4">              <span class="dt">fill =</span> color_lump)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-6" data-line-number="6"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Color&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb35-7" data-line-number="7"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x=</span><span class="st">&quot;Color&quot;</span>, </a>
+<a class="sourceLine" id="cb35-8" data-line-number="8">       <span class="dt">y=</span><span class="st">&quot;Points&quot;</span>, </a>
+<a class="sourceLine" id="cb35-9" data-line-number="9">       <span class="dt">title=</span><span class="st">&quot;Wine Score by color&quot;</span>, </a>
+<a class="sourceLine" id="cb35-10" data-line-number="10">       <span class="dt">caption=</span><span class="st">&quot;Faceted by Gender&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-11" data-line-number="11"><span class="st">  </span><span class="kw">theme_clean</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-12" data-line-number="12"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>, </a>
+<a class="sourceLine" id="cb35-13" data-line-number="13">        <span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb35-14" data-line-number="14"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>country_lump)</a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/plot4-1.png" alt="Click to enlarge" width="960" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="price-v-score-faceted-by-gender" class="section level2">
+<h2><span class="header-section-number">5.6</span> Price v Score faceted by Gender</h2>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="kw">ggplot</span>(wine_data_clean, </a>
+<a class="sourceLine" id="cb36-2" data-line-number="2">       <span class="kw">aes</span>(points, price, <span class="dt">color =</span> point_cat)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb36-3" data-line-number="3"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb36-4" data-line-number="4"><span class="st">  </span><span class="kw">scale_y_log10</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb36-5" data-line-number="5"><span class="st">  </span><span class="kw">theme_clean</span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb36-6" data-line-number="6"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Rating Category&quot;</span>, </a>
+<a class="sourceLine" id="cb36-7" data-line-number="7">       <span class="dt">title =</span> <span class="st">&quot;Price v Score by Taster Gender&quot;</span>, </a>
+<a class="sourceLine" id="cb36-8" data-line-number="8">       <span class="dt">x=</span><span class="st">&quot;Score&quot;</span>, </a>
+<a class="sourceLine" id="cb36-9" data-line-number="9">       <span class="dt">y=</span><span class="st">&quot;Price&quot;</span>, </a>
+<a class="sourceLine" id="cb36-10" data-line-number="10">       <span class="dt">caption=</span><span class="st">&quot;Price is scaled to log 10&quot;</span> ) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb36-11" data-line-number="11"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb36-12" data-line-number="12"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>taster_gender)</a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/plot5-1.png" alt="Click to enlarge" width="672" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="price-v-points-by-country" class="section level2">
+<h2><span class="header-section-number">5.7</span> Price v Points by Country</h2>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="kw">ggplot</span>(wine_data_clean, </a>
+<a class="sourceLine" id="cb37-2" data-line-number="2">       <span class="kw">aes</span>(<span class="dt">y=</span>price, </a>
+<a class="sourceLine" id="cb37-3" data-line-number="3">           <span class="dt">x=</span>points, </a>
+<a class="sourceLine" id="cb37-4" data-line-number="4">           <span class="dt">color =</span> point_cat)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb37-5" data-line-number="5"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">alpha=</span><span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb37-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_smooth</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb37-7" data-line-number="7"><span class="st">  </span><span class="kw">scale_y_log10</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb37-8" data-line-number="8"><span class="st">  </span><span class="kw">theme_clean</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb37-9" data-line-number="9"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb37-10" data-line-number="10"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color=</span><span class="st">&quot;Rating Category&quot;</span>, </a>
+<a class="sourceLine" id="cb37-11" data-line-number="11">       <span class="dt">title =</span> <span class="st">&quot;Score vs log of Price&quot;</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb37-12" data-line-number="12"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>country_lump)</a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/plot6-1.png" alt="Click to enlarge" width="960" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="price-by-country" class="section level2">
+<h2><span class="header-section-number">5.8</span> Price by Country</h2>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1"><span class="kw">ggplot</span>(wine_data_clean, </a>
+<a class="sourceLine" id="cb38-2" data-line-number="2">       <span class="kw">aes</span>(<span class="dt">y =</span> price, </a>
+<a class="sourceLine" id="cb38-3" data-line-number="3">           <span class="dt">x =</span> country_lump, </a>
+<a class="sourceLine" id="cb38-4" data-line-number="4">           <span class="dt">color =</span> point_cat)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb38-5" data-line-number="5"><span class="st">  </span><span class="kw">theme_clean</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb38-6" data-line-number="6"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb38-7" data-line-number="7"><span class="st">  </span><span class="kw">coord_flip</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb38-8" data-line-number="8"><span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">alpha=</span><span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb38-9" data-line-number="9"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color=</span><span class="st">&quot;Rating Category&quot;</span>, </a>
+<a class="sourceLine" id="cb38-10" data-line-number="10">       <span class="dt">title=</span><span class="st">&quot;Price and Country Colored by Rating Category&quot;</span>, </a>
+<a class="sourceLine" id="cb38-11" data-line-number="11">       <span class="dt">x=</span><span class="st">&quot;Country&quot;</span>, </a>
+<a class="sourceLine" id="cb38-12" data-line-number="12">       <span class="dt">y=</span><span class="st">&quot;Price&quot;</span>)</a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/plot7-1.png" alt="Click to enlarge" width="768" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="country-v-price-log10-scale" class="section level2">
+<h2><span class="header-section-number">5.9</span> Country v Price (log10 scale)</h2>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="kw">ggplot</span>(wine_data_clean, </a>
+<a class="sourceLine" id="cb39-2" data-line-number="2">       <span class="kw">aes</span>(<span class="dt">x =</span> country_lump, </a>
+<a class="sourceLine" id="cb39-3" data-line-number="3">           <span class="dt">y =</span> price, </a>
+<a class="sourceLine" id="cb39-4" data-line-number="4">           <span class="dt">color =</span> point_cat)) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-5" data-line-number="5"><span class="st">  </span><span class="kw">scale_y_log10</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb39-6" data-line-number="6"><span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">alpha=</span><span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-7" data-line-number="7"><span class="st">  </span><span class="kw">coord_flip</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb39-8" data-line-number="8"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Rating Category&quot;</span>, </a>
+<a class="sourceLine" id="cb39-9" data-line-number="9">       <span class="dt">title=</span><span class="st">&quot;Price by Country&quot;</span>, </a>
+<a class="sourceLine" id="cb39-10" data-line-number="10">       <span class="dt">caption=</span><span class="st">&quot;Price is scaled to log 10&quot;</span>, </a>
+<a class="sourceLine" id="cb39-11" data-line-number="11">       <span class="dt">x =</span> <span class="st">&quot;Country&quot;</span>, </a>
+<a class="sourceLine" id="cb39-12" data-line-number="12">       <span class="dt">y=</span><span class="st">&quot;Price&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb39-13" data-line-number="13"><span class="st">    </span><span class="kw">theme_clean</span>()  <span class="op">+</span></a>
+<a class="sourceLine" id="cb39-14" data-line-number="14"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))</a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/plot8-1.png" alt="Click to enlarge" width="768" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+<div id="taster-tweets-v-logprice" class="section level2">
+<h2><span class="header-section-number">5.10</span> Taster Tweets v log(Price)</h2>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">  <span class="kw">ggplot</span>(wine_data_clean, </a>
+<a class="sourceLine" id="cb40-2" data-line-number="2">         <span class="kw">aes</span>(<span class="dt">y =</span> price, </a>
+<a class="sourceLine" id="cb40-3" data-line-number="3">             <span class="dt">x =</span> taster_n_tweets, </a>
+<a class="sourceLine" id="cb40-4" data-line-number="4">             <span class="dt">color =</span> point_cat)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb40-5" data-line-number="5"><span class="st">  </span><span class="kw">theme_clean</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb40-6" data-line-number="6"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">hjust =</span> <span class="fl">0.5</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb40-7" data-line-number="7"><span class="st">  </span><span class="kw">scale_x_log10</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb40-8" data-line-number="8"><span class="st">  </span><span class="kw">scale_y_log10</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb40-9" data-line-number="9"><span class="st">  </span><span class="kw">geom_jitter</span>(<span class="dt">alpha=</span><span class="dv">1</span><span class="op">/</span><span class="dv">2</span>) <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb40-10" data-line-number="10"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color=</span><span class="st">&quot;Rating Category&quot;</span>, </a>
+<a class="sourceLine" id="cb40-11" data-line-number="11">       <span class="dt">title=</span><span class="st">&quot;Price v Number of Tweets&quot;</span>, </a>
+<a class="sourceLine" id="cb40-12" data-line-number="12">       <span class="dt">x=</span><span class="st">&quot;Number of Tweets from Taster&quot;</span>, </a>
+<a class="sourceLine" id="cb40-13" data-line-number="13">       <span class="dt">y=</span><span class="st">&quot;Price&quot;</span>, </a>
+<a class="sourceLine" id="cb40-14" data-line-number="14">       <span class="dt">caption=</span><span class="st">&quot;Price and Teets Scaled to log 10&quot;</span>)</a></code></pre></div>
+<div class="figure">
+<img src="deliverable2_files_t/figure-html/plot9-1.png" alt="Click to enlarge" width="768" />
+<p class="caption">
+Click to enlarge
+</p>
+</div>
+</div>
+</div>
+<div id="session-info" class="section level1">
+<h1><span class="header-section-number">6</span> Session info</h1>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1"><span class="kw">sessionInfo</span>()</a></code></pre></div>
+<pre><code>## R version 3.6.1 (2019-07-05)
+## Platform: x86_64-apple-darwin15.6.0 (64-bit)
+## Running under: macOS Mojave 10.14.6
+## 
+## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] wordcloud_2.6              RColorBrewer_1.1-2        
+##  [3] SnowballC_0.6.0            tm_0.7-6                  
+##  [5] NLP_0.2-0                  sentimentr_2.8.0          
+##  [7] PerformanceAnalytics_1.5.3 xts_0.11-2                
+##  [9] zoo_1.8-6                  stringi_1.4.3             
+## [11] plyr_1.8.4                 ggmap_3.0.0               
+## [13] GGally_1.4.0               ggthemes_4.2.0            
+## [15] ggExtra_0.9                kableExtra_1.1.0          
+## [17] knitr_1.26                 forcats_0.4.0             
+## [19] stringr_1.4.0              dplyr_0.8.3               
+## [21] purrr_0.3.3                readr_1.3.1               
+## [23] tidyr_1.0.0                tibble_2.1.3              
+## [25] ggplot2_3.2.1              tidyverse_1.2.1           
+## [27] arsenal_3.3.0              here_0.1                  
+## [29] conflicted_1.0.4          
+## 
+## loaded via a namespace (and not attached):
+##  [1] nlme_3.1-141      bitops_1.0-6      lubridate_1.7.4   webshot_0.5.1    
+##  [5] httr_1.4.1        rprojroot_1.3-2   tools_3.6.1       backports_1.1.5  
+##  [9] R6_2.4.1          mgcv_1.8-29       lazyeval_0.2.2    colorspace_1.4-1 
+## [13] withr_2.1.2       tidyselect_0.2.5  compiler_3.6.1    cli_1.1.0        
+## [17] rvest_0.3.5       textshape_1.6.0   xml2_1.2.2        labeling_0.3     
+## [21] slam_0.1-46       scales_1.0.0      quadprog_1.5-7    digest_0.6.22    
+## [25] rmarkdown_1.17.1  jpeg_0.1-8.1      pkgconfig_2.0.3   htmltools_0.4.0  
+## [29] maps_3.3.0        highr_0.8         fastmap_1.0.1     rlang_0.4.1      
+## [33] readxl_1.3.1      rstudioapi_0.10   shiny_1.4.0       generics_0.0.2   
+## [37] jsonlite_1.6      qdapRegex_0.7.2   magrittr_1.5      textclean_0.9.3  
+## [41] Matrix_1.2-17     Rcpp_1.0.3        munsell_0.5.0     lifecycle_0.1.0  
+## [45] yaml_2.2.0        grid_3.6.1        parallel_3.6.1    promises_1.1.0   
+## [49] crayon_1.3.4      miniUI_0.1.1.1    lattice_0.20-38   splines_3.6.1    
+## [53] haven_2.2.0       hms_0.5.2         zeallot_0.1.0     pillar_1.4.2     
+## [57] rjson_0.2.20      reshape2_1.4.3    glue_1.3.1        evaluate_0.14    
+## [61] data.table_1.12.6 modelr_0.1.5      png_0.1-7         vctrs_0.2.0      
+## [65] lexicon_1.2.1     httpuv_1.5.2      RgoogleMaps_1.4.4 cellranger_1.1.0 
+## [69] gtable_0.3.0      reshape_0.8.8     assertthat_0.2.1  xfun_0.11        
+## [73] mime_0.7          syuzhet_1.0.4     xtable_1.8-4      broom_0.5.2      
+## [77] later_1.0.0       survival_2.44-1.1 viridisLite_0.3.0 memoise_1.1.0    
+## [81] ellipsis_0.3.0</code></pre>
+</div>
+
+
+<script>
+  $(document).ready(function() {
+    $('#TOC').append('<div id=\"nav_logo\" class=\"hidden-xs\"><img src=\"http://www.garretthawes.com/r/wine-logo.jpeg" style="width:100%!important"></div>');
+    
+    $("img").click(function(){
+      $(this).toggleClass("max-width");
+    });
+    
+    
+    	  $('#theme-button ul a').click(function() {
+	    if ($(this).attr('name') != 'current') {
+	      var urlbeg = 'https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/'
+	      var urlend = '/bootstrap.min.css'
+	      var themeurl = urlbeg + $(this).text().toLowerCase() + urlend;
+	      var link = $('link[rel="stylesheet"][href$=".min.css"]').attr('href', themeurl);
+
+	      $('#theme-button ul a[name="current"]').text($(this).text());
+	    }
+	  });
+
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
