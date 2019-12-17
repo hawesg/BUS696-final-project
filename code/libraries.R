@@ -15,6 +15,7 @@
 #                                                                              #
 ################################################################################
 
+#TODO Go over these for duplicates and organize it.
 
 library("conflicted")
 library("ggmap")
@@ -51,18 +52,21 @@ library('randomForest')
 library('randomForestExplainer')
 library('analogue')
 library('rcompanion')
-
 library("leaps")
 library("caret")
+library("tm")
+library("SnowballC")
+library("RColorBrewer")
+library("wordcloud")
+library("tidyverse")
+library("stringi")
+library("stringr")
+library('partykit')
+library('rpart')
+library('rpart.plot')
+library('leaps')
+library('tidyverse')
+library('caret')
+library('rcompanion')
 
-##Load Require Library
-library(tm)
-library(SnowballC)
-library(RColorBrewer)
-library(wordcloud)
-##Read the Data
-
-library(tidyverse)
-library(stringi)
-library(stringr)
 
