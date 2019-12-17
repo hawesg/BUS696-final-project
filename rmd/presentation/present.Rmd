@@ -32,7 +32,6 @@ class: overview
 - Data Cleaning, Feature Generation and Exploritory Data Analysis <a href="http://bus696.garretthawes.com/deliverable-2/index.html">Deliverable</a>
 ]
 .pull-right[]
-.footnote[I still need to push the final github code I have been far too busy to push any changes it is 4 am now, will push code around 1pm 12/16/19 after I have a chance to clean it up for you]
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 ```
@@ -607,7 +606,7 @@ model.comparison <- model.comparison %>% bind_rows(
 # RANDOM FOREST - TUKEY TRANSFORMED PRICE
 
 .pull-left[
-![](present_files/figure-html/unnamed-chunk-6-1.png)
+![](present_files/figure-html/rforest-depth-1.png)
 
 ```{r echo=FALSE, fig.keep="hold", dev='png', fig.retina=4}
 # plot.bootstrap.min_depth_distribution + theme_solarized() + theme(legend.position = "bottom")

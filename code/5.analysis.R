@@ -86,11 +86,11 @@ str(data.train)
 # data.train <- loadRDS(here::here("data","output","wine_train_100.rds"))
 # saveRDS(data.test, file = here::here("data","output","wine_test_100.rds"))
       
-# ---- OLS Regression ----
-source("code/models/1.ols.R")
+# ---- OLS Regression and Stepwise Selection ----
+source("code/models/1.ols.and.step.R")
 
 # ---- Step Slection ----
-source("code/models/2.step.R")
+# source("code/models/2.step.R")
 
 # ---- Elastic Net ----
 source("code/models/3.enet.R")

@@ -10,43 +10,13 @@
 # Last updated:  2019-11-22                                                    #
 # Source:        /Users/garretthawes/wine-project                              #
 #                                                                              #
-# Comment:       I have only started to play around with this some             #
+# Comment:       Some stuff i was playing around with early on, variables      #
+#                need renaming but there is some interesting stuff with        #
+#                ggvis I wanted to keep                                        #       
 #                                                                              #
 ###############################################################################-
 
 
-###############################################################################-
-#                                                                              #
-#  Copy this stuff into the top of any script you are working on for modeling  #
-#                                                                              #
-###############################################################################-
-
-# rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
-
-if(!(exists("wine_train")&&exists("wine_train"))) {
-  load(here::here("data","output","wine_train.RData"))
-  load(here::here("data","output","wine_test.RData")) 
-}
-
-###############################################################################-
-
-################################## Libraries ###################################
-#                                                                              #
-#  Omit this if you want to just load them manually                            #
-#                                                                              #
-###############################################################################-
-#
-source("code/libraries.R")
-library("leaps")
-
-
-############################## Forward Step Model ##############################
-# ? sqrt
-# + I(points^2)
-# rm(fwd_fit)
-# + I(sqrt(points))
-names(wine_train)
-# dput(names(wine_train))
 fwd_fit <-
   regsubsets(
     log(price) ~ country + 
@@ -253,16 +223,3 @@ coef(fwd_fit , 24)
 # color_lumpWhite     country_lumpItaly        country_lumpUS province_lumpBurgundy
 # -0.2566484             0.1613557             0.1885719             0.6451918
 plot(bkwd_fit, scale = "Cp")
-
-
-
-
-
-
-
-
-#EXPEREMINT ----
-names(data.train)
-library(MASS)
-fit <- lm(-1 * price ^ (-.3) ~ ., data=data.train)
-step <- stepAIC(fit, direction="both")
