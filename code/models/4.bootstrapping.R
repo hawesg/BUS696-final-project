@@ -1,3 +1,100 @@
+# commentr::header_comment(title = "Bagging Models", author = "g", description = "These are the two seperate bootstrap models first the good one using caret and then the one based on code from class that doesn't work very well.", contact="f")
+
+
+################################################################################
+#                                                                              #
+# Purpose:       Bagging Models                                                #
+#                                                                              #
+# Author:        Garrett H, Bart C, Ricky L                                    #
+# Contact:       hawes102@mail.chapman.edu                                     #
+# Client:        Jonathan Hersh                                                #
+#                                                                              #
+# Code created:  2019-12-16                                                    #
+# Last updated:  2019-12-16                                                    #
+# Source:        /Users/garretthawes/wine-project                              #
+#                                                                              #
+# Comment:       These are the two seperate bootstrap models first the good o  #
+#                ne using caret and then the one based on code from class      #
+#                that doesn't work very well.                                  #
+#                                                                              #
+################################################################################
+
+##################### More robust model using caret train ######################
+
+library(doParallel)
+library(doParallel)  # for parallel backend to foreach
+library(foreach)     # for parallel processing with for loops
+
+# Modeling packages
+library(caret)       # for general model fitting
+library(rpart)       # for fitting decision trees
+library(ipred)       # for fitting bagged decision trees
+
+cl <- makeCluster(4) # use 4 workers
+registerDoParallel(cl) # register the parallel backend
+
+model.bootstrap.advanced <- train(
+  -1 * (price ^(-.3)) ~ .,
+  data = data.train,
+  method = "treebag",
+  trControl = trainControl(method = "cv", number = 10),
+  nbagg = 200,  
+  control = rpart.control(minsplit = 2, cp = 0)
+)
+pushover(message = msg, 
+         user = userID, 
+         app = appToken)
+
+
+# predictions <- foreach(
+#   icount(100), 
+#   .packages = "rpart", 
+#   .combine = cbind ) %dopar% {
+#     # bootstrap copy of training data
+#     index <- sample(nrow(data.train), replace = TRUE)
+#     wine_train_boot <- data.train[index, ]  
+#     
+#     # fit tree to bootstrap copy
+#     bagged_tree <- rpart(
+#       -1 * (price ^(-.3)) ~ ., 
+#       control = rpart.control(minsplit = 2, cp = 0),
+#       data = data.train
+#     ) 
+#     
+#     predict(bagged_tree, newdata = data.test)
+#   }
+# 
+# 
+# predictions %>%
+#   as.data.frame() %>%
+#   mutate(
+#     observation = 1:n(),
+#     actual = -1 * (data.test$price ^(-.3))) %>%
+#   tidyr::gather(tree, predicted, -c(observation, actual)) %>%
+#   group_by(observation) %>%
+#   mutate(tree = stringr::str_extract(tree, '\\d+') %>% as.numeric()) %>%
+#   ungroup() %>%
+#   arrange(observation, tree) %>%
+#   group_by(observation) %>%
+#   mutate(avg_prediction = cummean(predicted)) %>%
+#   group_by(tree) %>%
+#   summarize(RMSE = RMSE(avg_prediction, actual)) %>%
+#   ggplot(aes(tree, RMSE)) +
+#   geom_line() +
+#   xlab('Number of trees') + theme_solarized()
+
+stopCluster(cl)
+
+bag_test_pred <- predict(model.bootstrap.advanced, newdata = data.test)
+
+head(.tukey(data.test$price))
+
+bag_pred_test_df <- data.frame(actual = .tukey(data.test$price), pred = bag_test_pred) 
+
+
+postResample(bag_pred_test_df$pred, bag_pred_test_df$actual)
+
+################################ In class model ################################
 
 # store rownames as columns
 model.bootstrap.preds <- data.train %>% 
@@ -58,21 +155,6 @@ for(i in 1:B){
   model.bootstrap.preds <- left_join(x = model.bootstrap.preds, y = preds_boot,
                                 by = "rowname")
 }
-# 
-# names(model.bootstrap.preds)
-# ## Examine individual models, will need to spend more time here ----
-# plot(boot_mods[[1]])
-# plot(boot_mods[[2]])
-# plot(boot_mods[[3]])
-# plot(boot_mods[[4]])
-# plot(boot_mods[[5]])
-# plot(boot_mods[[6]])
-# plot(boot_mods[[7]])
-# plot(boot_mods[[8]])
-# plot(boot_mods[[9]])
-# plot(boot_mods[[10]])
-# plot(boot_mods[[20]])
-# plot(boot_mods[[30]])
 
 # must convert factor into numeric, note that class "0" = 1, 
 # and class "1" = 2, so we need to subtract 1 from every column

@@ -1,4 +1,18 @@
-
+###############################################################################-
+#                                                                              #
+# Purpose:       Word cloud for designation column                             #
+#                                                                              #
+# Author:        Garrett H, Bart C, Ricky L                                    #
+# Contact:       hawes102@mail.chapman.edu                                     #
+# Client:        Jonathan Hersh                                                #
+#                                                                              #
+# Code created:  2019-11-23                                                    #
+# Last updated:  2019-11-23                                                    #
+# Source:        /Users/garretthawes/wine-project                              #
+#                                                                              #
+# Comment:       Check side menu to navigate                                   #
+#                                                                              #
+###############################################################################-
 
 ##Load Require Library
 library(tm)

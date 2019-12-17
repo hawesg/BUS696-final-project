@@ -310,7 +310,7 @@ ggplot(wine_data_clean, aes(x = country_lump,
 ```
 ]
 
---- 
+---
 
 # TRANSFORMING Y - TUKEY'S LADDER OF POWERS 
 
@@ -549,17 +549,18 @@ ggplot(wine_train_preds) +
 # BOOTSTRAPPING - FURTHER WORK
 
 .pull-left[
+- Given the issues running the bootstrapping code from class at larger numbers and an error relating to not being able to make binary decisions above 31 levels, we investigated using `CARET` to train a bootstrapp model. 
 
 ```{r eval=FALSE}
 cl <- makeCluster(4) # use 4 workers
 registerDoParallel(cl) # register the parallel backend
 
 model.bag <- train(
-  -1 * (price ^(-.3)) ~ .,
+  -1 * (price^(-.3)) ~ .,
   data = data.train,
   method = "treebag",
-  trControl = trainControl(method = "cv", number = 10),
-  nbagg = 200,  
+  trControl = trainControl(method = "cv", 
+    number = 10), nbagg = 200,  
   control = rpart.control(minsplit = 2, cp = 0)
 )
 
@@ -568,17 +569,12 @@ pushover(message = "Process finished",
          app = appToken)
 
 ```
-
-
-
 ]
 
 .pull-right[
-- Given the issues running the bootstrapping code from class at larger numbers and an error relating to not being able to make binary decisions above 31 levels, we investigated using `CARET` to train a bootstrapp model. I have not had time to actually work with the data but these are the results.
 
 ```{r eval=FALSE}
 Bagged CART 
-
 68626 samples
    19 predictor
 
@@ -595,11 +591,11 @@ Resampling results:
 model.comparison <- model.comparison %>% bind_rows(
     data.table(
       r2_train = 0.6768,
-      r2_test = NA,
+      r2_test = 0.6823,
       RMSE_train = 0.04060,
-      RMSE_test = NA,
+      RMSE_test = 0.0403,
       MAE_train = 0.0301,
-      MAE_test = NA
+      MAE_test = 0.02976
     ))
 ```
 

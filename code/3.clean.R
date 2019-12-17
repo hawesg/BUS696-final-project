@@ -1,8 +1,28 @@
 ################### Notes ###################
 #Helper functions
-source("code/clean_fxns.R")
+source("code/helper_functions/clean_fxns.R")
 
 wine_data_original <- wine_data
+
+wine_data <-
+  wine_data %>% dplyr::mutate(color = recode(wine_data$color, O="Other", R="Red", W="White", SW="Sparkling White") )
+
+
+# Cleaning ----------------------------------------------------------------
+
+# Apply the cleaning strategies from above
+# Number of lumps can be found in FCT_LUMPS for example FCT_LUMPS$province
+
+wine_data <-
+  wine_data %>% dplyr::mutate(
+    taster_name = as.character(taster_name),
+    title = as.character(title),
+    color_lump = fct_other(color, keep=c("Red", "White")),
+    country_lump = fct_lump(wine_data$country, n = FCT_LUMPS$country)
+  ) %>%
+  dplyr::filter (country != "" &
+                   variety != "" &
+                   taster_name != "") %>% drop_na(c("price", "taster_gender")) 
 
 # Exploritory Analysis Comments  ------------------------------------------
 
@@ -150,29 +170,4 @@ wine_data_original <- wine_data
 #   ))
 
 # Switched to dplyr from plyr syntax
-
-wine_data <-
-  wine_data %>% dplyr::mutate(color = recode(wine_data$color, O="Other", R="Red", W="White", SW="Sparkling White") )
-
-
-
-# Cleaning ----------------------------------------------------------------
-
-# Apply the cleaning strategies from above
-# Number of lumps can be found in FCT_LUMPS for example FCT_LUMPS$province
-wine_data <-
-  wine_data %>% dplyr::mutate(
-    taster_name = as.character(taster_name),
-    title = as.character(title),
-    color_lump = fct_other(color, keep=c("Red", "White")),
-    country_lump = fct_lump(wine_data$country, n = FCT_LUMPS$country)
-  ) %>%
-  dplyr::filter (country != "" &
-                   variety != "" &
-                   taster_name != "") %>% drop_na(c("price", "taster_gender")) 
-
-
-
-wine_data_end_of_clean <- wine_data
-wine_data <- wine_data_end_of_clean
 

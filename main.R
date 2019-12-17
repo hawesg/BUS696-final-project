@@ -23,7 +23,7 @@ rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
 
 ################################## Libraries ###################################
 
-source("code/libraries.R")
+source("code/1.libraries.R")
 
 ################################### Contants ###################################
 
@@ -51,15 +51,15 @@ FCT_LUMPS <-
 
 # ---- begin ----
 # Step One: Load Data:
-source("code/load.R")
+source("code/2.load.R")
 
 # ---- clean ----
 # Step Two: Clean Data:
-source("code/clean.R")
+source("code/3.clean.R")
 
 # ---- feature generation ----
 # Step Three: Feature Engeneering:
-source("code/features.R")
+source("code/4.features.R")
 
 ################################### Clean up ###################################
 
@@ -71,13 +71,10 @@ rm("colors", "designation_rp", "other", "patterns",
    "wine_data_end_of_clean", "wine_data_original", "wine_data_with_twitter_data")
 
 save(wine_data_clean, file = here::here("data","output","clean_wine.RData"))
-#rm(list=setdiff(ls(), "wine_data_clean"))
-# load(here::here("data","output","clean_wine.RData"))
 
 # ---- analysis ----
 # Step Three: Analyzing data for report:
-source("code/analysis.R")
-
+source("code/5.analysis.R")
 
 # ---- plots ----
 # Step Three: Analyzing data for report:
@@ -85,35 +82,5 @@ source("code/analysis.R")
 
 # ---- render ----
 # Step : Knitting Report
-#rmarkdown::render("rmd/README.Rmd","github_document", "../README.md")
+rmarkdown::render("rmd/README.Rmd","github_document", "README.md")
 #rmarkdown::render("rmd/README.Rmd","pdf_document", "../analysis.pdf")
-
-
-# 
-# #!/usr/bin/env Rscript
-# args = commandArgs(trailingOnly = TRUE)
-# 
-# if (length(args) == 0) {
-#   FCT_LUMPS <-
-#     list(
-#       variety_color = 5,
-#       taster_name = 1,
-#       taster_twitter = 5,
-#       designation = 10,
-#       country = 10,
-#       variety = 10
-#     )
-# } else {
-#   FCT_LUMPS <- dget(args[1])
-# }
-# 
-# 
-# 
-
-
-
-# header_comment(
-#   '', # Purpose
-#   ''# Comment
-# )
-# line_comment("Setup testing and training set")
