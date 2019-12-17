@@ -10,30 +10,10 @@
 # Last updated:  2019-11-22                                                    #
 # Source:        /Users/garretthawes/wine-project                              #
 #                                                                              #
-# Comment:       Mostly a starting off point but was able to get R2 of .55 or  #
-#                so                                                            #
+# Comment:                                                                     #
+#                                                                              #
 #                                                                              #
 ###############################################################################-
-
-###############################################################################-
-#                                                                              #
-#  Copy this stuff into the top of any script you are working on for modeling  #
-#                                                                              #
-###############################################################################-
-
-# rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
-
-###############################################################################-
-
-################################## Libraries ###################################
-#                                                                              #
-#  Omit this if you want to just load them manually                            #
-#                                                                              #
-###############################################################################-
-#
-source("code/libraries.R")
-
-# names(data.train)
 
 ################################# Class method #################################
 
@@ -42,9 +22,6 @@ alpha_list <- seq(0, 1, len = 101)
 alpha_list
 
 #match(alpha_list,0.47)
-
-library(glmnet)
-library(glmnetUtils)
 
 names(data.train)
 

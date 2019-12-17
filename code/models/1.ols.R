@@ -15,33 +15,12 @@
 #                                                                              #
 ################################################################################
 
-###############################################################################-
-#                                                                              #
-#  Copy this stuff into the top of any script you are working on for modeling  #
-#                                                                              #
-###############################################################################-
-
-# rm(list = ls(all.names = TRUE)) #will clear all objects includes hidden objects.
-
-if (!(exists("wine_train") && exists("wine_train"))) {
-  load(here::here("data", "output", "wine_train.RData"))
-  load(here::here("data", "output", "wine_test.RData"))
-}
-
-###############################################################################-
-
-################################## Libraries ###################################
-#                                                                              #
-#  Omit this if you want to just load them manually                            #
-#                                                                              #
-###############################################################################-
-#
-source("code/libraries.R")
-
+# TODO Fix this up
 
 .sig <- function(column, keep_vars) {
   return(fct_relevel(fct_other(column, keep = keep_vars), "Other"))
 }
+
 m1 <- lm(log(price) ~ points, data = wine_train)
 summary(m1)
 
@@ -202,15 +181,5 @@ str(wine_train)
 # Residual standard error: 0.495 on 91493 degrees of freedom
 # Multiple R-squared:  0.4394,	Adjusted R-squared:  0.4394
 # F-statistic: 1.195e+04 on 6 and 91493 DF,  p-value: < 2.2e-16
-
-
-########################## Fucking around with caret ###########################
-library("skimr")
-skim(wine_data_clean)
-xray::anomalies(wine_data_clean)
-
-log_price <- log(wine_data_clean$price)
-skim(log_price)
-qplot(log_price)
 
 

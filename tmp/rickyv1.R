@@ -1,89 +1,4 @@
-#Source Libraries----
-
-library('partykit')
-library('rpart')
-library('rpart.plot')
-library('leaps')
-library('tidyverse')
-library('caret')
-library('rcompanion')
-
-#Import Data----
-
-load(here::here("data", "output", "limited_factors", "data.train.RData"))
-load(here::here("data", "output", "limited_factors", "wine_test.RData"))
-
-#Standardize----
-wine_data_to_be_standardized <-
-  data.train %>% select(
-    points,
-    title.n_words,
-    title.sentement,
-    title.n_chars,
-    taster.avg_points,
-    taster.n_reviews,
-    taster.n_tweets,
-    taster.n_followers
-  )
-wine_data_not_to_be_standardized <-
-  data.train %>% select(
-    price,
-    points.category,
-    country,
-    province,
-    winery,
-    color,
-    variety,
-    variety_and_color,
-    designation,
-    title.has_accents,
-    taster.name,
-    taster.gender
-  )
-
-# wine_data_standardized <-
-#   wine_data_clean %>% select(
-#     price,
-#     title.has_accents,``
-#     points.category,
-#     country,
-#     province,
-#     winery,
-#     color,
-#     variety,
-#     variety_and_color,
-#     designation,
-#     title.has_accents,
-#     taster.name,
-#     taster.gender,
-#     points,
-#     title.n_words,
-#     title.sentement,
-#     title.n_chars,
-#     taster.avg_points,
-#     taster.n_reviews,
-#     taster.n_tweets,
-#     taster.n_followers
-#   )
-
-summary(wine_data_to_be_standardized[, 1:8])
-preprocessParams <-
-  preProcess(wine_data_to_be_standardized[, 1:8], method = c("center", "scale"))
-print(preprocessParams)
-transformed <-
-  predict(preprocessParams, wine_data_to_be_standardized[, 1:8])
-summary(transformed)
-head(transformed)
-wine_data_standardized <-
-  bind_cols(wine_data_not_to_be_standardized, transformed)
-str(wine_data_standardized)
-library("skimr")
-skim(wine_data_standardized)
-
-data.train <- wine_data_standardized
-
-
-#OlS Model (No Log Price) ----
+########################### OLS Untransformed price ############################
 
 model.ols.price <-
   lm(
@@ -106,29 +21,19 @@ model.ols.price <-
 summary(model.ols.price)
 summary(model.ols.price)$r.squared
 
-#Predictions-No Log Model ----
-
-model.ols.price.preds <- predict(model.ols.price)
-model.ols.price.preds
-
-model.ols.price.preds_df <- data.frame(pred = model.ols.price.preds,
-                       actual = data.train$price)
+model.ols.price.preds_df <- data.frame(pred = predict(model.ols.price),
+                                       actual = data.train$price) %>% mutate(resids = actual - pred)
 
 ##Plot of Actual Vs Preds
 
 ggplot(model.ols.price.preds_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
   geom_abline(color = "red", linetype = "dashed")
 
-model.ols.price.preds_df <- data.frame(pred = model.ols.price.preds,
-                       actual = data.train$price,
-                       resids = model.ols.price$residuals)
-
 
 ##Plots of Preds Vs Resids
 
 ggplot(model.ols.price.preds_df, aes(x = pred, y = resids)) + geom_point(color = "purple", alpha = 1 /
                                                            100) + ggtitle("OLS_NO_LOG RESIDS VS PREDS") + geom_smooth() + theme_bw()
-
 
 #RMSE-OLS No Log
 
@@ -137,7 +42,6 @@ RMSE(model.ols.price.preds_df$pred, data.train$price)
 #MAE OLS No Log
 
 MAE(model.ols.price.preds_df$pred, data.train$price)
-
 
 #Forward Fit Model (log price) ----
 
@@ -177,21 +81,14 @@ summary(model.ols.log.from_fwd)$r.squared
 
 #Predictions-Forward Fit Model ----
 
-model.ols.log.from_fwd.preds <- predict(model.ols.log.from_fwd)
-model.ols.log.from_fwd.preds
 
-model.ols.log.from_fwd.preds_df <- data.frame(pred = model.ols.log.from_fwd.preds,
-                      actual = data.train$price)
+model.ols.log.from_fwd.preds_df <- data.frame(pred = predict(model.ols.log.from_fwd),
+                      actual = log(data.train$price)) %>% mutate(resids = actual - pred)
 
 ##Plot of Actual Vs Preds
 
 ggplot(model.ols.log.from_fwd.preds_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
   geom_abline(color = "red", linetype = "dashed")
-
-model.ols.log.from_fwd.preds_df <- data.frame(pred = model.ols.log.from_fwd.preds,
-                      actual = data.train$price,
-                      resids = model.ols.log.from_fwd$residuals)
-
 
 ##Plots of Preds Vs Resids
 
@@ -201,11 +98,11 @@ ggplot(model.ols.log.from_fwd.preds_df, aes(x = pred, y = resids)) + geom_point(
 
 ##RMSE
 
-RMSE(model.ols.log.from_fwd.preds_df$pred, data.train$price)
+RMSE(model.ols.log.from_fwd.preds_df$pred, model.ols.log.from_fwd.preds_df$actual)
 
 ##MAE
 
-MAE(model.ols.log.from_fwd.preds_df$pred, data.train$price)
+MAE(model.ols.log.from_fwd.preds_df$pred, model.ols.log.from_fwd.preds_df$actual)
 
 #Backward Fit Model (log price) ----
 
@@ -246,15 +143,13 @@ plot(model.ols.log.from_bkw)
 
 #Predictions-Backwards Fit Model----
 
-model.ols.log.from_bkw.preds <- predict(model.ols.log.from_bkw)
+model.ols.log.from_bkw.preds <-
 model.ols.log.from_bkw.preds
 
 ##New Dataframe W/Resids Not Changed
 
-model.ols.log.from_bkw.preds_df <- data.frame(pred = model.ols.log.from_bkw.preds,
-                      actual = data.train$price,
-                      resids = model.ols.log.from_bkw$residuals)
-
+model.ols.log.from_bkw.preds_df <- data.frame(pred =predict(model.ols.log.from_bkw),
+                      actual = data.train$price) %>% mutate(resids = actual-pred)
 
 ##Plot of Preds Vs Resids
 
@@ -315,21 +210,16 @@ summary(model.ols.tukey.from_fwd)$r.squared
 #Predictions Fwd Fit Tukey----
 ##Note: Made Predict Function Negative to Generate Positive Predictions
 
-model.ols.tukey.from_fwd.preds <- predict(model.ols.tukey.from_fwd)
+model.ols.tukey.from_fwd.preds <- 
 model.ols.tukey.from_fwd.preds
 
-model.ols.tukey.from_fwd.preds_df <- data.frame(pred = model.ols.tukey.from_fwd.preds,
-                      actual = data.train$price)
+model.ols.tukey.from_fwd.preds_df <- data.frame(pred = predict(model.ols.tukey.from_fwd),
+                      actual = data.train$price) %>% mutate(resids = actual - pred)
 
 ##Plot of Preds Vs Actual
 
 ggplot(model.ols.tukey.from_fwd.preds_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
   geom_abline(color = "red", linetype = "dashed")
-
-model.ols.tukey.from_fwd.preds_df <- data.frame(pred = model.ols.tukey.from_fwd.preds,
-                      actual = data.train$price,
-                      resids = model.ols.tukey.from_fwd$residuals)
-
 
 ##Plot of Resids vs Preds
 
@@ -386,13 +276,8 @@ cplot(model.ols.tukey.from_bkw)
 
 #Predictions Backwards Fit Tukey----
 
-model.ols.tukey.from_bkw.preds <- predict(model.ols.tukey.from_bkw)
-model.ols.tukey.from_bkw.preds
-
-model.ols.tukey.from_bkw.preds_df <- data.frame(pred = model.ols.tukey.from_bkw.preds,
-                      actual = data.train$price,
-                      resids = model.ols.tukey.from_bkw$residuals)
-
+model.ols.tukey.from_bkw.preds_df <- data.frame(pred = predict(model.ols.tukey.from_bkw),
+                      actual = data.train$price) %>% mutate(resids = actual - pred)
 
 ##Plot of Resids vs Preds
 
