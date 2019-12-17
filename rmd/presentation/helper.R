@@ -1,5 +1,7 @@
 # commentr::line_comment("Residuals Plot")
 
+model.comparison <- data.table()
+
 ############################# Map Plot Helper Info #############################
 
 world_map <- map_data("world")
@@ -199,9 +201,9 @@ plot(
 #   theme_solarized_2(base_size = 16) +
 #   theme(plot.title = element_text(hjust = 0.5),
 #         legend.position = "bottom")
-# 
+#
 # plot.marginal.plot_df
-# 
+#
 # plot.marginal.plot.1 <-
 #   ggMarginal(
 #     plot.marginal.plot_df,
@@ -315,328 +317,366 @@ ggplot(imp, aes(
 # TODO: Get this nice emoji based plot to work again.
 
 ################################ Helper Functions ################################
-    
+
 #TODO Combine these into one
 
-    .resid_plots <- function(model, traindata, testdata)
-    {
-      temp.train_df <- data.frame(
-        actual =  .tukey(traindata$price),
-        pred = predict(model, data = traindata) %>% round(4)
-      ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
-      
-      temp.test_df <- data.frame(
-        actual =  .tukey(testdata$price),
-        pred = predict(model, newdata = testdata) %>% round(4)
-      ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
-      
-      temp.ylim.low <- min(temp.train_df$resid, temp.test_df$resid)
-      temp.ylim.high <- max(temp.train_df$resid, temp.test_df$resid)
-      temp.xlim.low <- min(temp.train_df$pred, temp.test_df$pred)
-      temp.xlim.high <- max(temp.train_df$pred, temp.test_df$pred)
-      
-      
-      temp.pr.train <- postResample(temp.train_df$pred,
-                                    temp.train_df$actual) %>% round(4)
-      
-      temp.pr.test <- postResample(temp.test_df$pred,
-                                   temp.test_df$actual) %>% round(4)
-      
-      temp.plot.train <-
-        ggplot(temp.train_df, aes(x = pred, y = resid)) +
-        geom_point() +
-        geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-        xlim(temp.xlim.low, temp.xlim.high) +
-        ylim(temp.ylim.low, temp.ylim.high) +
-        labs(
-          x = "Fitted values",
-          y = "Residuals",
-          title = "Residuals vs Fitted Values",
-          subtitle = "Training Set"
-        ) +
-        geom_hline(yintercept = 0,
-                   col = "red",
-                   linetype = "dashed") + theme_solarized(base_size = 16) +
-        ggplot2::annotate(
-          "text",
-          temp.xlim.high,
-          temp.ylim.high,
-          hjust = 1,
-          vjust = 1,
-          color = "red",
-          size = 6,
-          label =
-            paste(
-              "R-squared",
-              format(temp.pr.train['Rsquared'], nsmall = 4),
-              "| RMSE: ",
-              format(temp.pr.train['RMSE'], nsmall = 4),
-              "| MAE: ",
-              format(temp.pr.train['MAE'], nsmall = 4)
-            )
+.resid_plots <- function(model, traindata, testdata)
+{
+  temp.train_df <- data.frame(
+    actual =  .tukey(traindata$price),
+    pred = predict(model, data = traindata) %>% round(4)
+  ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
+  
+  temp.test_df <- data.frame(
+    actual =  .tukey(testdata$price),
+    pred = predict(model, newdata = testdata) %>% round(4)
+  ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
+  
+  temp.ylim.low <- min(temp.train_df$resid, temp.test_df$resid)
+  temp.ylim.high <- max(temp.train_df$resid, temp.test_df$resid)
+  temp.xlim.low <- min(temp.train_df$pred, temp.test_df$pred)
+  temp.xlim.high <- max(temp.train_df$pred, temp.test_df$pred)
+  
+  
+  temp.pr.train <- postResample(temp.train_df$pred,
+                                temp.train_df$actual) %>% round(4)
+  
+  temp.pr.test <- postResample(temp.test_df$pred,
+                               temp.test_df$actual) %>% round(4)
+  
+  
+  temp.metrics <-
+    data.table(
+      r2_train = temp.pr.train['Rsquared'],
+      r2_test = temp.pr.test['Rsquared'],
+      RMSE_train = temp.pr.train['RMSE'],
+      RMSE_test = temp.pr.test['RMSE'],
+      MAE_train = temp.pr.train['MAE'],
+      MAE_test = temp.pr.test['MAE']
+    )
+  
+  model.comparison <<-
+    model.comparison %>% bind_rows(temp.metrics)
+  
+  temp.plot.train <-
+    ggplot(temp.train_df, aes(x = pred, y = resid)) +
+    geom_point() +
+    geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
+    xlim(temp.xlim.low, temp.xlim.high) +
+    ylim(temp.ylim.low, temp.ylim.high) +
+    labs(
+      x = "Fitted values",
+      y = "Residuals",
+      title = "Residuals vs Fitted Values",
+      subtitle = "Training Set"
+    ) +
+    geom_hline(yintercept = 0,
+               col = "red",
+               linetype = "dashed") + theme_solarized(base_size = 16) +
+    ggplot2::annotate(
+      "text",
+      temp.xlim.high,
+      temp.ylim.high,
+      hjust = 1,
+      vjust = 1,
+      color = "red",
+      size = 6,
+      label =
+        paste(
+          "R-squared",
+          format(temp.pr.train['Rsquared'], nsmall = 4),
+          "| RMSE: ",
+          format(temp.pr.train['RMSE'], nsmall = 4),
+          "| MAE: ",
+          format(temp.pr.train['MAE'], nsmall = 4)
         )
-      
-      
-      
-      
-      temp.plot.test <- ggplot(temp.test_df, aes(x = pred, y = resid)) +
-        geom_point() +
-        geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-        xlim(temp.xlim.low, temp.xlim.high) +
-        ylim(temp.ylim.low, temp.ylim.high) +
-        labs(
-          x = "Fitted values",
-          y = "Residuals",
-          title = "Residuals vs Fitted Values",
-          subtitle = "Test Set"
-        ) +
-        geom_hline(yintercept = 0,
-                   col = "red",
-                   linetype = "dashed") + theme_solarized(base_size = 16) +
-        ggplot2::annotate(
-          "text",
-          temp.xlim.high,
-          temp.ylim.high,
-          hjust = 1,
-          vjust = 1,
-          color = "red",
-          size = 6,
-          label =
-            paste(
-              "R-squared",
-              format(temp.pr.test['Rsquared'], nsmall = 4),
-              "| RMSE: ",
-              format(temp.pr.test['RMSE'], nsmall = 4),
-              "| MAE: ",
-              format(temp.pr.test['MAE'], nsmall = 4)
-            )
+    )
+  
+  temp.plot.test <-
+    ggplot(temp.test_df, aes(x = pred, y = resid)) +
+    geom_point() +
+    geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
+    xlim(temp.xlim.low, temp.xlim.high) +
+    ylim(temp.ylim.low, temp.ylim.high) +
+    labs(
+      x = "Fitted values",
+      y = "Residuals",
+      title = "Residuals vs Fitted Values",
+      subtitle = "Test Set"
+    ) +
+    geom_hline(yintercept = 0,
+               col = "red",
+               linetype = "dashed") + theme_solarized(base_size = 16) +
+    ggplot2::annotate(
+      "text",
+      temp.xlim.high,
+      temp.ylim.high,
+      hjust = 1,
+      vjust = 1,
+      color = "red",
+      size = 6,
+      label =
+        paste(
+          "R-squared",
+          format(temp.pr.test['Rsquared'], nsmall = 4),
+          "| RMSE: ",
+          format(temp.pr.test['RMSE'], nsmall = 4),
+          "| MAE: ",
+          format(temp.pr.test['MAE'], nsmall = 4)
         )
-      
-      temp.plots <- list(temp.plot.train, temp.plot.test)
-      
-      return(temp.plots)
-    }
-    
-    .resid_plots.log <- function(model, traindata, testdata)
-    {
-      temp.train_df <- data.frame(
-        actual =  log(traindata$price),
-        pred = predict(model, data = traindata) %>% round(4)
-      ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
-      
-      temp.test_df <- data.frame(
-        actual =  log(testdata$price),
-        pred = predict(model, newdata = testdata) %>% round(4)
-      ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
-      
-      temp.ylim.low <- min(temp.train_df$resid, temp.test_df$resid)
-      temp.ylim.high <- max(temp.train_df$resid, temp.test_df$resid)
-      temp.xlim.low <- min(temp.train_df$pred, temp.test_df$pred)
-      temp.xlim.high <- max(temp.train_df$pred, temp.test_df$pred)
-      
-      
-      temp.pr.train <- postResample(temp.train_df$pred,
-                                    temp.train_df$actual) %>% round(4)
-      
-      temp.pr.test <- postResample(temp.test_df$pred,
-                                   temp.test_df$actual) %>% round(4)
-      
-      # temp.pr.train.caption <-    paste( "R-squared", temp.pr.train['Rsquared'],
-      #                                    "| RMSE: ",temp.pr.train['RMSE'],
-      #                                    "| MAE: ", temp.pr.train['MAE'] )
-      
-      temp.plot.train <-
-        ggplot(temp.train_df, aes(x = pred, y = resid)) +
-        geom_point() +
-        geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-        xlim(temp.xlim.low, temp.xlim.high) +
-        ylim(temp.ylim.low, temp.ylim.high) +
-        labs(
-          x = "Fitted values",
-          y = "Residuals",
-          title = "Residuals vs Fitted Values",
-          subtitle = "Training Set"
-        ) +
-        geom_hline(yintercept = 0,
-                   col = "red",
-                   linetype = "dashed") + theme_solarized(base_size = 16) +
-        ggplot2::annotate(
-          "text",
-          temp.xlim.high,
-          temp.ylim.high,
-          hjust = 1,
-          vjust = 1,
-          color = "red",
-          size = 6,
-          label =
-            paste(
-              "R-squared",
-              format(temp.pr.train['Rsquared'], nsmall = 4),
-              "| RMSE: ",
-              format(temp.pr.train['RMSE'], nsmall = 4),
-              "| MAE: ",
-              format(temp.pr.train['MAE'], nsmall = 4)
-            )
+    )
+  
+  temp.plots <- list(temp.plot.train, temp.plot.test)
+  
+  return(temp.plots)
+}
+
+.resid_plots.log <- function(model, traindata, testdata)
+{
+  temp.train_df <- data.frame(
+    actual =  log(traindata$price),
+    pred = predict(model, data = traindata) %>% round(4)
+  ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
+  
+  temp.test_df <- data.frame(
+    actual =  log(testdata$price),
+    pred = predict(model, newdata = testdata) %>% round(4)
+  ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
+  
+  temp.ylim.low <- min(temp.train_df$resid, temp.test_df$resid)
+  temp.ylim.high <- max(temp.train_df$resid, temp.test_df$resid)
+  temp.xlim.low <- min(temp.train_df$pred, temp.test_df$pred)
+  temp.xlim.high <- max(temp.train_df$pred, temp.test_df$pred)
+  
+  
+  temp.pr.train <- postResample(temp.train_df$pred,
+                                temp.train_df$actual) %>% round(4)
+  
+  temp.pr.test <- postResample(temp.test_df$pred,
+                               temp.test_df$actual) %>% round(4)
+  
+  temp.metrics <-
+    data.table(
+      r2_train = temp.pr.train['Rsquared'],
+      r2_test = temp.pr.test['Rsquared'],
+      RMSE_train = temp.pr.train['RMSE'],
+      RMSE_test = temp.pr.test['RMSE'],
+      MAE_train = temp.pr.train['MAE'],
+      MAE_test = temp.pr.test['MAE']
+    )
+  
+  model.comparison <<-
+    model.comparison %>% bind_rows(temp.metrics)
+  
+  temp.plot.train <-
+    ggplot(temp.train_df, aes(x = pred, y = resid)) +
+    geom_point() +
+    geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
+    xlim(temp.xlim.low, temp.xlim.high) +
+    ylim(temp.ylim.low, temp.ylim.high) +
+    labs(
+      x = "Fitted values",
+      y = "Residuals",
+      title = "Residuals vs Fitted Values",
+      subtitle = "Training Set"
+    ) +
+    geom_hline(yintercept = 0,
+               col = "red",
+               linetype = "dashed") + theme_solarized(base_size = 16) +
+    ggplot2::annotate(
+      "text",
+      temp.xlim.high,
+      temp.ylim.high,
+      hjust = 1,
+      vjust = 1,
+      color = "red",
+      size = 6,
+      label =
+        paste(
+          "R-squared",
+          format(temp.pr.train['Rsquared'], nsmall = 4),
+          "| RMSE: ",
+          format(temp.pr.train['RMSE'], nsmall = 4),
+          "| MAE: ",
+          format(temp.pr.train['MAE'], nsmall = 4)
         )
-      
-      temp.plot.test <- ggplot(temp.test_df, aes(x = pred, y = resid)) +
-        geom_point() +
-        geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-        xlim(temp.xlim.low, temp.xlim.high) +
-        ylim(temp.ylim.low, temp.ylim.high) +
-        labs(
-          x = "Fitted values",
-          y = "Residuals",
-          title = "Residuals vs Fitted Values",
-          subtitle = "Test Set"
-        ) +
-        geom_hline(yintercept = 0,
-                   col = "red",
-                   linetype = "dashed") + theme_solarized(base_size = 16) +
-        ggplot2::annotate(
-          "text",
-          temp.xlim.high,
-          temp.ylim.high,
-          hjust = 1,
-          vjust = 1,
-          color = "red",
-          size = 6,
-          label =
-            paste(
-              "R-squared",
-              format(temp.pr.test['Rsquared'], nsmall = 4),
-              "| RMSE: ",
-              format(temp.pr.test['RMSE'], nsmall = 4),
-              "| MAE: ",
-              format(temp.pr.test['MAE'], nsmall = 4)
-            )
+    )
+  
+  temp.plot.test <-
+    ggplot(temp.test_df, aes(x = pred, y = resid)) +
+    geom_point() +
+    geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
+    xlim(temp.xlim.low, temp.xlim.high) +
+    ylim(temp.ylim.low, temp.ylim.high) +
+    labs(
+      x = "Fitted values",
+      y = "Residuals",
+      title = "Residuals vs Fitted Values",
+      subtitle = "Test Set"
+    ) +
+    geom_hline(yintercept = 0,
+               col = "red",
+               linetype = "dashed") + theme_solarized(base_size = 16) +
+    ggplot2::annotate(
+      "text",
+      temp.xlim.high,
+      temp.ylim.high,
+      hjust = 1,
+      vjust = 1,
+      color = "red",
+      size = 6,
+      label =
+        paste(
+          "R-squared",
+          format(temp.pr.test['Rsquared'], nsmall = 4),
+          "| RMSE: ",
+          format(temp.pr.test['RMSE'], nsmall = 4),
+          "| MAE: ",
+          format(temp.pr.test['MAE'], nsmall = 4)
         )
-      
-      temp.plots <- list(temp.plot.train, temp.plot.test)
-      
-      return(temp.plots)
-    }
-    
-    .resid_plots.enet <- function(model, traindata, testdata)
-    {
-      temp.train_df <- data.frame(
-        actual =  .tukey(traindata$price),
-        pred = predict(
-          model.enet,
-          alpha = alpha_list[min_cv],
-          lambda = lambda.min,
-          data.train
-        ) %>% round(4)
-      ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
-      
-      temp.test_df <- data.frame(
-        actual =  .tukey(testdata$price),
-        pred = predict(
-          model.enet,
-          alpha = alpha_list[min_cv],
-          lambda = lambda.min,
-          newdata = data.test
-        ) %>% round(4)
-      ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
-      
-      temp.ylim.low <- min(temp.train_df$resid, temp.test_df$resid)
-      temp.ylim.high <- max(temp.train_df$resid, temp.test_df$resid)
-      temp.xlim.low <- min(temp.train_df$pred, temp.test_df$pred)
-      temp.xlim.high <- max(temp.train_df$pred, temp.test_df$pred)
-      
-      
-      temp.pr.train <- postResample(temp.train_df$pred,
-                                    temp.train_df$actual) %>% round(4)
-      
-      temp.pr.test <- postResample(temp.test_df$pred,
-                                   temp.test_df$actual) %>% round(4)
-      
-      temp.enet.alpha <- alpha_list[min_cv]
-      
-      temp.plot.train <-
-        ggplot(temp.train_df, aes(x = pred, y = resid)) +
-        geom_point() +
-        geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-        xlim(temp.xlim.low, temp.xlim.high) +
-        ylim(temp.ylim.low, temp.ylim.high) +
-        labs(
-          x = "Fitted values",
-          y = "Residuals",
-          title = "Residuals vs Fitted Values",
-          subtitle = "Training Set",
-          caption = paste(
-            expression(lambda),
-            ": 1se | ",
-            expression(alpha),
-            ": ",
-            plot.enet.alpha
-          )
-        ) +
-        geom_hline(yintercept = 0,
-                   col = "red",
-                   linetype = "dashed") + theme_solarized(base_size = 16) +
-        ggplot2::annotate(
-          "text",
-          temp.xlim.high,
-          temp.ylim.high,
-          hjust = 1,
-          vjust = 1,
-          color = "red",
-          size = 6,
-          label =
-            paste(
-              "R-squared",
-              format(temp.pr.train['Rsquared'], nsmall = 4),
-              "| RMSE: ",
-              format(temp.pr.train['RMSE'], nsmall = 4),
-              "| MAE: ",
-              format(temp.pr.train['MAE'], nsmall = 4)
-            )
+    )
+  
+  temp.plots <- list(temp.plot.train, temp.plot.test)
+  
+  return(temp.plots)
+}
+
+.resid_plots.enet <- function(model, traindata, testdata)
+{
+  temp.train_df <- data.frame(
+    actual =  .tukey(traindata$price),
+    pred = predict(
+      model.enet,
+      alpha = alpha_list[min_cv],
+      lambda = lambda.min,
+      data.train
+    ) %>% round(4)
+  ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
+  
+  temp.test_df <- data.frame(
+    actual =  .tukey(testdata$price),
+    pred = predict(
+      model.enet,
+      alpha = alpha_list[min_cv],
+      lambda = lambda.min,
+      newdata = data.test
+    ) %>% round(4)
+  ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
+  
+  temp.ylim.low <- min(temp.train_df$resid, temp.test_df$resid)
+  temp.ylim.high <- max(temp.train_df$resid, temp.test_df$resid)
+  temp.xlim.low <- min(temp.train_df$pred, temp.test_df$pred)
+  temp.xlim.high <- max(temp.train_df$pred, temp.test_df$pred)
+  
+  
+  temp.pr.train <- postResample(temp.train_df$pred,
+                                temp.train_df$actual) %>% round(4)
+  
+  temp.pr.test <- postResample(temp.test_df$pred,
+                               temp.test_df$actual) %>% round(4)
+  
+  temp.metrics <-
+    data.table(
+      r2_train = temp.pr.train['Rsquared'],
+      r2_test = temp.pr.test['Rsquared'],
+      RMSE_train = temp.pr.train['RMSE'],
+      RMSE_test = temp.pr.test['RMSE'],
+      MAE_train = temp.pr.train['MAE'],
+      MAE_test = temp.pr.test['MAE']
+    )
+  
+  model.comparison <<-
+    model.comparison %>% bind_rows(temp.metrics)
+  
+  temp.enet.alpha <- alpha_list[min_cv]
+  
+  temp.plot.train <-
+    ggplot(temp.train_df, aes(x = pred, y = resid)) +
+    geom_point() +
+    geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
+    xlim(temp.xlim.low, temp.xlim.high) +
+    ylim(temp.ylim.low, temp.ylim.high) +
+    labs(
+      x = "Fitted values",
+      y = "Residuals",
+      title = "Residuals vs Fitted Values",
+      subtitle = "Training Set",
+      caption = paste(
+        expression(lambda),
+        ": 1se | ",
+        expression(alpha),
+        ": ",
+        plot.enet.alpha
+      )
+    ) +
+    geom_hline(yintercept = 0,
+               col = "red",
+               linetype = "dashed") + theme_solarized(base_size = 16) +
+    ggplot2::annotate(
+      "text",
+      temp.xlim.high,
+      temp.ylim.high,
+      hjust = 1,
+      vjust = 1,
+      color = "red",
+      size = 6,
+      label =
+        paste(
+          "R-squared",
+          format(temp.pr.train['Rsquared'], nsmall = 4),
+          "| RMSE: ",
+          format(temp.pr.train['RMSE'], nsmall = 4),
+          "| MAE: ",
+          format(temp.pr.train['MAE'], nsmall = 4)
         )
-      
-      temp.plot.test <- ggplot(temp.test_df, aes(x = pred, y = resid)) +
-        geom_point() +
-        geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-        xlim(temp.xlim.low, temp.xlim.high) +
-        ylim(temp.ylim.low, temp.ylim.high) +
-        labs(
-          x = "Fitted values",
-          y = "Residuals",
-          title = "Residuals vs Fitted Values",
-          subtitle = "Test Set",
-          caption = paste(
-            expression(lambda),
-            ": 1se | ",
-            expression(alpha),
-            ": ",
-            plot.enet.alpha
-          )
-        ) +
-        geom_hline(yintercept = 0,
-                   col = "red",
-                   linetype = "dashed") + theme_solarized(base_size = 16) +
-        ggplot2::annotate(
-          "text",
-          temp.xlim.high,
-          temp.ylim.high,
-          hjust = 1,
-          vjust = 1,
-          color = "red",
-          size = 6,
-          label =
-            paste(
-              "R-squared",
-              format(temp.pr.test['Rsquared'], nsmall = 4),
-              "| RMSE: ",
-              format(temp.pr.test['RMSE'], nsmall = 4),
-              "| MAE: ",
-              format(temp.pr.test['MAE'], nsmall = 4)
-            )
+    )
+  
+  temp.plot.test <-
+    ggplot(temp.test_df, aes(x = pred, y = resid)) +
+    geom_point() +
+    geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
+    xlim(temp.xlim.low, temp.xlim.high) +
+    ylim(temp.ylim.low, temp.ylim.high) +
+    labs(
+      x = "Fitted values",
+      y = "Residuals",
+      title = "Residuals vs Fitted Values",
+      subtitle = "Test Set",
+      caption = paste(
+        expression(lambda),
+        ": 1se | ",
+        expression(alpha),
+        ": ",
+        plot.enet.alpha
+      )
+    ) +
+    geom_hline(yintercept = 0,
+               col = "red",
+               linetype = "dashed") + theme_solarized(base_size = 16) +
+    ggplot2::annotate(
+      "text",
+      temp.xlim.high,
+      temp.ylim.high,
+      hjust = 1,
+      vjust = 1,
+      color = "red",
+      size = 6,
+      label =
+        paste(
+          "R-squared",
+          format(temp.pr.test['Rsquared'], nsmall = 4),
+          "| RMSE: ",
+          format(temp.pr.test['RMSE'], nsmall = 4),
+          "| MAE: ",
+          format(temp.pr.test['MAE'], nsmall = 4)
         )
-      
-      temp.plots <- list(temp.plot.train, temp.plot.test)
-      
-      return(temp.plots)
-    }
-    
-    
+    )
+  
+  temp.plots <- list(temp.plot.train, temp.plot.test)
+  
+  return(temp.plots)
+}
+
+
+
+

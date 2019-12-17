@@ -15,7 +15,7 @@ This is the the project files for our BUS 696 Final project working with the dat
 For now code is organized in this structure:
 
 1. [code](code): a folder to store code for processing data
-2. [data](fata): a folder to store input and output data
+2. [data](data): a folder to store input and output data
 3. [images](images): a folder to store images produced for reporting
 4. [rmd/README.Rmd](rmd/README.Rmd): This is a a R file used to produce the
 `README.md` file.
