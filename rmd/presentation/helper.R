@@ -1,6 +1,21 @@
-# commentr::line_comment("Residuals Plot")
+commentr::header_comment(title = "Presentation Helper", author = "g", description = "Various code to keep present.Rmd clean", contact="f")
 
-model.comparison <- data.table()
+################################################################################
+#                                                                              #
+# Purpose:       Presentation Helper                                           #
+#                                                                              #
+# Author:        Garrett H, Bart C, Ricky L                                    #
+# Contact:       hawes102@mail.chapman.edu                                     #
+# Client:        Jonathan Hersh                                                #
+#                                                                              #
+# Author:        Garrett H, Bart C, Ricky L                                    #
+# Contact:       hawes102@mail.chapman.edu                                     #
+# Client:        Jonathan Hersh                                                #
+#                                                                              #
+# Comment:       Various code to keep present.Rmd clean                        #
+#                                                                              #
+################################################################################
+
 
 ############################# Map Plot Helper Info #############################
 

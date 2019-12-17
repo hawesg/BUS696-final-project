@@ -2,12 +2,7 @@
 
 ## Garrett, Ricky, Bart
 
-![Logo](http://garretthawes.com/r/logo.jpeg)
-![Cover](http://garretthawes.com/r/cover.jpeg)
-
-This is the the project files for our BUS 696 Final project working with the data from https://www.kaggle.com/zynicide/wine-reviews 
-
-For now code is organized in this structure:
+This folder holds the main code of the project to be executed by main.R they are run in the order of their prefix ie: `1.libraries.R` is run before `2.load.R` etc...
 
 1. [code](code): a folder to store code for processing data
 2. [data](fata): a folder to store input and output data
@@ -17,3 +12,5 @@ For now code is organized in this structure:
 6. [main.R](main.R): This is the main R file. It lists the steps for the analysis
 7. [run.sh](run.sh): This is the bash file that will automatically run 'main.R' when
 invoked.
+
+![Logo](http://garretthawes.com/r/logo.jpeg)

@@ -1,5 +1,8 @@
 #************* Feature Generation *****************
 
+#Helper functions
+source("code/helper_functions/features_fxns.R")
+
 # Points Categories -------------------------------------------------------
 
 # Turn score into categories per https://www.winespectator.com/articles/scoring-scale

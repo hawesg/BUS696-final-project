@@ -1,5 +1,3 @@
-# commentr::header_comment(title = "Bagging Models", author = "g", description = "These are the two seperate bootstrap models first the good one using caret and then the one based on code from class that doesn't work very well.", contact="f")
-
 
 ################################################################################
 #                                                                              #
@@ -13,8 +11,8 @@
 # Last updated:  2019-12-16                                                    #
 # Source:        /Users/garretthawes/wine-project                              #
 #                                                                              #
-# Comment:       These are the two seperate bootstrap models first the good o  #
-#                ne using caret and then the one based on code from class      #
+# Comment:       These are the two seperate bootstrap models first the good    #
+#                one using caret and then the one based on code from class     #
 #                that doesn't work very well.                                  #
 #                                                                              #
 ################################################################################

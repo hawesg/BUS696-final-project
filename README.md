@@ -1,7 +1,7 @@
 Wine Data Set
 ================
-Garrett Hawes, Ricky Lobel, Bart Something
-12-16-2019
+Garrett Hawes, Ricky Lobel, Bart Ciastkowski
+12-17-2019
 
 # BUS 696 Final Project
 
@@ -34,6 +34,8 @@ preperation](http://bus696.garretthawes.com/deliverable-2/index.html)
 and the [main
 presentation](http://bus696.garretthawes.com/present.html). Both were
 weiten in rmarkdown.
+
+Packrat was used to manage packages.
 
 ![Cover](http://garretthawes.com/r/cover.jpeg)
 

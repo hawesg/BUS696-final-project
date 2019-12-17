@@ -22,8 +22,7 @@
 ###############################################################################-
 
 
-
-names(wine_data_clean)
+######################### Center and Scale predictors ##########################
 
 wine_data_to_be_standardized <-
   wine_data_clean %>% 
@@ -67,6 +66,7 @@ wine_data_standardized <- bind_cols(wine_data_not_to_be_standardized, transforme
 # library("skimr")
 # skim(wine_data_standardized)
 
+############################### Test/Train Split ###############################
 
 # Setup Test and Train set with CARET so they are proportianal
 set.seed(1861)
@@ -86,11 +86,11 @@ str(data.train)
 # data.train <- loadRDS(here::here("data","output","wine_train_100.rds"))
 # saveRDS(data.test, file = here::here("data","output","wine_test_100.rds"))
       
-# # ---- OLS Regression ----
-# source("code/models/1.ols.R")
+# ---- OLS Regression ----
+source("code/models/1.ols.R")
 
-# # ---- Step Slection ----
-# source("code/models/2.step.R")
+# ---- Step Slection ----
+source("code/models/2.step.R")
 
 # ---- Elastic Net ----
 source("code/models/3.enet.R")

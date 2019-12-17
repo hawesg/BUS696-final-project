@@ -1,6 +1,6 @@
 ---
 title: "Wine Data Set"
-author: "Garrett Hawes, Ricky Lobel, Bart Something"
+author: "Garrett Hawes, Ricky Lobel, Bart Ciastkowski"
 date: '`r format(Sys.Date(), "%m-%d-%Y")`'
 ---
 

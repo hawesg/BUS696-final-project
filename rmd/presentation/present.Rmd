@@ -41,7 +41,7 @@ options(htmltools.dir.version = FALSE)
 library(knitr)
 library(kableExtra)
 # library(emojifont)
-source(here::here("code","libraries.R"))
+# source(here::here("code","1.libraries.R"))
 # This is a way to set options for all code chunks at once
 # Note that you can also dynamically control options by setting them to a value
 # DPI setting increased for Word output, cairo is anti aliasing
@@ -70,8 +70,8 @@ background-size: contain
   - Source data sets
   - Cleaning 
   - Feature Generation and transformations
-  - Exploritory Data Analyisis
-  - Pre processing and Train/Test split
+  - Exploratory Data Analysis
+  - Preprocessing and Train/Test split
 - MODELING THE DATA
   - Stepwise Feature Selection
   - Linear Regression
@@ -85,10 +85,10 @@ background-size: contain
 
 ---
 
-# OVERVIEW OF BUISNESS PROPOSITION
+# OVERVIEW OF BUSINESS PROPOSITION
 
 
-We are trying to accurately model the price of wine utilizing several variables connected with the winemaking process.  In this dataset, the majority of the wines surveyed fall below $100, but there are notable exceptions.  This sort of model has many applications that can be directly applied to numerous businesses and ventures.  Below are some industries and vocations that could benefit from such a model. Examples of potential usecases are:
+We are trying to accurately model the price of wine utilizing several variables connected with the winemaking process.  In this dataset, the majority of the wines surveyed fall below $100, but there are notable exceptions.  This sort of model has many applications that can be directly applied to numerous businesses and ventures.  Below are some industries and vocations that could benefit from such a model. Examples of potential use cases are:
 
 - Restaurant Owner: Sell Wine For Larger Markup
 - Wine Speculator: Naturally Can Make Bigger Profits
@@ -117,10 +117,10 @@ background-size: contain
 - `points`: The number of points WineEnthusiast rated the wine on a scale of 1-100*
 - `price`: The cost in USD for one bottle
 - `province`: The province or state that the wine originated
-- `region_1`: The wine growing area in a province or state (ie Napa)
+- `region_1`: The wine-growing area in a province or state (ie Napa)
 ]
 .pull-right[
-- `region_2`: Sometimes there are more specific regions specified within a wine growing area (ie Rutherford inside the Napa Valley), but this value can sometimes be blank
+- `region_2`: Sometimes there are more specific regions specified within a wine-growing area (ie Rutherford inside the Napa Valley), but this value can sometimes be blank
 - `taster_name`: The name of the reviewer
 - `taster_twitter_handle`: The twitter handle of the reviewer
 - `title`: The title of the wine
@@ -136,8 +136,8 @@ class: twitter
 # TWITTER
 
 - We pulled data from the twitter profiles of each of the reviewers like gender, amount of tweets, number of followers, etc. 
-- The underlying assumption is that reviewers who were prolific on social media might be more generous with their assigned points then those who weren’t.
-- Additionally they may behave differently on gender lines. 
+- The underlying assumption is that reviewers who were prolific on social media might be more generous with their assigned points than those who weren’t.
+- Additionally, they may behave differently on gender lines. 
 
 <!-- ![](http://www.eteknix.com/wp-content/uploads/2014/08/twitter-logo.png) -->
 
@@ -155,22 +155,14 @@ caption = htmltools::tags$caption(
  # knitr::kable(head(twitter_stats), format = "html")
 ```
 
---- 
-
-```{r echo=FALSE, paged.print=TRUE}
-# kable(twitter_stats) %>%
-#   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = FALSE)
-# knitr::kable(twitter_stats, format = "html")
-```
-
 ---
 class: wine-color
 
 # WINE COLOR
 
 - The original data set included the variety of the grape but not the color of the wine. 
-- A group of colors was assigned via regular expressions ie: all varieties matching `REGEX` were classidfied as red. Validation was done of each of the matches to make sure there was no false positives.
-- The rest was done manually with the aid of a google sheet document that auto populated with thumbnails from google image search. Afterward this data was imported and left joined to the data set.
+- A group of colors was assigned via regular expressions ie: all varieties matching `REGEX` were classified as red. Validation was done of each of the matches to make sure there were no false positives.
+- The rest was done manually with the aid of a google sheet document that auto-populated with thumbnails from google image search. Afterward, this data was imported and left joined to the data set.
 
 .center[ ![](http://garretthawes.com/color-class_2.gif) ]
 
@@ -178,9 +170,9 @@ class: wine-color
 
 # DATA CLEANING
 
-- Varioius encoding issues were fixed with the text columns, NA were removed from price and columns were converted to charecter where blank implies that there was none (ie: designation).
+- Various encoding issues were fixed with the text columns, NA values were removed from price and columns were converted to character where blank implies that there was none (ie: designation).
 - Wines with missing countries were removed, as were wines missing a grape varietal and taster name.
-- Some coulmns were converted to charecter vectors to make them easier to work with.
+- Some columns were converted to charecter vectors to make them easier to work with.
 
 ```{r data-cleaning, eval=FALSE, message=TRUE, warning=FALSE}
 wine_data <- wine_data %>% 
@@ -238,7 +230,7 @@ ggplot(s, aes(x=ave_sentiment))+
 FCT_LUMPS <- list( by_count = 0, ..., winery = 15)
 ```
 
-- `by_count` superseeds the other parameters in that setting it will cause `fct_lump` based on how many observations there are with any given feature.
+- `by_count` supersedes the other parameters in that setting it will cause `fct_lump` based on how many observations there are with any given feature.
 
 ```{r feature-generation-2, eval=FALSE, message=TRUE, warning=FALSE}
 if (FCT_LUMPS$by_count != 0) {
@@ -254,9 +246,9 @@ if (FCT_LUMPS$by_count != 0) {
 ---
 class: maps
 
-# EXPLORITORY DATA ANALYSIS
+# EXPLORATORY DATA ANALYSIS
 
-- As you can see there are distinct patterns that emerge when looking at both price and review score broken down by country.
+- As you can see there are distinct patterns that emerge when looking at both price and review scores broken down by country.
 
 ```{r maps, echo=FALSE, fig.height=5, fig.show='hold', out.width=c('50%', '50%')}
 .map_from_attribute("point_avg", "Average Points")
@@ -266,7 +258,7 @@ class: maps
 ---
 class: marginal
 
-# EXPLORITORY DATA ANALYSIS
+# EXPLORATORY DATA ANALYSIS
 
 .pull-left[
 ```{r marginal-price, echo=FALSE, dev='png'}
@@ -283,7 +275,7 @@ plot.ggmarginal.log.p1
 ---
 class: exploritory
 
-# EXPLORITORY DATA ANALYSIS
+# EXPLORATORY DATA ANALYSIS
 
 .pull-left[
 ```{r price-by-country, echo=FALSE, dev="png"}
@@ -358,9 +350,9 @@ wine_data_standardized <- bind_cols(wine_data_not_to_be_standardized, transforme
 ---
 class: exploritory
 
-# EXPLORITORY DATA ANALYSIS
+# EXPLORATORY DATA ANALYSIS
 
-- As you can see cenering and scaling increases corelation between price as well as the transforming the dependant variable with $-1 \cdot price^{-0.3}$
+- As you can see centering and scaling increases the correlation between price as well as the transforming the dependent variable with $-1 \cdot price^{-0.3}$
 
 .pull-left[
 ```{r ggpairs, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10}
@@ -386,7 +378,7 @@ ggpairs(wine_data_standardized_tukey, columns = ggpairs.variables,
 # TEST/TRAIN SPLIT
 
 - The createDataPartition function of caret was used to create balanced test and training sets including 75% and 25% of the data respectively
-- Specifically price was broken into 5 groups and data was sampled by group to ensure an even distribution.
+- Specifically, price was broken into 5 groups and data was sampled by group to ensure an even distribution.
 
 ```{r test-train, eval=FALSE}
 set.seed(1861)
@@ -438,7 +430,7 @@ class: ols-log
 
 .pull-left[
 - Slightly more accurate than Log(Price) model.
-- Seems to validate Tukey's ladder provided transformation over log transformation.
+- These results validate the transformation provided by Tukey's ladder over log transformation.
 
 $$\hat{price_{tukey}} =  .01points  + .04country_{Canada} \\ + .07country_{Germany} + .04variety_{Chardonnay} \\+ .01\cdot designation_{Estate} - .03\cdot province_{Champagne} \\- .02\cdot color_{White} - .02\cdot taster.gender_{M} \\
 ... \\
@@ -484,7 +476,7 @@ $$\hat{\beta} = \underset{\beta}{\operatorname{argmin}} \left\{ \sum_{i=1}^N\lef
 
 - Number of Bootstrap sample to 100
 - Size of each bootstrap = 500 to ensure adequate data
-- Model was selected via `ctree`
+- The model was selected via `ctree`
 
 $$\hat{f_{bag}}=\hat{f_{1}}(X)+\hat{f_{2}}(X)+\cdots +\hat{f_{b}}(X)$$
 where $(X)$ is the record we want to generate a prediction for and $\hat{f_{1}}(X),\cdots,\hat{f_{b}}(X)$ are preditions from individual models.
@@ -585,6 +577,12 @@ Resampling results:
 
   RMSE       Rsquared   MAE       
   0.0406081  0.6767615  0.03010213
+  
+Test Set Results
+
+  RMSE       Rsquared   MAE       
+  0.0402520  0.6823170  0.02976208
+  
 ```
 
 ```{r include=FALSE}
@@ -595,7 +593,7 @@ model.comparison <- model.comparison %>% bind_rows(
       RMSE_train = 0.04060,
       RMSE_test = 0.0403,
       MAE_train = 0.0301,
-      MAE_test = 0.02976
+      MAE_test = 0.0298
     ))
 ```
 
@@ -731,8 +729,8 @@ plot(bothROC)
 ```
 ]
 .pull-right[
-- Train and Test above diagonal chance-only line
-- Determining whether wine is a “good value” better than chance
+- Train and Test above the diagonal chance-only line
+- Determining whether the wine is a “good value” better than chance
 - AUC values are high, above 80% or about 70% higher than chance
 - AUC for train and test  nearly identical hence model neither over- or underfit
 - Points, Specific Province, Specific Variety, Specific Winery, followed by Specific Taster explain the model best whereas Title information not so much
@@ -781,7 +779,7 @@ model.comparison <- data.frame(model = c("OLS", "OLS", "ENET", "BOOTSTRAP", "RAN
 
 datatable(model.comparison, container = sketch, rownames = FALSE, caption = htmltools::tags$caption(
   style = 'caption-side: bottom; text-align: center;',
-  '* ', htmltools::em('Test-Set predictions have not been run on bootstrap model yet')
+  '* ', htmltools::em('The caret tunned bootstrap model is by far the best.')
 ))
 ```
 
@@ -798,7 +796,7 @@ datatable(model.comparison, container = sketch, rownames = FALSE, caption = html
 - **K Nearest Neighbors**
 - **Bayesian Additive Regression Trees** mostly because the R package is called bartMachine
 
-#### Additionally we would like to delve deaper into the capabilities of the `caret` package specifically  hyperparameter tuning and model comparison as well as using `caretEnsemble` to run a composite model. 
+#### Additionally we would like to delve deeper into the capabilities of the `caret` package specifically hyperparameter tuning and model comparison as well as using `caretEnsemble` to run a composite model. 
 
 
 ---

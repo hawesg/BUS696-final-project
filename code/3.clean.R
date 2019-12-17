@@ -1,4 +1,4 @@
-################### Notes ###################
+
 #Helper functions
 source("code/helper_functions/clean_fxns.R")
 

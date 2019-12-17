@@ -142,8 +142,8 @@ class: twitter
 
 &lt;!-- ![](http://www.eteknix.com/wp-content/uploads/2014/08/twitter-logo.png) --&gt;
 
-<div id="htmlwidget-9280d1a630d17185d8ea" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-9280d1a630d17185d8ea">{"x":{"filter":"none","caption":"<caption style=\"caption-side: bottom; text-align: center;\">\n  *\n  <em>twitter.csv pulled from twitter 10/01/19<\/em>\n<\/caption>","fillContainer":false,"data":[["@AnneInVino","@bkfiona","@gordone_cellars","@JoeCz","@kerinokeefe","@laurbuzz","@mattkettmann","@paulgwine ","@suskostrzewa","@vboone","@vossroger","@wawinereport","@wineschach","@winewchristina","@worldwineguys"],[6748,257,1002,2798,3007,1042,1534,1791,1269,1284,803,19200,1212,7325,1897],[13100,424,279,4572,6143,1929,2540,3207,1905,2291,1034,10300,1442,3720,2615],["F","F","M","M","F","F","M","M","F","F","M","M","M","F","M"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Twitter Handle<\/th>\n      <th>Number of Tweets<\/th>\n      <th>Number of Followers<\/th>\n      <th>Gender<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":6,"columnDefs":[{"className":"dt-right","targets":[1,2]}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[6,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-e67a5fb8a8ba033f46df" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e67a5fb8a8ba033f46df">{"x":{"filter":"none","caption":"<caption style=\"caption-side: bottom; text-align: center;\">\n  *\n  <em>twitter.csv pulled from twitter 10/01/19<\/em>\n<\/caption>","fillContainer":false,"data":[["@AnneInVino","@bkfiona","@gordone_cellars","@JoeCz","@kerinokeefe","@laurbuzz","@mattkettmann","@paulgwine ","@suskostrzewa","@vboone","@vossroger","@wawinereport","@wineschach","@winewchristina","@worldwineguys"],[6748,257,1002,2798,3007,1042,1534,1791,1269,1284,803,19200,1212,7325,1897],[13100,424,279,4572,6143,1929,2540,3207,1905,2291,1034,10300,1442,3720,2615],["F","F","M","M","F","F","M","M","F","F","M","M","M","F","M"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>Twitter Handle<\/th>\n      <th>Number of Tweets<\/th>\n      <th>Number of Followers<\/th>\n      <th>Gender<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":6,"columnDefs":[{"className":"dt-right","targets":[1,2]}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[6,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
 
 ---
 class: wine-color
@@ -241,6 +241,8 @@ class: marginal
 ]
 
 ---
+background-image: url(https://github.com/yihui/xaringan/releases/download/v0.0.2/karl-moustache.jpg)
+---
 class: exploritory
 
 # EXPLORATORY DATA ANALYSIS
@@ -285,8 +287,8 @@ transformTukey(sample(prices, 5000),
 
 ```
 ## 
-##     lambda     W Shapiro.p.value
-## 389   -0.3 0.995       3.496e-12
+##     lambda      W Shapiro.p.value
+## 389   -0.3 0.9963       6.395e-10
 ## 
 ## if (lambda &gt;  0){TRANS = x ^ lambda} 
 ## if (lambda == 0){TRANS = log(x)} 
@@ -407,8 +409,6 @@ class: ols-log
 &lt;img src="present_files/figure-html/ols-bkwfit-.gif" width="504" /&gt;
 ]
 
----
-background-image: url(https://github.com/yihui/xaringan/releases/download/v0.0.2/karl-moustache.jpg)
 ---
 
 # ELASTIC NET - TUKEY TRANSFORMED PRICE
@@ -646,8 +646,8 @@ background-size: contain
 
 # MODEL COMPARISON
 
-<div id="htmlwidget-3325aa300e6acd5a6735" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-3325aa300e6acd5a6735">{"x":{"filter":"none","class":"display","caption":"<caption style=\"caption-side: bottom; text-align: center;\">\n  * \n  <em>The caret tunned bootstrap model is by far the best.<\/em>\n<\/caption>","data":[["OLS","OLS","ENET","BOOTSTRAP","RANDOM FOREST"],["lm","lm","glmnet, glmnetutils","ctree, caret","randomForest"],["log","tukey","tukey","tukey","tukey"],[0.5698,0.5808,0.5972,0.6768,0.5987],[0.5648,0.5764,0.5941,0.6823,0.6035],[0.4338,0.0462,0.0453,0.0406,0.0452],[0.4355,0.0464,0.0454,0.0403,0.0449],[0.3323,0.0362,0.0355,0.0301,0.035],[0.3336,0.0364,0.0356,0.0298,0.0348]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th rowspan=\"2\">Model<\/th>\n      <th rowspan=\"2\">Package<\/th>\n      <th rowspan=\"2\">DV<\/th>\n      <th colspan=\"2\">R-Squared<\/th>\n      <th colspan=\"2\">RMSE<\/th>\n      <th colspan=\"2\">MAE<\/th>\n    <\/tr>\n    <tr>\n      <th>Train<\/th>\n      <th>Test<\/th>\n      <th>Train<\/th>\n      <th>Test<\/th>\n      <th>Train<\/th>\n      <th>Test<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6,7,8]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-6984c226f86aaaa606d4" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6984c226f86aaaa606d4">{"x":{"filter":"none","class":"display","caption":"<caption style=\"caption-side: bottom; text-align: center;\">\n  * \n  <em>The caret tunned bootstrap model is by far the best.<\/em>\n<\/caption>","data":[["OLS","OLS","ENET","BOOTSTRAP","RANDOM FOREST"],["lm","lm","glmnet, glmnetutils","ctree, caret","randomForest"],["log","tukey","tukey","tukey","tukey"],[0.5698,0.5808,0.5972,0.6768,0.5987],[0.5648,0.5764,0.5941,0.6823,0.6035],[0.4338,0.0462,0.0453,0.0406,0.0452],[0.4355,0.0464,0.0454,0.0403,0.0449],[0.3323,0.0362,0.0355,0.0301,0.035],[0.3336,0.0364,0.0356,0.0298,0.0348]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th rowspan=\"2\">Model<\/th>\n      <th rowspan=\"2\">Package<\/th>\n      <th rowspan=\"2\">DV<\/th>\n      <th colspan=\"2\">R-Squared<\/th>\n      <th colspan=\"2\">RMSE<\/th>\n      <th colspan=\"2\">MAE<\/th>\n    <\/tr>\n    <tr>\n      <th>Train<\/th>\n      <th>Test<\/th>\n      <th>Train<\/th>\n      <th>Test<\/th>\n      <th>Train<\/th>\n      <th>Test<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[3,4,5,6,7,8]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 
 .footnote[&lt;i class="fad fa-pen-square"&gt;&lt;/i&gt; In class bootstrap method was left out since it did not generate a full range of predictions as was logistic regression since these metrics don't apply.]
 

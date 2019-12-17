@@ -7,7 +7,10 @@ Garrett Hawes, Ricky Lobel, Bart Ciastkowski
 
 ## Garrett, Ricky, Bart
 
-This is where you find the files for report generation. Deliverable2 has the pre analysis work and presentation is a markdown based presentation. 
+Here are the files for our presentation. 
+
+- present.Rmd is the main presentation
+- helper.R holds some code that was shifted out of the main rmd to keep it clean
 
 ![Cover](http://garretthawes.com/r/cover.jpeg)
 
