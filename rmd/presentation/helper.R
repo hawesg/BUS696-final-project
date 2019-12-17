@@ -174,129 +174,6 @@ model = model.enet
 traindata = data.train
 testdata = data.test
 
-.resid_plots.enet <- function(model, traindata, testdata)
-{
-  temp.train_df <- data.frame(
-    actual =  .tukey(traindata$price),
-    pred = predict(
-      model.enet,
-      alpha = alpha_list[min_cv],
-      lambda = lambda.min,
-      data.train
-    ) %>% round(4)
-  ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
-  
-  temp.test_df <- data.frame(
-    actual =  .tukey(testdata$price),
-    pred = predict(
-      model.enet,
-      alpha = alpha_list[min_cv],
-      lambda = lambda.min,
-      newdata = data.test
-    ) %>% round(4)
-  ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
-  
-  temp.ylim.low <- min(temp.train_df$resid, temp.test_df$resid)
-  temp.ylim.high <- max(temp.train_df$resid, temp.test_df$resid)
-  temp.xlim.low <- min(temp.train_df$pred, temp.test_df$pred)
-  temp.xlim.high <- max(temp.train_df$pred, temp.test_df$pred)
-  
-  
-  temp.pr.train <- postResample(temp.train_df$pred,
-                                temp.train_df$actual) %>% round(4)
-  
-  temp.pr.test <- postResample(temp.test_df$pred,
-                               temp.test_df$actual) %>% round(4)
-
-  temp.enet.alpha <- alpha_list[min_cv]
-  
-  temp.plot.train <-
-    ggplot(temp.train_df, aes(x = pred, y = resid)) +
-    geom_point() +
-    geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-    xlim(temp.xlim.low, temp.xlim.high) +
-    ylim(temp.ylim.low, temp.ylim.high) +
-    labs(
-      x = "Fitted values",
-      y = "Residuals",
-      title = "Residuals vs Fitted Values",
-      subtitle = "Training Set",
-      caption = paste(
-        expression(lambda),
-        ": 1se | ",
-        expression(alpha),
-        ": ",
-        plot.enet.alpha
-      )
-    ) +
-    geom_hline(yintercept = 0,
-               col = "red",
-               linetype = "dashed") + theme_solarized(base_size = 16) +
-    ggplot2::annotate(
-      "text",
-      temp.xlim.high,
-      temp.ylim.high,
-      hjust = 1,
-      vjust = 1,
-      color = "red",
-      size = 6,
-      label =
-        paste(
-          "R-squared",
-          format(temp.pr.train['Rsquared'], nsmall = 4),
-          "| RMSE: ",
-          format(temp.pr.train['RMSE'], nsmall = 4),
-          "| MAE: ",
-          format(temp.pr.train['MAE'], nsmall = 4)
-        )
-    )
-  
-  temp.plot.test <- ggplot(temp.test_df, aes(x = pred, y = resid)) +
-    geom_point() +
-    geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-    xlim(temp.xlim.low, temp.xlim.high) +
-    ylim(temp.ylim.low, temp.ylim.high) +
-    labs(
-      x = "Fitted values",
-      y = "Residuals",
-      title = "Residuals vs Fitted Values",
-      subtitle = "Test Set",
-      caption = paste(
-        expression(lambda),
-        ": 1se | ",
-        expression(alpha),
-        ": ",
-        plot.enet.alpha
-      )
-    ) +
-    geom_hline(yintercept = 0,
-               col = "red",
-               linetype = "dashed") + theme_solarized(base_size = 16) +
-    ggplot2::annotate(
-      "text",
-      temp.xlim.high,
-      temp.ylim.high,
-      hjust = 1,
-      vjust = 1,
-      color = "red",
-      size = 6,
-      label =
-        paste(
-          "R-squared",
-          format(temp.pr.test['Rsquared'], nsmall = 4),
-          "| RMSE: ",
-          format(temp.pr.test['RMSE'], nsmall = 4),
-          "| MAE: ",
-          format(temp.pr.test['MAE'], nsmall = 4)
-        )
-    )
-  
-  temp.plots <- list(temp.plot.train, temp.plot.test)
-  
-  return(temp.plots)
-}
-
-
 
 plot(
   boot_mods[[1]],
@@ -377,128 +254,7 @@ ggplot(wine_train_preds) +
     values = c("Actual" = "#00AFBB", "Preds Bag" = "#E7B800")
   )
 
-
-
-# head(wine_train_preds)
-#
-# double_histogram_df <- data.frame(price = log(wine_train_preds$price),
-#                                   type = "Actual")
-# head(double_histogram_df)
-# summary(double_histogram_df)
-# double_histogram_df <- double_histogram_df %>% bind_rows(data.frame(price = log(wine_train_preds$price),
-#                                                                     type = "Pred Bag"))
-# tail(double_histogram_df)
-# double_histogram_df <- double_histogram_df %>% drop_na()
-# summary(double_histogram_df)
-# double_histogram_df <- double_histogram_df %>% mutate(type = as_factor(type))
-# skim(double_histogram_df)
-# library(skimr)
-# library(ggplot2)
-# ggplot(double_histogram_df) +
-#   geom_histogram(aes(x=price, fill=double_histogram_df$type),
-#                  colour="grey50", alpha=0.5, position="identity")
-# wine_data_c <-
-#   wine_data_clean %>%
-#   dplyr::select(
-#     # ID,
-#     price,
-#     points,
-#     point_cat,
-#     country,
-#     country_lump,
-#     province_lump,
-#     winery_lump,
-#     color_lump,
-#     variety_lump,
-#     variety_color,
-#     designation_lump,
-#     title_word_count,
-#     title_sentement,
-#     title_length,
-#     title_has_accents,
-#     taster_name_lump,
-#     taster_twitter_lump,
-#     taster_gender,
-#     taster_avg_points,
-#     taster_review_count,
-#     taster_n_tweets,
-#     taster_n_followers,
-#   ) %>% droplevels()
-#
-# setdiff(names(wine_data), names(wine_data_clean))
-#
-#
-# # Rename columns ----------------------------------------------------------
-#
-# wd_temp <- wine_data_clean
-# names
-# colnames(wd_temp) <-
-#   c(
-#     "price",
-#     "points",
-#     "points.category",
-#     "country.map",
-#     "country",
-#     "province",
-#     "winery",
-#     "color",
-#     "variety",
-#     "variety_and_color",
-#     "designation",
-#     "title.n_words",
-#     "title.sentement",
-#     "title.n_chars",
-#     "title.has_accents",
-#     "taster.name",
-#     "taster.twitter_handle",
-#     "taster.gender",
-#     "taster.avg_points",
-#     "taster.n_reviews",
-#     "taster.n_tweets",
-#     "taster.n_followers"
-#   )
-#
-# names(wine_data_c)
-#
-# wine_data_c <- wd_temp
-# wine_data_to_be_standardized <-
-#   wine_data_c %>%
-#   select(
-#     points,
-#     title.n_words,
-#     title.sentement,
-#     title.n_chars,
-#     taster.avg_points,
-#     taster.n_reviews,
-#     taster.n_tweets,
-#     taster.n_followers
-#   )
-# wine_data_not_to_be_standardized <-
-#   wine_data_c %>%
-#   select(
-#     price,
-#     points.category,
-#     country,
-#     province,
-#     winery,
-#     color,
-#     variety,
-#     variety_and_color,
-#     designation,
-#     title.has_accents,
-#     taster.name,
-#     taster.gender
-#   )
-#
-# preprocessParams <-
-#   preProcess(wine_data_to_be_standardized[, 1:8], method = c("center", "scale"))
-# print(preprocessParams)
-#
-# transformed <-
-#   predict(preprocessParams, wine_data_to_be_standardized[, 1:8])
-# summary(transformed)
-# head(transformed)
-# wine_data_standardized <- bind_cols(wine_data_not_to_be_standardized, transformed)
+######################## Standardized data for ggpairs #########################
 
 wine_data_standardized <- data.train %>% bind_rows(data.test)
 
@@ -517,24 +273,7 @@ plot.ggpairs <-
           columns = ggpairs.variables,
           ggplot2::aes(color = color, alpha = .2))
 
-
-
-
-table_numeric <-
-  tableby( ~ ., data = wine_data_clean %>%
-             select_if(is.numeric))
-summary_statistics_summary <-
-  summary(table_numeric, title = "Wine Data by Price - Numeric Columns")
-
-# https://community.rstudio.com/t/adding-manual-legend-to-ggplot2/41651/6
-#
-# https://stackoverflow.com/questions/32490043/adding-manual-legend-in-ggplot
-#
-# https://aosmith.rbind.io/2018/07/19/manual-legends-ggplot2/
-#
-#   https://stackoverflow.com/questions/6957549/overlaying-histograms-with-ggplot2-in-r
-
-
+############################# Var Imporance plots ##############################
 
 imp <- varImpPlot(rf_fit)# let's save the varImp objec
 head(imp)
@@ -573,138 +312,12 @@ ggplot(imp, aes(
   theme(plot.title = element_text(hjust = 0.5)) +
   geom_emoji("wine_glass")
 
-####### RANDOM FORESTS
+# TODO: Get this nice emoji based plot to work again.
 
-model.rf.preds.train <- data.frame(
-  actual =  .tukey(data.train$price),
-  pred = predict(rf_fit, data = data.train) %>% round(3)
-) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
+################################ Helper Functions ################################
+    
+#TODO Combine these into one
 
-model.rf.preds.test <- data.frame(
-  actual =  .tukey(data.test$price),
-  pred = predict(rf_fit, newdata = data.test) %>% round(3)
-) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
-#library("caret")
-#postResample(pred = model.rf.preds.train$pred, obs = model.rf.preds.trains$actual)
-library("caret")
-
-
-pr.random_forest <- postResample(model.rf.preds.train$pred,
-                                 model.rf.preds.train$actual) %>% round(4)
-
-pr.random_forest.test <- postResample(model.rf.preds.test$pred,
-                                      model.rf.preds.test$actual) %>% round(4)
-
-plot.random_forest.resids <-
-  ggplot(model.rf.preds.train, aes(x = pred, y = resid)) +
-  geom_point() +
-  geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-  theme_solarized() +
-  labs(
-    x = "Fitted values",
-    y = "Residuals",
-    title = "Residuals vs Fitted Plot - Training Set",
-    caption = "INSERT INDEPENDENT VARIABLES HERE" ,
-    subtitle = paste(
-      "R2:",
-      pr.random_forest['Rsquared'],
-      "| RMSE: ",
-      pr.random_forest['RMSE'],
-      "| MAE: ",
-      pr.random_forest['MAE']
-    )
-  ) +
-  geom_hline(yintercept = 0,
-             col = "red",
-             linetype = "dashed") + theme_solarized()
-
-
-ggplot(model.rf.preds.test , aes(x = pred, y = resid)) +
-  geom_point() +
-  geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-  theme_solarized(base_size = 16) +
-  labs(
-    x = "Fitted values",
-    y = "Residuals",
-    title = "Residuals vs Fitted Plot - Testing Set",
-    caption = "INSERT INDEPENDENT VARIABLES HERE" ,
-    subtitle = paste(
-      "R2:",
-      pr.random_forest.test['Rsquared'],
-      "| RMSE: ",
-      pr.random_forest.test['RMSE'],
-      "| MAE: ",
-      pr.random_forest.test['MAE']
-    )
-  ) +
-  geom_hline(yintercept = 0,
-             col = "red",
-             linetype = "dashed") + theme_solarized() +
-  ggplot2::annotate(
-    geom = 'text',
-    x = max(model.rf.preds.test$pred),
-    y = max(model.rf.preds.test$resid),
-    hjust = 1,
-    vjust = 1,
-    size = 6,
-    label = "atop(r^2 == 0.024, atop(RMSE == 0.244, MAE == 0.023))",
-    parse = TRUE,
-    color = 'red'
-  )
-
-
-
-ggplot(model.rf.preds.test , aes(x = pred, y = resid)) +
-  geom_point() +
-  geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-  theme_solarized(base_size = 16) +
-  labs(
-    x = "Fitted values",
-    y = "Residuals",
-    title = "Residuals vs Fitted Plot - Testing Set",
-    caption = "INSERT INDEPENDENT VARIABLES HERE" ,
-    subtitle = paste(
-      "R2:",
-      pr.random_forest.test['Rsquared'],
-      "| RMSE: ",
-      pr.random_forest.test['RMSE'],
-      "| MAE: ",
-      pr.random_forest.test['MAE']
-    )
-  ) +
-  geom_hline(yintercept = 0,
-             col = "red",
-             linetype = "dashed") + theme_solarized() +
-  ggplot2::annotate(
-    geom = 'text',
-    x = max(model.rf.preds.test$pred),
-    y = max(model.rf.preds.test$resid),
-    hjust = 1,
-    vjust = 1,
-    color = 'red',
-    
-    
-    
-    
-    
-    
-    # ggplot2::annotate("text", -Inf, Inf, hjust = 0, vjust = 1, size=6, color="red",
-    #                   #label = "paste"
-    #                   label = "paste(italic(R) ^ 2, \" \n = .75\")", parse = TRUE)
-    
-    
-    
-    
-    
-    
-    plot.random_forest.resids
-    plot.random_forest.resids.test
-    
-    test <-
-      list(plot.random_forest.resids, plot.random_forest.resids.test)
-    test
-    
-    
     .resid_plots <- function(model, traindata, testdata)
     {
       temp.train_df <- data.frame(
@@ -728,10 +341,6 @@ ggplot(model.rf.preds.test , aes(x = pred, y = resid)) +
       
       temp.pr.test <- postResample(temp.test_df$pred,
                                    temp.test_df$actual) %>% round(4)
-      
-      # temp.pr.train.caption <-    paste( "R-squared", temp.pr.train['Rsquared'],
-      #                                    "| RMSE: ",temp.pr.train['RMSE'],
-      #                                    "| MAE: ", temp.pr.train['MAE'] )
       
       temp.plot.train <-
         ggplot(temp.train_df, aes(x = pred, y = resid)) +
@@ -807,112 +416,6 @@ ggplot(model.rf.preds.test , aes(x = pred, y = resid)) +
       
       return(temp.plots)
     }
-    
-    
-    
-    .resid_plots <- function(model, traindata, testdata)
-    {
-      temp.train_df <- data.frame(
-        actual =  .tukey(traindata$price),
-        pred = predict(model, data = traindata) %>% round(4)
-      ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
-      
-      temp.test_df <- data.frame(
-        actual =  .tukey(testdata$price),
-        pred = predict(model, newdata = testdata) %>% round(4)
-      ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
-      
-      temp.ylim.low <- min(temp.train_df$resid, temp.test_df$resid)
-      temp.ylim.high <- max(temp.train_df$resid, temp.test_df$resid)
-      temp.xlim.low <- min(temp.train_df$pred, temp.test_df$pred)
-      temp.xlim.high <- max(temp.train_df$pred, temp.test_df$pred)
-      
-      
-      temp.pr.train <- postResample(temp.train_df$pred,
-                                    temp.train_df$actual) %>% round(4)
-      
-      temp.pr.test <- postResample(temp.test_df$pred,
-                                   temp.test_df$actual) %>% round(4)
-      
-      # temp.pr.train.caption <-    paste( "R-squared", temp.pr.train['Rsquared'],
-      #                                    "| RMSE: ",temp.pr.train['RMSE'],
-      #                                    "| MAE: ", temp.pr.train['MAE'] )
-      
-      temp.plot.train <-
-        ggplot(temp.train_df, aes(x = pred, y = resid)) +
-        geom_point() +
-        geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-        xlim(temp.xlim.low, temp.xlim.high) +
-        ylim(temp.ylim.low, temp.ylim.high) +
-        labs(
-          x = "Fitted values",
-          y = "Residuals",
-          title = "Residuals vs Fitted Values",
-          subtitle = "Training Set"
-        ) +
-        geom_hline(yintercept = 0,
-                   col = "red",
-                   linetype = "dashed") + theme_solarized(base_size = 16) +
-        ggplot2::annotate(
-          "text",
-          temp.xlim.high,
-          temp.ylim.high,
-          hjust = 1,
-          vjust = 1,
-          color = "red",
-          size = 6,
-          label =
-            paste(
-              "R-squared",
-              format(temp.pr.train['Rsquared'], nsmall = 4),
-              "| RMSE: ",
-              format(temp.pr.train['RMSE'], nsmall = 4),
-              "| MAE: ",
-              format(temp.pr.train['MAE'], nsmall = 4)
-            )
-        )
-      
-      
-      
-      
-      temp.plot.test <- ggplot(temp.test_df, aes(x = pred, y = resid)) +
-        geom_point() +
-        geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
-        xlim(temp.xlim.low, temp.xlim.high) +
-        ylim(temp.ylim.low, temp.ylim.high) +
-        labs(
-          x = "Fitted values",
-          y = "Residuals",
-          title = "Residuals vs Fitted Values",
-          subtitle = "Test Set"
-        ) +
-        geom_hline(yintercept = 0,
-                   col = "red",
-                   linetype = "dashed") + theme_solarized(base_size = 16) +
-        ggplot2::annotate(
-          "text",
-          temp.xlim.high,
-          temp.ylim.high,
-          hjust = 1,
-          vjust = 1,
-          color = "red",
-          size = 6,
-          label =
-            paste(
-              "R-squared",
-              format(temp.pr.test['Rsquared'], nsmall = 4),
-              "| RMSE: ",
-              format(temp.pr.test['RMSE'], nsmall = 4),
-              "| MAE: ",
-              format(temp.pr.test['MAE'], nsmall = 4)
-            )
-        )
-      
-      temp.plots <- list(temp.plot.train, temp.plot.test)
-      
-      return(temp.plots)
-    }
-    
     
     .resid_plots.log <- function(model, traindata, testdata)
     {
@@ -1013,4 +516,127 @@ ggplot(model.rf.preds.test , aes(x = pred, y = resid)) +
       
       return(temp.plots)
     }
+    
+    .resid_plots.enet <- function(model, traindata, testdata)
+    {
+      temp.train_df <- data.frame(
+        actual =  .tukey(traindata$price),
+        pred = predict(
+          model.enet,
+          alpha = alpha_list[min_cv],
+          lambda = lambda.min,
+          data.train
+        ) %>% round(4)
+      ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
+      
+      temp.test_df <- data.frame(
+        actual =  .tukey(testdata$price),
+        pred = predict(
+          model.enet,
+          alpha = alpha_list[min_cv],
+          lambda = lambda.min,
+          newdata = data.test
+        ) %>% round(4)
+      ) %>% rename(actual = 1, pred = 2) %>% remove_rownames() %>%  mutate(resid = actual - pred)
+      
+      temp.ylim.low <- min(temp.train_df$resid, temp.test_df$resid)
+      temp.ylim.high <- max(temp.train_df$resid, temp.test_df$resid)
+      temp.xlim.low <- min(temp.train_df$pred, temp.test_df$pred)
+      temp.xlim.high <- max(temp.train_df$pred, temp.test_df$pred)
+      
+      
+      temp.pr.train <- postResample(temp.train_df$pred,
+                                    temp.train_df$actual) %>% round(4)
+      
+      temp.pr.test <- postResample(temp.test_df$pred,
+                                   temp.test_df$actual) %>% round(4)
+      
+      temp.enet.alpha <- alpha_list[min_cv]
+      
+      temp.plot.train <-
+        ggplot(temp.train_df, aes(x = pred, y = resid)) +
+        geom_point() +
+        geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
+        xlim(temp.xlim.low, temp.xlim.high) +
+        ylim(temp.ylim.low, temp.ylim.high) +
+        labs(
+          x = "Fitted values",
+          y = "Residuals",
+          title = "Residuals vs Fitted Values",
+          subtitle = "Training Set",
+          caption = paste(
+            expression(lambda),
+            ": 1se | ",
+            expression(alpha),
+            ": ",
+            plot.enet.alpha
+          )
+        ) +
+        geom_hline(yintercept = 0,
+                   col = "red",
+                   linetype = "dashed") + theme_solarized(base_size = 16) +
+        ggplot2::annotate(
+          "text",
+          temp.xlim.high,
+          temp.ylim.high,
+          hjust = 1,
+          vjust = 1,
+          color = "red",
+          size = 6,
+          label =
+            paste(
+              "R-squared",
+              format(temp.pr.train['Rsquared'], nsmall = 4),
+              "| RMSE: ",
+              format(temp.pr.train['RMSE'], nsmall = 4),
+              "| MAE: ",
+              format(temp.pr.train['MAE'], nsmall = 4)
+            )
+        )
+      
+      temp.plot.test <- ggplot(temp.test_df, aes(x = pred, y = resid)) +
+        geom_point() +
+        geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs")) +
+        xlim(temp.xlim.low, temp.xlim.high) +
+        ylim(temp.ylim.low, temp.ylim.high) +
+        labs(
+          x = "Fitted values",
+          y = "Residuals",
+          title = "Residuals vs Fitted Values",
+          subtitle = "Test Set",
+          caption = paste(
+            expression(lambda),
+            ": 1se | ",
+            expression(alpha),
+            ": ",
+            plot.enet.alpha
+          )
+        ) +
+        geom_hline(yintercept = 0,
+                   col = "red",
+                   linetype = "dashed") + theme_solarized(base_size = 16) +
+        ggplot2::annotate(
+          "text",
+          temp.xlim.high,
+          temp.ylim.high,
+          hjust = 1,
+          vjust = 1,
+          color = "red",
+          size = 6,
+          label =
+            paste(
+              "R-squared",
+              format(temp.pr.test['Rsquared'], nsmall = 4),
+              "| RMSE: ",
+              format(temp.pr.test['RMSE'], nsmall = 4),
+              "| MAE: ",
+              format(temp.pr.test['MAE'], nsmall = 4)
+            )
+        )
+      
+      temp.plots <- list(temp.plot.train, temp.plot.test)
+      
+      return(temp.plots)
+    }
+    
     

@@ -1,0 +1,11 @@
+<script>
+(function () {
+  slideshow.on('showSlide', function (slide) {
+    
+    gtag('event', 'showSlide', {
+      'event_category': 'Slide',
+      'event_label': slide.getSlideIndex() 
+    });
+  });
+})();
+</script>

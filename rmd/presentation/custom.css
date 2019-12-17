@@ -1,0 +1,73 @@
+.twitter img{
+    height: 15em;
+}
+
+.wine-color img{
+    height:16em;
+}
+
+.maps img{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 46%;
+}
+
+.marginal img{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.features .pull-left img{
+    height: 20em;
+    margin-top: -5em;
+}
+
+.features .pull-right img{
+    height: 12em;
+}
+
+.ols-log img{
+    height: 22em;
+}
+
+.gini img{
+    height: 20em
+}
+
+.twitter .datatables{
+    width: 74% !IMPORTANT;
+    margin: auto;
+}
+
+.overview span.footnote {
+    color: red;
+    left: 0;
+    bottom: 7px;
+    padding: 10px;
+    font-weight: 700;
+    background-color: rgba(0, 0, 255, 0.5);
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+  
+li {
+      padding-left: 1rem;
+      text-indent: -0.7rem;
+    }
+  
+    li::before {
+      content: "🍷 ";
+    }
+}
+
+
+.comparison div#DataTables_Table_1_filter, .comparison div#DataTables_Table_1_length{
+    display: none;
+}
+
