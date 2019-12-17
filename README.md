@@ -7,6 +7,8 @@ Garrett Hawes, Ricky Lobel, Bart Ciastkowski
 
 ## Garrett, Ricky, Bart
 
+**Note: in order to avoid merging issues Ricky and Bart worked in seperate files in a temp directory and I inserted that code into the main structure and then deleted the temp folder, to be clear since it looks like 100% of the code was pushed by me. - garrett**
+
 This is the the project files for our BUS 696 Final project working with
 the data from <https://www.kaggle.com/zynicide/wine-reviews>
 
