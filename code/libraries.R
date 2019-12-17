@@ -51,3 +51,18 @@ library('randomForest')
 library('randomForestExplainer')
 library('analogue')
 library('rcompanion')
+
+library("leaps")
+library("caret")
+
+##Load Require Library
+library(tm)
+library(SnowballC)
+library(RColorBrewer)
+library(wordcloud)
+##Read the Data
+
+library(tidyverse)
+library(stringi)
+library(stringr)
+

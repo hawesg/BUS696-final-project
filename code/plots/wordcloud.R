@@ -51,6 +51,7 @@ wineDesignation.clean <-
 # rot.per: Determines the fraction of words that are plotted vertically.
 # colors: The default value is black. If you want to use different colors based on frequency, you can specify a vector of colors or use one of the pre-defined color palettes.
 
+par(bg = '#fdf6e3')
 wordcloud(
   words = wineDesignation.clean,
   min.freq = 2,

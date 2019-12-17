@@ -98,13 +98,13 @@ preds.train<- data.frame (
   data.train_logit
   #actual = data.train_logit$well_priced
 ) 
-head(preds.train)
 
-preds.train.test <- data.frame (
+
+preds.train <- data.frame (
   pred = predict(model.logit, type="response"),
   actual = data.train_logit$well_priced
-) 
-head(preds.train.test)
+)
+head(preds.train)
 
 
 ## test set
@@ -112,30 +112,38 @@ preds.test<- data.frame (
   pred = predict(model.logit, 
                  newdata=data.test_logit, 
                  type="response"),
-  data.test_logit
-  #actual = data.test_logit$well_priced
+  #data.test_logit
+  actual = data.test_logit$well_priced
 ) 
+head(data.test_logit)
 head(preds.test)
 glimpse(data.test_logit)
 
 #### ROC Curve ----
 #head(preds.test)
 
-TrainDF <- data.frame(default = c(preds.train$well_priced),
-                      scores = c(preds.train$pred),
+TrainDF <- data.frame(default = preds.train$actual,
+                      scores = preds.train$pred,
                       models = c(rep("Train Data Set",length(preds.train$pred))))
 
 # summary(TrainDF)
 
-TestDF <- data.frame(default = c(preds.test$well_priced),
-                     scores = c(preds.test$pred),
+TestDF <- data.frame(default = preds.test$actual,
+                     scores = preds.test$pred,
                      models = c(rep("Test Data Set",length(preds.test$pred))))
+
+test <- TrainDF %>% bind_rows(TestDF)
+
+test <- test %>% mutate(models = factor(models))
+head(test)
+str(test)
+
 
 
 ### ROC Curve train -----
 TrainROC <- ggplot(TrainDF, aes(m = scores, d = default, color = models)) + 
   geom_roc(show.legend = TRUE, labelsize = 3.5, cutoffs.at = c(.99,.9,.8,.7,.5,.3,.1,0))
-TrainROC <- TrainROC + style_roc(theme = theme_grey) +
+TrainROC <- TrainROC + style_roc(theme = theme_solarized_2()) +
   theme(axis.text = element_text(colour = "blue")) +
   theme(legend.justification = c(1, 0), 
         legend.position = c(1, 0),
@@ -145,7 +153,7 @@ plot(TrainROC)
 ### ROC Curve test ----
 TestROC <- ggplot(TestDF, aes(m = scores, d = default, color = models)) + 
   geom_roc(show.legend = TRUE, labelsize = 3.5, cutoffs.at = c(.99,.9,.8,.7,.5,.3,.1,0))
-TestROC <- TestROC + style_roc(theme = theme_grey) +
+TestROC <- TestROC + style_roc(theme = theme_solarized_2()) +
   theme(axis.text = element_text(colour = "blue")) +
   theme(legend.justification = c(1, 0), 
         legend.position = c(1, 0),
@@ -154,8 +162,32 @@ plot(TestROC)
 
 ### Area under the curve ----
 AUC_results <- data.frame (
-  TrainAUC = calc_auc(TrainROC),
-  TestAUC =calc_auc(TestROC)
+  train = calc_auc(TrainROC),
+  test =calc_auc(TestROC)
 )
-AUC_results
+# AUC_results$TrainAUC.AUC <- round(AUC_results$TrainAUC.AUC,4)
+# AUC_results$TestAUC.AUC <- round(AUC_results$TestAUC.AUC,4)
 
+AUC_results <- AUC_results %>% select(train.AUC, test.AUC) %>% round(4)
+
+AUC_results 
+
+paste0("Test (",AUC_results$test.AUC,")")
+paste0("Train (",AUC_results$train.AUC,")")
+
+head(test)
+levels(test$models)
+test$models <- recode(test$models,`Test Data Set` = paste0("Test (",AUC_results$test.AUC,")"), `Train Data Set` = paste0("Train (",AUC_results$train.AUC,")"))
+
+
+bothROC <- ggplot(test, aes(m = scores, d = default, color = models)) + 
+  geom_roc(show.legend = TRUE, labelsize = 3.5, cutoffs.at = c(.99,.9,.8,.7,.5,.3,.1,0))
+bothROC <- bothROC + style_roc(theme = theme_solarized_2()) +
+  # theme(axis.text = element_text(colour = "blue")) +
+  theme(legend.justification = c(1, 0), 
+        legend.position = c(1, 0),
+        legend.box.margin=margin(c(50,50,50,50)))+
+  labs(title="ROC Plot for Test and Training Set",
+       color="Data Set",
+       caption="* AUC in brackets")
+plot(bothROC)

@@ -21,8 +21,7 @@
 #                                                                              #
 ###############################################################################-
 
-library("leaps")
-library("caret")
+
 
 names(wine_data_clean)
 
@@ -86,8 +85,7 @@ str(data.train)
 # 
 # data.train <- loadRDS(here::here("data","output","wine_train_100.rds"))
 # saveRDS(data.test, file = here::here("data","output","wine_test_100.rds"))
-
-
+      
 # # ---- OLS Regression ----
 # source("code/models/1.ols.R")
 
