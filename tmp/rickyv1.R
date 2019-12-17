@@ -10,12 +10,12 @@ library('rcompanion')
 
 #Import Data----
 
-load(here::here("data", "output", "limited_factors", "wine_train.RData"))
+load(here::here("data", "output", "limited_factors", "data.train.RData"))
 load(here::here("data", "output", "limited_factors", "wine_test.RData"))
 
 #Standardize----
 wine_data_to_be_standardized <-
-  wine_train %>% select(
+  data.train %>% select(
     points,
     title.n_words,
     title.sentement,
@@ -26,7 +26,7 @@ wine_data_to_be_standardized <-
     taster.n_followers
   )
 wine_data_not_to_be_standardized <-
-  wine_train %>% select(
+  data.train %>% select(
     price,
     points.category,
     country,
@@ -80,12 +80,12 @@ str(wine_data_standardized)
 library("skimr")
 skim(wine_data_standardized)
 
-wine_train <- wine_data_standardized
+data.train <- wine_data_standardized
 
 
 #OlS Model (No Log Price) ----
 
-ols_no_log <-
+model.ols.price <-
   lm(
     price ~
       country +
@@ -100,48 +100,48 @@ ols_no_log <-
       title.has_accents +
       taster.name +
       taster.gender,
-    data = wine_train,
+    data = data.train,
   )
 
-summary(ols_no_log)
-summary(ols_no_log)$r.squared
+summary(model.ols.price)
+summary(model.ols.price)$r.squared
 
 #Predictions-No Log Model ----
 
-preds_no_log <- predict(ols_no_log)
-preds_no_log
+model.ols.price.preds <- predict(model.ols.price)
+model.ols.price.preds
 
-mod10_df <- data.frame(pred = preds_no_log,
-                       actual = wine_train$price)
+model.ols.price.preds_df <- data.frame(pred = model.ols.price.preds,
+                       actual = data.train$price)
 
 ##Plot of Actual Vs Preds
 
-ggplot(mod10_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
+ggplot(model.ols.price.preds_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
   geom_abline(color = "red", linetype = "dashed")
 
-mod10_df <- data.frame(pred = preds_no_log,
-                       actual = wine_train$price,
-                       resids = ols_no_log$residuals)
+model.ols.price.preds_df <- data.frame(pred = model.ols.price.preds,
+                       actual = data.train$price,
+                       resids = model.ols.price$residuals)
 
 
 ##Plots of Preds Vs Resids
 
-ggplot(mod10_df, aes(x = pred, y = resids)) + geom_point(color = "purple", alpha = 1 /
+ggplot(model.ols.price.preds_df, aes(x = pred, y = resids)) + geom_point(color = "purple", alpha = 1 /
                                                            100) + ggtitle("OLS_NO_LOG RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 
 #RMSE-OLS No Log
 
-RMSE(mod10_df$pred, wine_train$price)
+RMSE(model.ols.price.preds_df$pred, data.train$price)
 
 #MAE OLS No Log
 
-MAE(mod10_df$pred, wine_train$price)
+MAE(model.ols.price.preds_df$pred, data.train$price)
 
 
 #Forward Fit Model (log price) ----
 
-fwd_fit <-
+model.ols.log.step.fwd <-
   regsubsets(
     log(price) ~
       country +
@@ -156,60 +156,60 @@ fwd_fit <-
       title.has_accents +
       taster.name +
       taster.gender,
-    data = wine_train,
+    data = data.train,
     method = "forward",
     nvmax = 10
   )
 
-summary(fwd_fit)
+summary(model.ols.log.step.fwd)
 
-plot(fwd_fit, scale = "adjr2", main = "FORWARD SELECTION PROCEDURE")
-coef(fwd_fit, 10)
+plot(model.ols.log.step.fwd, scale = "adjr2", main = "FORWARD SELECTION PROCEDURE")
+coef(model.ols.log.step.fwd, 10)
 
 ##OLS Model Based on Fwd Fit
 
-ols_from_fwd_fit <-
+model.ols.log.from_fwd <-
   lm(log(price) ~ province + color + points + taster.name + taster.gender + designation,
-     data = wine_train)
+     data = data.train)
 
-summary(ols_from_fwd_fit)
-summary(ols_from_fwd_fit)$r.squared
+summary(model.ols.log.from_fwd)
+summary(model.ols.log.from_fwd)$r.squared
 
 #Predictions-Forward Fit Model ----
 
-preds_fwd_fit <- predict(ols_from_fwd_fit)
-preds_fwd_fit
+model.ols.log.from_fwd.preds <- predict(model.ols.log.from_fwd)
+model.ols.log.from_fwd.preds
 
-mod1_df <- data.frame(pred = preds_fwd_fit,
-                      actual = wine_train$price)
+model.ols.log.from_fwd.preds_df <- data.frame(pred = model.ols.log.from_fwd.preds,
+                      actual = data.train$price)
 
 ##Plot of Actual Vs Preds
 
-ggplot(mod1_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
+ggplot(model.ols.log.from_fwd.preds_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
   geom_abline(color = "red", linetype = "dashed")
 
-mod1_df <- data.frame(pred = preds_fwd_fit,
-                      actual = wine_train$price,
-                      resids = ols_from_fwd_fit$residuals)
+model.ols.log.from_fwd.preds_df <- data.frame(pred = model.ols.log.from_fwd.preds,
+                      actual = data.train$price,
+                      resids = model.ols.log.from_fwd$residuals)
 
 
 ##Plots of Preds Vs Resids
 
-ggplot(mod1_df, aes(x = pred, y = resids)) + geom_point(color = "purple", alpha = 1 /
+ggplot(model.ols.log.from_fwd.preds_df, aes(x = pred, y = resids)) + geom_point(color = "purple", alpha = 1 /
                                                           100) + ggtitle("FWD_FIT MODEL RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 
 ##RMSE
 
-RMSE(mod1_df$pred, wine_train$price)
+RMSE(model.ols.log.from_fwd.preds_df$pred, data.train$price)
 
 ##MAE
 
-MAE(mod1_df$pred, wine_train$price)
+MAE(model.ols.log.from_fwd.preds_df$pred, data.train$price)
 
 #Backward Fit Model (log price) ----
 
-bkwd_fit <-
+model.ols.log.step.bkw <-
   regsubsets(
     log(price) ~
       country +
@@ -224,61 +224,61 @@ bkwd_fit <-
       title.has_accents +
       taster.name +
       taster.gender,
-    data = wine_train,
+    data = data.train,
     method = "backward",
     nvmax = 10
   )
 
-summary(bkwd_fit)
+summary(model.ols.log.step.bkw)
 
-plot(bkwd_fit, scale = "adjr2", main = "BACKWARD SELECTION PROCEDURE")
-coef(bkwd_fit, 10)
+plot(model.ols.log.step.bkw, scale = "adjr2", main = "BACKWARD SELECTION PROCEDURE")
+coef(model.ols.log.step.bkw, 10)
 
 ##OLS Model Based on Bkwd
 
-model.ols.log_1 <-
+model.ols.log.from_bkw <-
   lm(log(price) ~ variety + province + points + taster.name + designation + taster.gender,
-     data = wine_train)
+     data = data.train)
 
-summary(model.ols.log_1)
-summary(model.ols.log_1)$r.squared
-plot(model.ols.log_1)
+summary(model.ols.log.from_bkw)
+summary(model.ols.log.from_bkw)$r.squared
+plot(model.ols.log.from_bkw)
 
 #Predictions-Backwards Fit Model----
 
-model.ols.log_1.preds <- predict(model.ols.log_1)
-model.ols.log_1.preds
+model.ols.log.from_bkw.preds <- predict(model.ols.log.from_bkw)
+model.ols.log.from_bkw.preds
 
 ##New Dataframe W/Resids Not Changed
 
-model.ols.log_1.preds_df <- data.frame(pred = model.ols.log_1.preds,
-                      actual = wine_train$price,
-                      resids = model.ols.log_1$residuals)
+model.ols.log.from_bkw.preds_df <- data.frame(pred = model.ols.log.from_bkw.preds,
+                      actual = data.train$price,
+                      resids = model.ols.log.from_bkw$residuals)
 
 
 ##Plot of Preds Vs Resids
 
-ggplot(model.ols.log_1.preds_df, aes(x = pred, y = resids)) +
+ggplot(model.ols.log.from_bkw.preds_df, aes(x = pred, y = resids)) +
   geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT MODEL RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 
 ##RMSE
 
-RMSE(mod3_df$pred, wine_train$price)
+RMSE(model.ols.log.from_bkw.preds_df$pred, model.ols.log.from_bkw.preds_df$actual)
 
 ##MAE
 
-MAE(mod3_df$pred, wine_train$price)
+MAE(model.ols.log.from_bkw.preds_df$pred, model.ols.log.from_bkw.preds_df$actual)
 
 #Tukey Experimentation----
 
-sample <- sample(wine_train$price, size = 5000)
-Tukey <- transformTukey(sample)
-plotNormalHistogram(Tukey)
+price_sample <- sample(data.train$price, size = 5000)
+tukey.transform <- transformTukey(price_sample)
+plotNormalHistogram(tukey.transform)
 
 #Forward Fit Model-W/Tukey ----
 
-fwd_fit_tukey <-
+model.ols.tukey.step.fwd <-
   regsubsets(
     -1 * price ^ (-.3) ~
       country +
@@ -293,61 +293,61 @@ fwd_fit_tukey <-
       title.has_accents +
       taster.name +
       taster.gender,
-    data = wine_train,
+    data = data.train,
     method = "forward",
     nvmax = 10
   )
 
-summary(fwd_fit_tukey)
+summary(model.ols.tukey.step.fwd)
 
-plot(fwd_fit_tukey, scale = "adjr2", main = "Forward Fit Model")
-coef(fwd_fit_tukey, 10)
+plot(model.ols.tukey.step.fwd, scale = "adjr2", main = "Forward Fit Model")
+coef(model.ols.tukey.step.fwd, 10)
 
-ols_from_fwd_fit_tukey <-
+model.ols.tukey.from_fwd <-
   lm(
     -1 * price ^ (-.3) ~ country + color + points + province + taster.gender + taster.name + designation,
-    data = wine_train
+    data = data.train
   )
 
-summary(ols_from_fwd_fit_tukey)
-summary(ols_from_fwd_fit_tukey)$r.squared
+summary(model.ols.tukey.from_fwd)
+summary(model.ols.tukey.from_fwd)$r.squared
 
 #Predictions Fwd Fit Tukey----
 ##Note: Made Predict Function Negative to Generate Positive Predictions
 
-preds_fwd_fit_tukey <- -predict(ols_from_fwd_fit_tukey)
-preds_fwd_fit_tukey
+model.ols.tukey.from_fwd.preds <- predict(model.ols.tukey.from_fwd)
+model.ols.tukey.from_fwd.preds
 
-mod5_df <- data.frame(pred = preds_fwd_fit_tukey,
-                      actual = wine_train$price)
+model.ols.tukey.from_fwd.preds_df <- data.frame(pred = model.ols.tukey.from_fwd.preds,
+                      actual = data.train$price)
 
 ##Plot of Preds Vs Actual
 
-ggplot(mod5_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
+ggplot(model.ols.tukey.from_fwd.preds_df, aes(x = actual, y = pred)) + geom_point(color = "purple") +
   geom_abline(color = "red", linetype = "dashed")
 
-mod5_df <- data.frame(pred = preds_fwd_fit_tukey,
-                      actual = wine_train$price,
-                      resids = ols_from_fwd_fit_tukey$residuals)
+model.ols.tukey.from_fwd.preds_df <- data.frame(pred = model.ols.tukey.from_fwd.preds,
+                      actual = data.train$price,
+                      resids = model.ols.tukey.from_fwd$residuals)
 
 
 ##Plot of Resids vs Preds
 
-ggplot(mod5_df, aes(x = pred, y = resids)) +
+ggplot(model.ols.tukey.from_fwd.preds_df, aes(x = pred, y = resids)) +
   geom_point(color = "purple", alpha = 1 / 100) + ggtitle("FWD FIT TUKEY RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 
 ##RMSE
 
-RMSE(mod5_df$pred, wine_train$price)
+RMSE(model.ols.tukey.from_fwd.preds_df$pred, data.train$price)
 
 ##MAE
 
-MAE(mod5_df$pred, wine_train$price)
+MAE(model.ols.tukey.from_fwd.preds_df$pred, data.train$price)
 
 #Backward Fit Model----
 
-bkwd_fit_tukey <-
+model.ols.tukey.step.bkw <-
   regsubsets(
     -1 * price ^ (-.3) ~
       country +
@@ -362,47 +362,47 @@ bkwd_fit_tukey <-
       title.has_accents +
       taster.name +
       taster.gender,
-    data = wine_train,
+    data = data.train,
     method = "backward",
     nvmax = 10
   )
 
-summary(bkwd_fit_tukey)
+summary(model.ols.tukey.step.bkw)
 
-plot(bkwd_fit_tukey, scale = "adjr2", main = "Backward Fit Model")
-coef(bkwd_fit_tukey, 10)
+plot(model.ols.tukey.step.bkw, scale = "adjr2", main = "Backward Fit Model")
+coef(model.ols.tukey.step.bkw, 10)
 
-model.ols.price <-
+model.ols.tukey.from_bkw <-
   lm(
     -1 * price ^ (-.3) ~ country + variety + points + province + taster.gender + designation + color,
-    data = wine_train
+    data = data.train
   )
 
-summary(model.ols.price)
-summary(model.ols.price)$r.squared
-as.formula(model.ols.price)
-coef(model.ols.price) %>% round(2)
-cplot(model.ols.price)
+summary(model.ols.tukey.from_bkw)
+summary(model.ols.tukey.from_bkw)$r.squared
+as.formula(model.ols.tukey.from_bkw)
+coef(model.ols.tukey.from_bkw) %>% round(2)
+cplot(model.ols.tukey.from_bkw)
 
 #Predictions Backwards Fit Tukey----
 
-preds_bkwd_tukey <- -predict(ols_from_bkwd_fit_tukey)
-preds_bkwd_tukey
+model.ols.tukey.from_bkw.preds <- predict(model.ols.tukey.from_bkw)
+model.ols.tukey.from_bkw.preds
 
-preds_bkwd_tukey_df <- data.frame(pred = preds_bkwd_tukey,
-                      actual = wine_train$price,
-                      resids = ols_from_bkwd_fit_tukey$residuals)
+model.ols.tukey.from_bkw.preds_df <- data.frame(pred = model.ols.tukey.from_bkw.preds,
+                      actual = data.train$price,
+                      resids = model.ols.tukey.from_bkw$residuals)
 
 
 ##Plot of Resids vs Preds
 
-ggplot(preds_bkwd_tukey_df, aes(x = pred, y = resids)) +
+ggplot(model.ols.tukey.from_bkw.preds_df, aes(x = pred, y = resids)) +
   geom_point(color = "purple", alpha = 1 / 100) + ggtitle("BKWD FIT TUKEY RESIDS VS PREDS") + geom_smooth() + theme_bw()
 
 ##RMSE
 
-RMSE(preds_bkwd_tukey_df$pred, wine_train$price)
+RMSE(model.ols.tukey.from_bkw.preds_df$pred, model.ols.tukey.from_bkw.preds_df$actual)
 
 ##MAE
 
-MAE(preds_bkwd_tukey_df$pred, wine_train$price)
+MAE(model.ols.tukey.from_bkw.preds_df$pred, model.ols.tukey.from_bkw.preds_df$actual)
